@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ Sơ - ESCROW</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/local/profile.css">
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-top">
+            <div class="header-top__left">
+                <a href="/html/index.html" class="header-top__link">Trang Chủ</a>
+                <span>|</span>
+                <a href="#" class="header-top__link">P2P</a>
+                <span>|</span>
+                <a href="#" class="header-top__link">Ví</a>
+                <span>|</span>
+                <a href="#" class="header-top__link">Tố Cáo</a>
+            </div>
+            <div class="header-top__right">
+                <a href="#" class="header-top__link"><i class="bx bx-bell-ring"></i> Thông Báo</a>
+                <a href="#" class="header-top__link"><i class="bx bx-help-circle"></i> Hỗ Trợ</a>
+                <a href="#" class="header-top__link"><i class="bx bx-cog"></i> Cài Đặt</a>
+                <a href="/html/pages/register.html" class="header-top__link">Đăng Ký</a>
+                <span>|</span>
+                <a href="/html/pages/login.html" class="header-top__link">Đăng Nhập</a>
+            </div>
+        </div>
+        <div class="header-mid">
+            <div class="header-mid__logo">ESCROW</div>
+            <div class="header-mid__search">
+                <input type="text" placeholder="Tra cứu STK, SĐT, link FB, mã giao dịch,...">
+                <button><i class="bx bx-search"></i></button>
+            </div>              
+            <div class="header-mid__profile">
+                <a href="/html/pages/profile.html"><i class="bx bx-user-circle"></i></a>
+            </div>
+        </div>
+        <div class="header-bottom">
+            <div class="header-bottom__marquee">
+                Chào mừng bạn đến với Hệ Thống Giao Dịch Trung Gian ESCROW -
+                An Toàn, Bảo Mật, Uy Tín hàng đầu Việt Nam. Hỗ trợ giao dịch 24/7!
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="profile-main">
+        <div class="profile-layout">
+
+            <!-- ===================== LEFT: PROFILE CARD =====================
+                 Toàn bộ data được fill bởi JS (profile.js → loadUserProfile)
+                 Không có data nào hardcode ở đây
+            ================================================================ -->
+            <aside class="profile-card">
+
+                <!-- Avatar + Tên: JS fill id="userAvatar", id="userName" -->
+                <div class="profile-card__top">
+                    <div class="profile-card__avatar" id="userAvatar"></div>
+                    <div class="profile-card__info">
+                        <h2 class="profile-card__name" id="userName"></h2>
+                        <span class="profile-card__status">
+                            <i class='bx bx-check-circle'></i>
+                            <span id="userStatus"></span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="profile-card__divider"></div>
+
+                <!-- Thông tin cá nhân: JS fill từng id -->
+                <div class="profile-card__section">
+                    <h3 class="profile-card__section-title">Thông tin cá nhân</h3>
+
+                    <div class="profile-card__field">
+                        <span class="profile-card__field-label"><i class='bx bx-phone'></i> Số điện thoại</span>
+                        <div class="profile-card__field-right">
+                            <span class="profile-card__field-value" id="phoneValue"></span>
+                            <span class="profile-card__field-value profile-card__field-value--hidden" id="phoneHidden">••••••••••</span>
+                            <button class="profile-card__toggle-btn" id="phoneToggle"><i class='bx bx-show' id="phoneIcon"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="profile-card__field">
+                        <span class="profile-card__field-label"><i class='bx bx-envelope'></i> Email</span>
+                        <div class="profile-card__field-right">
+                            <span class="profile-card__field-value" id="emailValue"></span>
+                            <span class="profile-card__field-value profile-card__field-value--hidden" id="emailHidden">••••••••••</span>
+                            <button class="profile-card__toggle-btn" id="emailToggle"><i class='bx bx-show' id="emailIcon"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="profile-card__field">
+                        <span class="profile-card__field-label"><i class='bx bxl-facebook-circle'></i> Facebook</span>
+                        <div class="profile-card__field-right">
+                            <span class="profile-card__field-value" id="fbValue"></span>
+                            <span class="profile-card__field-value profile-card__field-value--hidden" id="fbHidden">••••••••••</span>
+                            <button class="profile-card__toggle-btn" id="fbToggle"><i class='bx bx-show' id="fbIcon"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="profile-card__field">
+                        <span class="profile-card__field-label"><i class='bx bxl-tiktok'></i> TikTok</span>
+                        <div class="profile-card__field-right">
+                            <span class="profile-card__field-value" id="tiktokValue"></span>
+                            <span class="profile-card__field-value profile-card__field-value--hidden" id="tiktokHidden">••••••••••</span>
+                            <button class="profile-card__toggle-btn" id="tiktokToggle"><i class='bx bx-show' id="tiktokIcon"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="profile-card__field">
+                        <span class="profile-card__field-label"><i class='bx bx-calendar'></i> Gia nhập</span>
+                        <span class="profile-card__field-value" id="joinDate"></span>
+                    </div>
+                </div>
+
+                <div class="profile-card__divider"></div>
+
+                <!-- Thống kê: JS fill id="successCount", "totalCount", "rateFill", "rateText" -->
+                <div class="profile-card__section">
+                    <h3 class="profile-card__section-title">Thống kê giao dịch</h3>
+                    <div class="profile-card__stats">
+                        <div class="profile-card__stat">
+                            <span class="profile-card__stat-num" id="successCount"></span>
+                            <span class="profile-card__stat-label">Thành công</span>
+                        </div>
+                        <div class="profile-card__stat-divider">/</div>
+                        <div class="profile-card__stat">
+                            <span class="profile-card__stat-num profile-card__stat-num--total" id="totalCount"></span>
+                            <span class="profile-card__stat-label">Tổng giao dịch</span>
+                        </div>
+                    </div>
+                    <div class="profile-card__rate-bar">
+                        <div class="profile-card__rate-fill" id="rateFill"></div>
+                    </div>
+                    <p class="profile-card__rate-text">Tỉ lệ thành công: <strong id="rateText"></strong></p>
+                </div>
+
+                <div class="profile-card__divider"></div>
+
+                <!-- Uy tín: JS fill id="avgRating", "repStars", "reportCount" -->
+                <div class="profile-card__section">
+                    <h3 class="profile-card__section-title">Uy tín & Phản hồi</h3>
+                    <div class="profile-card__reputation">
+                        <div class="profile-card__rep-block">
+                            <div class="profile-card__rep-num profile-card__rep-num--star" id="avgRating"></div>
+                            <div class="profile-card__rep-stars" id="repStars"></div>
+                            <span class="profile-card__rep-label">Đánh giá trung bình</span>
+                        </div>
+                        <div class="profile-card__rep-block">
+                            <div class="profile-card__rep-num profile-card__rep-num--report" id="reportCount"></div>
+                            <span class="profile-card__rep-label">Lần bị tố cáo</span>
+                        </div>
+                    </div>
+                </div>
+
+            </aside>
+
+            <!-- RIGHT: LỊCH SỬ -->
+            <section class="profile-history">
+
+                <div class="history-toolbar">
+                    <div class="history-tabs">
+                        <button class="history-tab history-tab--active" id="tabGD" onclick="switchTab('GD')">
+                            <i class='bx bx-transfer'></i> Lịch sử giao dịch
+                        </button>
+                        <button class="history-tab" id="tabTC" onclick="switchTab('TC')">
+                            <i class='bx bx-error-circle'></i> Lịch sử tố cáo
+                        </button>
+                    </div>
+                    <div class="history-search">
+                        <i class='bx bx-search'></i>
+                        <input type="text" id="searchInput" placeholder="Tìm mã giao dịch..." oninput="filterList()">
+                        <button class="calendar-btn" id="calendarBtn" onclick="toggleDatePicker()" title="Lọc theo ngày">
+                            <i class='bx bx-calendar'></i>
+                        </button>
+                    </div>
+
+                    <!-- DATE PICKER POPUP -->
+                    <div class="date-picker" id="datePicker">
+                        <div class="date-picker__row">
+                            <div class="date-picker__field">
+                                <label>Từ ngày</label>
+                                <input type="date" id="dateFrom" onchange="filterByDate()">
+                            </div>
+                            <div class="date-picker__field">
+                                <label>Đến ngày</label>
+                                <input type="date" id="dateTo" onchange="filterByDate()">
+                            </div>
+                            <button class="date-picker__clear" onclick="clearDateFilter()" title="Xóa bộ lọc">
+                                <i class='bx bx-x'></i> Xóa lọc
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="panelGD">
+                    <div class="gd-list" id="gdList"></div>
+                </div>
+
+                <div id="panelTC" style="display:none;">
+                    <div class="gd-list" id="tcList"></div>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-top">
+            <div class="footer-top__left">
+                <h2 class="footer-top__logo">ESCROW</h2>
+                <p class="footer-top__description">
+                    Hệ thống giao dịch trung gian an toàn hàng đầu,
+                    bảo vệ quyền lợi người mua và người bán.
+                </p>
+                <div class="footer-top__social">
+                    <a href="#"><i class="bx bxl-facebook-circle"></i></a>
+                    <a href="#"><i class="bx bxl-telegram"></i></a>
+                    <a href="#"><i class="bx bxl-youtube"></i></a>
+                </div>
+            </div>
+            <div></div>
+            <div class="footer-top__right">
+                <div class="footer-box">
+                    <h3 class="footer-box__title">Dịch Vụ</h3>
+                    <ul class="footer-box__list">
+                        <li><a href="#">Quy trình giao dịch</a></li>
+                        <li><a href="#">Biểu phí dịch vụ</a></li>
+                        <li><a href="#">Giao dịch P2P</a></li>
+                        <li><a href="#">Kiểm tra uy tín</a></li>
+                    </ul>
+                </div>
+                <div class="footer-box">
+                    <h3 class="footer-box__title">Hỗ Trợ & Pháp Lý</h3>
+                    <ul class="footer-box__list">
+                        <li><a href="#">Điều khoản sử dụng</a></li>
+                        <li><a href="#">Chính sách bảo mật</a></li>
+                        <li><a href="#">Giải quyết tranh chấp</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-box footer-box--contact">
+                    <h3 class="footer-box__title">Liên Hệ</h3>
+                    <div class="footer-box__contact">
+                        <p><i class="bx bx-phone"></i> 1900 xxxx</p>
+                        <p><i class="bx bx-envelope"></i> support@escrow.vn</p>
+                        <p><i class="bx bx-map"></i> Quận 1, TP.HCM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">© 2026 ESCROW. All rights reserved.</div>
+    </footer>
+
+</div>
+
+<!-- =====================================================================
+     TEMPLATE: GIAO DỊCH
+     Bố cục cố định tại đây. JS (renderTransactions) clone và điền data.
+     Không có data nào trong template này.
+     Backend mapping:
+       .gd-item__badge       ← GiaoDichP2P.MaLoaiGiaoDich (BUY/SELL)
+       .gd-item__partner     ← NguoiDung.HoTen (MaNguoiMua hoặc MaNguoiBan)
+       .gd-item__code        ← GiaoDichP2P.MaGiaoDich
+       .gd-item__date        ← GiaoDichP2P.ThoiGianTao
+       .gd-item__stars       ← DanhGia.SoSao
+       .gd-item__comment     ← DanhGia.NhanXet
+       .gd-item__status      ← TrangThaiGiaoDich.MaCode
+       .gd-item__amount      ← GiaoDichP2P.SoTien
+====================================================================== -->
+<template id="gdTemplate">
+    <div class="gd-item">
+        <div class="gd-item__badge"></div>
+        <div class="gd-item__info">
+            <span class="gd-item__partner"></span>
+            <span class="gd-item__code"></span>
+            <span class="gd-item__date"></span>
+        </div>
+        <div class="gd-item__meta">
+            <div class="gd-item__stars"></div>
+            <div class="gd-item__row2">
+                <span class="gd-item__comment"></span>
+                <span class="gd-item__status"></span>
+            </div>
+            <div class="gd-item__row3">
+                <div class="gd-item__amount-wrap">
+                    <span class="gd-item__amount">***</span>
+                    <button class="gd-item__eye"><i class='bx bx-show'></i></button>
+                </div>
+                <button class="gd-item__detail-btn">Xem chi tiết</button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- =====================================================================
+     TEMPLATE: TỐ CÁO
+     Layout thống nhất với giao dịch — cũng 3 cột.
+     Backend mapping:
+       .gd-item__badge       ← GiaoDichP2P.MaLoaiGiaoDich (B/S của GD liên quan)
+       .tc-item__code        ← TranhChap.MaGiaoDich
+       .tc-item__partner     ← NguoiDung.HoTen (người tố cáo)
+       .tc-item__date        ← TranhChap.ThoiGianTao
+       .tc-item__content     ← TranhChap.LyDoKhieuNai
+       .tc-item__admin       ← NguoiDung.HoTen (MaAdminXuLy)
+       .tc-item__resolved-at ← TranhChap.ThoiGianXuLy
+       .gd-item__status      ← TranhChap.TrangThai
+====================================================================== -->
+<template id="tcTemplate">
+    <div class="gd-item">
+        <div class="gd-item__badge"></div>
+        <div class="gd-item__info">
+            <span class="gd-item__partner"></span>
+            <span class="gd-item__code tc-item__code"></span>
+            <span class="gd-item__date"></span>
+        </div>
+        <div class="gd-item__meta">
+            <p class="gd-item__comment tc-item__content"></p>
+            <div class="gd-item__row2">
+                <span class="tc-item__admin"></span>
+                <span class="gd-item__status"></span>
+            </div>
+            <div class="gd-item__row3">
+                <span class="tc-item__resolved-at"></span>
+                <button class="gd-item__detail-btn">Xem chi tiết</button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+<div class="modal" id="modalDetail">
+    <div class="modal__header">
+        <h3 class="modal__title" id="modalTitle"></h3>
+        <button class="modal__close" onclick="closeModal()"><i class='bx bx-x'></i></button>
+    </div>
+    <div class="modal__body" id="modalBody"></div>
+</div>
+<script src="/js/global.js"></script>
+<script src="/js/local/profile.js"></script>
+</body>
+</html>

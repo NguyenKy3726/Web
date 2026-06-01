@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Ký - ESCROW</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/local/register.css">
+</head>
+<body>
+
+    <!-- BACK HOME -->
+    <div class="back-home">
+        <a href="/html/index.html">
+            <i class='bx bx-arrow-back'></i> Trang chủ
+        </a>
+    </div>
+
+    <div class="auth-card">
+
+        <!-- LEFT -->
+        <div class="auth-card__left">
+            <a href="/html/index.html" class="auth-card__logo">ESCROW</a>
+
+            <div class="auth-card__brand">
+                <div class="auth-card__brand-icon">
+                    <i class='bx bx-user-plus'></i>
+                </div>
+                <h2 class="auth-card__brand-title">Tạo Tài Khoản<br>Miễn Phí</h2>
+                <p class="auth-card__brand-desc">Đăng ký chỉ mất 1 phút và hoàn toàn miễn phí.</p>
+
+                <ul class="auth-card__steps">
+                    <li><span class="step-num">1</span><span>Điền thông tin cá nhân cơ bản</span></li>
+                    <li><span class="step-num">2</span><span>Xác minh email bằng mã OTP</span></li>
+                    <li><span class="step-num">3</span><span>Đăng nhập và bắt đầu giao dịch</span></li>
+                    <li><span class="step-num">4</span><span>Làm KYC để nâng hạn mức giao dịch</span></li>
+                </ul>
+            </div>
+
+            <div></div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="auth-card__right">
+            <div class="auth-form__header">
+                <h1 class="auth-form__title">Tạo Tài Khoản</h1>
+                <p class="auth-form__subtitle">Vui lòng điền đầy đủ thông tin bên dưới để đăng ký.</p>
+            </div>
+
+            <div class="auth-form__error" id="errorBox">
+                <i class='bx bx-error-circle'></i>
+                <span id="errorMsg"></span>
+            </div>
+
+            <div class="auth-form__grid">
+
+                <div class="auth-form__group auth-form__group--full">
+                    <label class="auth-form__label" for="hoTen">Họ và tên <span class="required">*</span></label>
+                    <div class="auth-form__input-wrap">
+                        <i class='bx bx-id-card'></i>
+                        <input class="auth-form__input" type="text" id="hoTen" placeholder="Nguyễn Văn A">
+                    </div>
+                    <span class="auth-form__field-error" id="err-hoTen"></span>
+                </div>
+
+                <div class="auth-form__group">
+                    <label class="auth-form__label" for="tenDangNhap">Tên đăng nhập <span class="required">*</span></label>
+                    <div class="auth-form__input-wrap">
+                        <i class='bx bx-user'></i>
+                        <input class="auth-form__input" type="text" id="tenDangNhap" placeholder="username123">
+                    </div>
+                    <span class="auth-form__hint">Chỉ gồm chữ, số, dấu gạch dưới</span>
+                    <span class="auth-form__field-error" id="err-tenDangNhap"></span>
+                </div>
+
+                <div class="auth-form__group">
+                    <label class="auth-form__label" for="email">Email <span class="required">*</span></label>
+                    <div class="auth-form__input-wrap">
+                        <i class='bx bx-envelope'></i>
+                        <input class="auth-form__input" type="email" id="email" placeholder="example@gmail.com">
+                    </div>
+                    <span class="auth-form__field-error" id="err-email"></span>
+                </div>
+
+                <div class="auth-form__group">
+                    <label class="auth-form__label" for="soDienThoai">Số điện thoại <span class="required">*</span></label>
+                    <div class="auth-form__input-wrap">
+                        <i class='bx bx-phone'></i>
+                        <input class="auth-form__input" type="tel" id="soDienThoai" placeholder="0912345678">
+                    </div>
+                    <span class="auth-form__field-error" id="err-soDienThoai"></span>
+                </div>
+
+                <div class="auth-form__group">
+                    <label class="auth-form__label" for="matKhau">Mật khẩu <span class="required">*</span></label>
+                    <div class="auth-form__input-wrap">
+                        <i class='bx bx-lock-alt'></i>
+                        <input class="auth-form__input has-toggle" type="password" id="matKhau" placeholder="Tối thiểu 8 ký tự">
+                        <i class='bx bx-hide toggle-pw' id="togglePw1"></i>
+                    </div>
+                    <div class="pw-strength">
+                        <div class="pw-strength__bar"><div class="pw-strength__fill" id="pwFill"></div></div>
+                        <span class="pw-strength__text" id="pwText"></span>
+                    </div>
+                    <span class="auth-form__field-error" id="err-matKhau"></span>
+                </div>
+
+                <div class="auth-form__group">
+                    <label class="auth-form__label" for="xacNhanMatKhau">Xác nhận mật khẩu <span class="required">*</span></label>
+                    <div class="auth-form__input-wrap">
+                        <i class='bx bx-lock-open-alt'></i>
+                        <input class="auth-form__input has-toggle" type="password" id="xacNhanMatKhau" placeholder="Nhập lại mật khẩu">
+                        <i class='bx bx-hide toggle-pw' id="togglePw2"></i>
+                    </div>
+                    <span class="auth-form__field-error" id="err-xacNhanMatKhau"></span>
+                </div>
+
+            </div>
+
+            <div class="auth-form__terms">
+                <input type="checkbox" id="agreeTerms">
+                <span>Tôi đồng ý với <a href="#">Điều khoản sử dụng</a> và <a href="#">Chính sách bảo mật</a> của ESCROW.</span>
+            </div>
+
+            <button class="auth-form__btn" id="registerBtn">
+                <i class='bx bx-user-plus'></i>
+                Tạo Tài Khoản
+            </button>
+
+            <div class="auth-form__divider"><span>hoặc</span></div>
+
+            <p class="auth-form__switch">
+                Đã có tài khoản? <a href="/html/pages/login.html">Đăng nhập ngay</a>
+            </p>
+        </div>
+
+    </div>
+
+    <script src="/js/local/register.js"></script>
+</body>
+</html>

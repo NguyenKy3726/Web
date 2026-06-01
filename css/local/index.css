@@ -1,0 +1,703 @@
+/* =========================
+            MAIN
+========================= */
+
+main{
+    width: 100%;
+    padding: 40px 100px;
+}
+
+
+
+/* =========================
+        TOP TRADER
+========================= */
+
+.section-top-trader{
+    width: 100%;
+
+    background: #f0f9ff;
+
+    border: 1px solid #38bdf8;
+    border-radius: 24px;
+
+    padding: 50px 40px;
+
+    overflow: hidden;
+}
+
+
+
+/* TITLE */
+
+.section-top-trader__title{
+    text-align: center;
+
+    font-size: 58px;
+    font-weight: 700;
+
+    color: #0ea5e9;
+
+    margin-bottom: 50px;
+}
+
+
+
+/* WRAPPER */
+
+.section-top-trader__wrapper{
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+/* SLIDER */
+
+.section-top-trader__slider{
+    width: 100%;
+
+    overflow: hidden;
+}
+
+
+
+/* TRACK */
+
+.section-top-trader__track{
+    display: flex;
+
+    gap: 24px;
+
+    transition: 0.4s ease;
+}
+
+
+
+/* CARD */
+
+.section-top-trader__card{
+    min-width: calc((100% - 48px) / 3);
+
+    background: white;
+    border: #0ea5e9 1px solid;
+    border-radius: 22px;
+
+    padding: 25px 20px;
+
+    position: relative;
+
+    flex-shrink: 0;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+
+
+/* TROPHY */
+
+.section-top-trader__icon{
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    font-size: 24px;
+}
+
+
+
+/* AVATAR */
+
+.section-top-trader__avatar{
+    width: 110px;
+    height: 110px;
+
+    border-radius: 50%;
+
+    background: #6989b4;
+
+    border: 5px solid #38bdf8;
+
+    margin: 0 auto 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+    font-size: 44px;
+    font-weight: 700;
+}
+
+
+
+/* NAME */
+
+.section-top-trader__name{
+    text-align: center;
+
+    font-size: 26px;
+    font-weight: 700;
+
+    color: #253046;
+
+    margin-bottom: 12px;
+}
+
+
+
+/* INFO */
+
+.section-top-trader__info{
+    text-align: center;
+
+    font-size: 20px;
+
+    color: #0a9422;
+
+    margin-bottom: 8px;
+}
+
+
+
+/* SCORE */
+
+.section-top-trader__score{
+    display: block;
+
+    text-align: center;
+
+    font-size: 24px;
+    font-weight: 700;
+
+    color: #0a9422;
+}
+
+
+
+/* BUTTON */
+
+.section-top-trader__button{
+    width: 56px;
+    height: 56px;
+
+    border: none;
+    border-radius: 50%;
+    background: white;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+
+    position: absolute;
+
+    z-index: 10;
+
+    cursor: pointer;
+
+    font-size: 28px;
+
+    color: #0ea5e9;
+}
+
+
+
+/* LEFT */
+
+.section-top-trader__button--left{
+    left: -28px;
+}
+
+
+
+/* RIGHT */
+
+.section-top-trader__button--right{
+    right: -28px;
+}
+
+
+
+/* =========================
+        SECTION 1: HERO
+========================= */
+
+.section-hero{
+    background: #1e293b;
+    border-radius: 24px;
+
+    padding: 60px 50px;
+
+    margin-bottom: 50px;
+
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+
+
+/* HERO CONTENT */
+
+.section-hero__content{
+    flex: 1;
+}
+
+
+
+/* HERO BADGE */
+
+.section-hero__badge{
+    display: inline-block;
+
+    background: #0ea5e9;
+    color: white;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    padding: 6px 16px;
+    border-radius: 20px;
+
+    margin-bottom: 20px;
+}
+
+
+
+/* HERO TITLE */
+
+.section-hero__title{
+    color: white;
+
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.3;
+
+    margin-bottom: 18px;
+}
+
+
+
+/* HERO DESC */
+
+.section-hero__desc{
+    color: #94a3b8;
+
+    font-size: 18px;
+    line-height: 1.7;
+
+    margin-bottom: 30px;
+
+    max-width: 600px;
+}
+
+
+
+/* HERO ACTIONS */
+
+.section-hero__actions{
+    display: flex;
+    gap: 16px;
+}
+
+
+
+/* HERO BUTTON */
+
+.section-hero__btn{
+    text-decoration: none;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    padding: 14px 32px;
+    border-radius: 10px;
+
+    transition: 0.2s;
+}
+
+
+
+/* HERO BUTTON PRIMARY */
+
+.section-hero__btn--primary{
+    background: #38bdf8;
+    color: #0c4a6e;
+}
+
+.section-hero__btn--primary:hover{
+    background: #0ea5e9;
+    color: white;
+}
+
+
+
+/* HERO BUTTON OUTLINE */
+
+.section-hero__btn--outline{
+    border: 2px solid #38bdf8;
+    color: #38bdf8;
+}
+
+.section-hero__btn--outline:hover{
+    background: #38bdf8;
+    color: #0c4a6e;
+}
+
+
+
+/* HERO VISUAL */
+
+.section-hero__visual{
+    width: 180px;
+    height: 180px;
+
+    background: #0ea5e9;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+}
+
+.section-hero__visual i{
+    font-size: 100px;
+    color: white;
+}
+
+
+
+/* =========================
+    SECTION 3: FEATURE
+========================= */
+
+.section-feature{
+    margin: 50px 0;
+}
+
+
+
+/* FEATURE TITLE */
+
+.section-feature__title{
+    text-align: center;
+
+    font-size: 42px;
+    font-weight: 700;
+
+    color: #1e293b;
+
+    margin-bottom: 40px;
+}
+
+
+
+/* FEATURE GRID */
+
+.section-feature__grid{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 24px;
+}
+
+
+
+/* FEATURE CARD */
+
+.feature-card{
+    background: white;
+    border-radius: 18px;
+
+    padding: 30px 24px;
+
+    text-align: center;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+
+    transition: 0.3s;
+}
+
+.feature-card:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 10px 24px rgba(14,165,233,0.18);
+}
+
+
+
+/* FEATURE ICON */
+
+.feature-card__icon{
+    width: 80px;
+    height: 80px;
+
+    background: #f0f9ff;
+    border: 2px solid #38bdf8;
+    border-radius: 50%;
+
+    margin: 0 auto 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.feature-card__icon i{
+    font-size: 40px;
+    color: #0ea5e9;
+}
+
+
+
+/* FEATURE CARD TITLE */
+
+.feature-card__title{
+    font-size: 20px;
+    font-weight: 700;
+
+    color: #1e293b;
+
+    margin-bottom: 12px;
+}
+
+
+
+/* FEATURE CARD DESC */
+
+.feature-card__desc{
+    font-size: 15px;
+    line-height: 1.6;
+
+    color: #64748b;
+}
+
+
+
+/* =========================
+    SECTION 4: PROCESS
+========================= */
+
+.section-process{
+    background: #f0f9ff;
+
+    border: 1px solid #38bdf8;
+    border-radius: 24px;
+
+    padding: 50px 40px;
+
+    margin-top: 50px;
+}
+
+
+
+/* PROCESS TITLE */
+
+.section-process__title{
+    text-align: center;
+
+    font-size: 42px;
+    font-weight: 700;
+
+    color: #0ea5e9;
+
+    margin-bottom: 50px;
+}
+
+
+
+/* PROCESS STEPS */
+
+.section-process__steps{
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+
+    gap: 10px;
+}
+
+
+
+/* PROCESS STEP */
+
+.process-step{
+    flex: 1;
+    max-width: 200px;
+
+    text-align: center;
+}
+
+
+
+/* PROCESS CIRCLE */
+
+.process-step__circle{
+    width: 64px;
+    height: 64px;
+
+    background: #0ea5e9;
+    color: white;
+
+    border-radius: 50%;
+
+    margin: 0 auto 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 28px;
+    font-weight: 700;
+}
+
+
+
+/* PROCESS CIRCLE DONE */
+
+.process-step__circle--done{
+    background: #0a9422;
+}
+
+
+
+/* PROCESS NAME */
+
+.process-step__name{
+    font-size: 20px;
+    font-weight: 700;
+
+    color: #1e293b;
+
+    margin-bottom: 8px;
+}
+
+
+
+/* PROCESS DESC */
+
+.process-step__desc{
+    font-size: 14px;
+    line-height: 1.5;
+
+    color: #64748b;
+}
+
+
+
+/* PROCESS ARROW */
+
+.process-step__arrow{
+    color: #38bdf8;
+
+    font-size: 36px;
+
+    padding-top: 14px;
+
+    flex-shrink: 0;
+}
+
+
+
+/* =========================
+        RESPONSIVE
+========================= */
+
+@media(max-width:1200px){
+
+    main{
+        padding: 40px 60px;
+    }
+
+}
+
+
+
+@media(max-width:992px){
+
+    .section-top-trader__card{
+        min-width: calc((100% - 24px) / 2);
+    }
+
+    .section-feature__grid{
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+
+@media(max-width:768px){
+
+    main{
+        padding: 20px;
+    }
+
+    .section-top-trader{
+        padding: 30px 20px;
+    }
+
+    .section-top-trader__title{
+        font-size: 36px;
+    }
+
+    .section-top-trader__card{
+        min-width: 100%;
+    }
+
+    /* HERO mobile: xếp dọc */
+    .section-hero{
+        flex-direction: column-reverse;
+        text-align: center;
+        padding: 40px 24px;
+    }
+
+    .section-hero__title{
+        font-size: 30px;
+    }
+
+    .section-hero__desc{
+        font-size: 16px;
+    }
+
+    .section-hero__actions{
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .section-hero__visual{
+        width: 120px;
+        height: 120px;
+    }
+
+    .section-hero__visual i{
+        font-size: 64px;
+    }
+
+    /* FEATURE mobile: 1 cột */
+    .section-feature__title,
+    .section-process__title{
+        font-size: 30px;
+    }
+
+    .section-feature__grid{
+        grid-template-columns: 1fr;
+    }
+
+    /* PROCESS mobile: xếp dọc, ẩn mũi tên ngang */
+    .section-process__steps{
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .process-step{
+        max-width: 100%;
+    }
+
+    .process-step__arrow{
+        transform: rotate(90deg);
+        padding: 0;
+    }
+
+}

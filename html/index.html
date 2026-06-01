@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Chủ - Giao Dịch Trung Gian</title>
+
+    <!-- BOXICON -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://cdn.boxicons.com/3.0.8/fonts/basic/boxicons.min.css" rel="stylesheet">
+    <link href="https://cdn.boxicons.com/3.0.8/fonts/filled/boxicons-filled.min.css" rel="stylesheet">
+    <link href="https://cdn.boxicons.com/3.0.8/fonts/brands/boxicons-brands.min.css" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/local/index.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- ========================= HEADER ========================== -->
+        <header>
+            <!-- HEADER TOP -->
+            <div class="header-top">
+                <div class="header-top__left">
+                    <a href="#" class="header-top__link" data-page="home">Trang Chủ</a>
+                    <span>|</span>
+                    <a href="#" class="header-top__link">P2P</a>
+                    <span>|</span>
+                    <a href="#" class="header-top__link">Ví</a>
+                    <span>|</span>
+                    <a href="#" class="header-top__link">Tố Cáo</a>
+                </div>
+
+                <div class="header-top__right">
+                    <a href="#" class="header-top__link"><i class="bx bx-bell-ring"></i> Thông Báo</a>
+                    <a href="#" class="header-top__link"><i class="bx bx-help-circle"></i> Hỗ Trợ</a>
+                    <a href="#" class="header-top__link"><i class="bx bx-cog"></i> Cài Đặt</a>
+                    <a href="/html/pages/register.html" class="header-top__link">Đăng Ký</a>
+                    <span>|</span>
+                    <a href="/html/pages/login.html" class="header-top__link">Đăng Nhập</a>
+                </div>
+            </div>
+
+            <!-- HEADER MID -->
+            <div class="header-mid">
+                <!-- LOGO -->
+                <div class="header-mid__logo">ESCROW</div>
+
+                <!-- SEARCH -->
+                <div class="header-mid__search">
+                    <input type="text" placeholder="Tra cứu STK, SĐT, link FB, mã giao dịch,...">
+                    <button><i class="bx bx-search"></i></button>
+                </div>
+
+                <!-- ACCOUNT -->
+                <div class="header-mid__profile">
+                    <a href="/html/pages/profile.html"><i class="bx bx-user-circle"></i></a>
+                </div>
+            </div>
+
+            <!-- HEADER BOTTOM -->
+            <div class="header-bottom">
+                <div class="header-bottom__marquee">
+                    Chào mừng bạn đến với Hệ Thống Giao Dịch Trung Gian ESCROW - 
+                    An Toàn, Bảo Mật, Uy Tín hàng đầu Việt Nam. Hỗ trợ giao dịch 24/7!
+                </div>
+            </div>
+        </header>
+
+        <!-- ========================= MAIN ========================== -->
+        <main>
+
+            <!-- ===== SECTION 1: HERO BANNER ===== -->
+            <section class="section-hero">
+                <div class="section-hero__content">
+                    <span class="section-hero__badge">An Toàn · Bảo Mật · Uy Tín</span>
+                    <h1 class="section-hero__title">Giao Dịch Trung Gian An Toàn Tuyệt Đối</h1>
+                    <p class="section-hero__desc">
+                        Bảo vệ tiền của bạn cho đến khi giao dịch hoàn tất.
+                        Không lo bị lừa đảo, mọi giao dịch đều được giám sát chặt chẽ.
+                    </p>
+                    <div class="section-hero__actions">
+                        <a href="#" class="section-hero__btn section-hero__btn--primary">Bắt Đầu Ngay</a>
+                        <a href="#" class="section-hero__btn section-hero__btn--outline">Tìm Hiểu Thêm</a>
+                    </div>
+                </div>
+                <div class="section-hero__visual">
+                    <i class="bx bx-shield-quarter"></i>
+                </div>
+            </section>
+
+            <!-- ===== SECTION 2: TOP TRADER ===== -->
+            <section class="section-top-trader">
+                <h2 class="section-top-trader__title">Top Nhà Giao Dịch Tháng</h2>
+                <div class="section-top-trader__wrapper">
+                    <button class="section-top-trader__button section-top-trader__button--left" id="prevBtn">
+                        <i class="bx bx-chevron-left"></i>
+                    </button>
+                    <div class="section-top-trader__slider">
+                        <div class="section-top-trader__track" id="sliderTrack">
+                            <!-- Cards được render bằng home.js -->
+                        </div>
+                    </div>
+                    <button class="section-top-trader__button section-top-trader__button--right" id="nextBtn">
+                        <i class="bx bx-chevron-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ===== SECTION 3: TẠI SAO CHỌN ESCROW ===== -->
+            <section class="section-feature">
+                <h2 class="section-feature__title">Tại Sao Chọn ESCROW?</h2>
+                <div class="section-feature__grid">
+                    <div class="feature-card">
+                        <div class="feature-card__icon"><i class="bx bx-lock-alt"></i></div>
+                        <h3 class="feature-card__title">Bảo Mật Tuyệt Đối</h3>
+                        <p class="feature-card__desc">
+                            Tiền được giữ an toàn trong ví ký quỹ cho đến khi
+                            cả hai bên xác nhận giao dịch thành công.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon"><i class="bx bx-balance"></i></div>
+                        <h3 class="feature-card__title">Xử Lý Tranh Chấp</h3>
+                        <p class="feature-card__desc">
+                            Đội ngũ trọng tài chuyên nghiệp giải quyết tranh chấp
+                            công bằng, minh bạch 24/7.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon"><i class="bx bx-bolt-circle"></i></div>
+                        <h3 class="feature-card__title">Giao Dịch Nhanh</h3>
+                        <p class="feature-card__desc">
+                            Quy trình tối ưu, hoàn tất giao dịch chỉ trong vài phút
+                            với hệ thống tự động hóa hiện đại.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-card__icon"><i class="bx bx-user-check"></i></div>
+                        <h3 class="feature-card__title">Xác Minh KYC</h3>
+                        <p class="feature-card__desc">
+                            Mọi người dùng đều được xác minh danh tính,
+                            tạo môi trường giao dịch tin cậy.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== SECTION 4: QUY TRÌNH GIAO DỊCH ===== -->
+            <section class="section-process">
+                <h2 class="section-process__title">Quy Trình Giao Dịch</h2>
+                <div class="section-process__steps">
+                    <div class="process-step">
+                        <div class="process-step__circle">1</div>
+                        <h3 class="process-step__name">Tạo Đơn</h3>
+                        <p class="process-step__desc">Người mua tạo giao dịch và mô tả sản phẩm</p>
+                    </div>
+                    <div class="process-step__arrow"><i class="bx bx-right-arrow-alt"></i></div>
+                    <div class="process-step">
+                        <div class="process-step__circle">2</div>
+                        <h3 class="process-step__name">Nạp Tiền</h3>
+                        <p class="process-step__desc">Tiền được giữ an toàn trong ví ký quỹ</p>
+                    </div>
+                    <div class="process-step__arrow"><i class="bx bx-right-arrow-alt"></i></div>
+                    <div class="process-step">
+                        <div class="process-step__circle">3</div>
+                        <h3 class="process-step__name">Giao Hàng</h3>
+                        <p class="process-step__desc">Người bán giao sản phẩm cho người mua</p>
+                    </div>
+                    <div class="process-step__arrow"><i class="bx bx-right-arrow-alt"></i></div>
+                    <div class="process-step">
+                        <div class="process-step__circle process-step__circle--done"><i class="bx bx-check"></i></div>
+                        <h3 class="process-step__name">Hoàn Tất</h3>
+                        <p class="process-step__desc">Tiền được giải ngân cho người bán</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- ========================= FOOTER ========================== -->
+        <footer>
+            <!-- TOP -->
+            <div class="footer-top">
+
+                <!-- LEFT -->
+                <div class="footer-top__left">
+                    <h2 class="footer-top__logo">ESCROW</h2>
+                    <p class="footer-top__description">
+                        Hệ thống giao dịch trung gian an toàn hàng đầu,
+                        bảo vệ quyền lợi người mua và người bán.
+                    </p>
+                    <div class="footer-top__social">
+                        <a href="#"><i class="bx bxl-facebook-circle"></i></a>
+                        <a href="#"><i class="bx bxl-telegram"></i></a>
+                        <a href="#"><i class="bx bxl-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- Spacer div giữ theo bố cục mẫu 2 -->
+                <div></div>
+
+                <!-- RIGHT -->
+                <div class="footer-top__right">
+
+                    <!-- BOX -->
+                    <div class="footer-box">
+                        <h3 class="footer-box__title">Dịch Vụ</h3>
+                        <ul class="footer-box__list">
+                            <li><a href="#">Quy trình giao dịch</a></li>
+                            <li><a href="#">Biểu phí dịch vụ</a></li>
+                            <li><a href="#">Giao dịch P2P</a></li>
+                            <li><a href="#">Kiểm tra uy tín</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- BOX -->
+                    <div class="footer-box">
+                        <h3 class="footer-box__title">Hỗ Trợ & Pháp Lý</h3>
+                        <ul class="footer-box__list">
+                            <li><a href="#">Điều khoản sử dụng</a></li>
+                            <li><a href="#">Chính sách bảo mật</a></li>
+                            <li><a href="#">Giải quyết tranh chấp</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- BOX CONTACT -->
+                    <div class="footer-box footer-box--contact">
+                        <h3 class="footer-box__title">Liên Hệ</h3>
+                        <div class="footer-box__contact">
+                            <p><i class="bx bx-phone"></i> 1900 xxxx</p>
+                            <p><i class="bx bx-envelope"></i> support@escrow.vn</p>
+                            <p><i class="bx bx-map"></i> Quận 1, TP.HCM</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- BOTTOM -->
+            <div class="footer-bottom">
+                © 2026 ESCROW. All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+    <!-- JS -->
+    <script src="/js/global.js"></script>
+    <script src="/js/local/index.js"></script>
+</body>
+</html>
