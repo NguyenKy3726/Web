@@ -641,6 +641,10 @@ main{
         font-size: 36px;
     }
 
+    .section-top-trader__track{
+        gap: 0;
+    }
+
     .section-top-trader__card{
         min-width: 100%;
     }
@@ -666,8 +670,8 @@ main{
     }
 
     .section-hero__visual{
-        width: 120px;
-        height: 120px;
+        width: 100px;
+        height: 100px;
     }
 
     .section-hero__visual i{
@@ -692,6 +696,7 @@ main{
     }
 
     .process-step{
+        width: 100%;
         max-width: 100%;
     }
 
