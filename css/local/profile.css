@@ -778,3 +778,374 @@
     color: #ef4444;
     background: #fef2f2;
 }
+/* ==================================
+   RESPONSIVE TOÀN BỘ PROFILE PAGE
+================================== */
+
+@media screen and (max-width: 768px){
+
+    /* CONTAINER */
+
+    .container{
+        width:100%;
+        max-width:100%;
+        overflow-x:hidden;
+    }
+
+    /* =====================
+       HEADER TOP
+    ===================== */
+
+    .header-top{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        gap:4px;
+        padding:6px;
+    }
+
+    .header-top_left,
+    .header-top_right{
+        display:flex;
+        justify-content:center;
+        flex-wrap:nowrap;
+        gap:4px;
+        width:100%;
+    }
+
+    .header-top__link{
+        font-size:10px;
+        white-space:nowrap;
+    }
+
+    /* =====================
+       HEADER MID
+    ===================== */
+
+    .header-mid{
+        display:grid !important;
+
+        grid-template-columns: 1fr 50px;
+
+        grid-template-areas:
+            "logo logo"
+            "search profile";
+
+        align-items:center;
+
+        column-gap:10px;
+        row-gap:10px;
+
+        padding:10px;
+    }
+
+    /* ESCROW */
+
+    .header-mid__logo{
+        grid-area:logo;
+
+        width:100%;
+        text-align:center;
+
+        font-size:28px;
+        line-height:1;
+
+        margin-bottom:5px;
+    }
+
+    /* SEARCH */
+
+    .header-mid__search{
+        grid-area:search;
+
+        width:100%;
+        min-width:0;
+
+        display:flex;
+        align-items:center;
+    }
+
+    .header-mid__search input{
+        flex:1;
+        width:100%;
+        min-width:0;
+
+        font-size:13px;
+    }
+
+    .header-mid__search button{
+        width:45px;
+        flex-shrink:0;
+    }
+
+    /* ICON */
+
+    .header-mid__profile{
+        grid-area:profile;
+
+        width:50px !important;
+        min-width:50px;
+
+        display:flex !important;
+        justify-content:center;
+        align-items:center;
+
+        margin:0 !important;
+        padding:0 !important;
+    }
+
+    .header-mid__profile.active{
+        display:flex !important;
+        justify-content:center;
+        align-items:center;
+    }
+
+    .header-mid__profile a{
+        display:flex;
+        justify-content:center;
+        align-items:center;
+    }
+
+    .header-mid__profile i{
+        font-size:32px;
+        line-height:1;
+    }
+
+    /* =====================
+       HEADER BOTTOM
+    ===================== */
+
+    .header-bottom{
+        display:flex;
+        justify-content:center;
+    }
+
+    .header-bottom__marquee{
+        width:75%;
+        margin:auto;
+        font-size:11px;
+    }
+
+    /* =====================
+       MAIN
+    ===================== */
+
+    .profile-main{
+        padding:10px;
+    }
+
+    .profile-layout{
+        display:flex;
+        flex-direction:column;
+        gap:15px;
+    }
+
+    .profile-card,
+    .profile-history{
+        width:100%;
+        max-width:100%;
+    }
+
+    /* =====================
+       PROFILE CARD
+    ===================== */
+
+    .profile-card{
+        padding:15px;
+        border-radius:16px;
+    }
+
+    .profile-card__top{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .profile-card__stats,
+    .profile-card__reputation{
+        flex-direction:column;
+        gap:10px;
+    }
+
+    /* =====================
+       LỊCH SỬ GIAO DỊCH
+    ===================== */
+
+    .history-toolbar{
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .history-search{
+        width:100%;
+    }
+
+    .history-search input{
+        width:100%;
+    }
+
+    .history-tabs{
+        overflow-x:auto;
+        white-space:nowrap;
+    }
+
+    .gd-item,
+    .tc-item{
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+    }
+
+    .gd-item__row2,
+    .gd-item__row3{
+        flex-wrap:wrap;
+    }
+
+    /* =====================
+       FOOTER
+    ===================== */
+
+    .footer-content{
+        display:flex;
+        flex-direction:column;
+        gap:20px;
+    }
+
+    .footer-column{
+        width:100%;
+    }
+}
+
+
+/* ==================================
+   ĐIỆN THOẠI NHỎ
+================================== */
+
+@media screen and (max-width: 480px){
+
+    html{
+        font-size:14px;
+    }
+
+    /* HEADER TOP */
+
+    .header-top__link{
+        font-size:9px;
+    }
+
+    .header-top__left,
+    .header-top__right{
+        gap:2px;
+    }
+
+    /* HEADER MID */
+
+    /* HEADER MID */
+
+.header-mid{
+    display:grid !important;
+
+    grid-template-columns:minmax(0,1fr) 40px;
+
+    grid-template-areas:
+        "logo logo"
+        "search profile";
+
+    align-items:center;
+
+    column-gap:0;
+    row-gap:10px;
+
+    width:100%;
+
+    padding:10px;
+}
+
+.header-mid__logo{
+    grid-area:logo;
+
+    width:100%;
+    text-align:center;
+
+    font-size:22px;
+}
+
+.header-mid__search{
+    grid-area:search;
+
+    width:100%;
+    min-width:0;
+
+    display:flex;
+    align-items:center;
+
+    justify-self:stretch;
+}
+
+.header-mid__search input{
+    flex:1;
+    width:100%;
+    min-width:0;
+
+    font-size:12px;
+}
+
+.header-mid__search button{
+    width:40px;
+    flex-shrink:0;
+}
+
+.header-mid__profile{
+    grid-area:profile;
+
+    width:40px !important;
+    min-width:40px;
+
+    display:flex !important;
+    justify-content:flex-end;
+    align-items:center;
+
+    justify-self:end;
+
+    margin:0 !important;
+    padding:0 !important;
+}
+
+.header-mid__profile a{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.header-mid__profile i{
+    font-size:28px;
+}
+
+    /* HEADER BOTTOM */
+
+    .header-bottom__marquee{
+        width:80%;
+        margin:auto;
+        font-size:10px;
+
+        animation:marquee 8s linear infinite;
+    }
+
+    /* PROFILE */
+
+    .profile-card{
+        padding:12px;
+    }
+
+    /* HISTORY */
+
+    .history-tab{
+        font-size:12px;
+        padding:6px 10px;
+    }
+
+    .gd-item,
+    .tc-item{
+        padding:10px;
+    }
+}
