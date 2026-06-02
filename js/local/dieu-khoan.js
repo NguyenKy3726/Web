@@ -1,3 +1,4 @@
+// Active sidebar link khi scroll
 const sections = document.querySelectorAll('.section[id]');
 const links = document.querySelectorAll('.sidebar__link');
 
@@ -11,6 +12,7 @@ window.addEventListener('scroll', () => {
     });
 });
 
+// Smooth scroll
 links.forEach(l => {
     l.addEventListener('click', e => {
         e.preventDefault();
