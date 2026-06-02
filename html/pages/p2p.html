@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giao Dịch P2P - ESCROW</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/local/p2p.css">
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-top">
+            <div class="header-top__left">
+                <a href="/html/index.html" class="header-top__link" data-page="home">Trang Chủ</a>
+                <span>|</span>
+                <a href="/html/pages/p2p.html" class="header-top__link" data-page="p2p">P2P</a>
+                <span>|</span>  
+                <a href="/html/pages/wallet.html" class="header-top__link" data-page="wallet">Ví</a>
+                <span>|</span>
+                <a href="/html/pages/report.html" class="header-top__link" data-page="report">Tố Cáo</a>
+            </div>
+            <div class="header-top__right">
+                <a href="#" class="header-top__link"><i class="bx bx-bell-ring"></i> Thông Báo</a>
+                <a href="#" class="header-top__link"><i class="bx bx-help-circle"></i> Hỗ Trợ</a>
+                <a href="/html/pages/install.html" class="header-top__link"><i class="bx bx-cog"></i> Cài Đặt</a>
+                <a href="/html/pages/register.html" class="header-top__link">Đăng Ký</a>
+                <span>|</span>
+                <a href="/html/pages/login.html" class="header-top__link">Đăng Nhập</a>
+            </div>
+        </div>
+        <div class="header-mid">
+            <div class="header-mid__logo">ESCROW</div>
+            <div class="header-mid__search">
+                <input type="text" placeholder="Tra cứu STK, SĐT, link FB, mã giao dịch,...">
+                <button><i class="bx bx-search"></i></button>
+            </div>
+            <div class="header-mid__profile">
+                <a href="/html/pages/profile.html"><i class="bx bx-user-circle"></i></a>
+            </div>
+        </div>
+        <div class="header-bottom">
+            <div class="header-bottom__marquee">
+                Chào mừng bạn đến với Hệ Thống Giao Dịch Trung Gian ESCROW - An Toàn, Bảo Mật, Uy Tín hàng đầu Việt Nam. Hỗ trợ giao dịch 24/7!
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="p2p-main">
+
+        <!-- ===================== PHẦN 1: TẠO / THAM GIA ===================== -->
+        <div class="p2p-entry" id="p2pEntry">
+
+            <div class="p2p-layout">
+
+                <!-- ====== LEFT: FORM CARD ====== -->
+                <div class="p2p-form-wrap">
+
+                    <!-- TOGGLE TAB -->
+                    <div class="p2p-toggle">
+                        <button class="p2p-toggle__btn p2p-toggle__btn--active" id="tabCreate" onclick="switchEntryTab('create')">
+                            <i class='bx bx-plus-circle'></i>
+                            <span>Tạo Giao Dịch Mới</span>
+                        </button>
+                        <button class="p2p-toggle__btn" id="tabJoin" onclick="switchEntryTab('join')">
+                            <i class='bx bx-link-external'></i>
+                            <span>Tham Gia Bằng Mã</span>
+                        </button>
+                    </div>
+
+                    <!-- CARD -->
+                    <div class="p2p-card">
+
+                        <!-- PANEL TẠO MỚI -->
+                        <div id="panelCreate">
+                            <p class="p2p-card__desc">Bạn là người mua hoặc người bán — tạo giao dịch và gửi mã cho đối tác.</p>
+
+                            <div class="p2p-form">
+
+                                <div class="p2p-form__group">
+                                    <label class="p2p-form__label">Vai trò của bạn <span class="required">*</span></label>
+                                    <div class="p2p-form__role-wrap">
+                                        <label class="p2p-form__role p2p-form__role--buy">
+                                            <input type="radio" name="role" value="BUY" id="roleBuy" checked>
+                                            <i class='bx bx-cart'></i>
+                                            <span>Người Mua</span>
+                                        </label>
+                                        <label class="p2p-form__role p2p-form__role--sell">
+                                            <input type="radio" name="role" value="SELL" id="roleSell">
+                                            <i class='bx bx-store'></i>
+                                            <span>Người Bán</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="p2p-form__group">
+                                    <label class="p2p-form__label" for="productName">Tên / Mô tả sản phẩm <span class="required">*</span></label>
+                                    <div class="p2p-form__input-wrap">
+                                        <i class='bx bx-package'></i>
+                                        <input class="p2p-form__input" type="text" id="productName" placeholder="VD: iPhone 13 Pro Max 256GB Gold">
+                                    </div>
+                                    <span class="p2p-form__field-error" id="err-productName"></span>
+                                </div>
+
+                                <div class="p2p-form__group">
+                                    <label class="p2p-form__label" for="amount">Số tiền giao dịch (VNĐ) <span class="required">*</span></label>
+                                    <div class="p2p-form__input-wrap">
+                                        <i class='bx bx-money'></i>
+                                        <input class="p2p-form__input" type="text" id="amount" placeholder="VD: 5.000.000" oninput="formatAmount(this)">
+                                    </div>
+                                    <span class="p2p-form__field-error" id="err-amount"></span>
+                                </div>
+
+                                <div class="p2p-form__group">
+                                    <label class="p2p-form__label" for="terms">Điều khoản giao dịch</label>
+                                    <textarea class="p2p-form__textarea" id="terms" placeholder="Ghi rõ điều kiện: thời gian giao hàng, tình trạng sản phẩm, phương thức giao nhận..."></textarea>
+                                </div>
+
+                                <div class="p2p-form__group">
+                                    <label class="p2p-form__label">Thời hạn giao dịch <span class="required">*</span></label>
+                                    <div class="p2p-form__deadline-wrap">
+                                        <label class="p2p-form__deadline">
+                                            <input type="radio" name="deadline" value="24" checked>
+                                            <span>24 giờ</span>
+                                        </label>
+                                        <label class="p2p-form__deadline">
+                                            <input type="radio" name="deadline" value="48">
+                                            <span>48 giờ</span>
+                                        </label>
+                                        <label class="p2p-form__deadline">
+                                            <input type="radio" name="deadline" value="72">
+                                            <span>72 giờ</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- PHÍ DỊCH VỤ -->
+                                <div class="p2p-fee-box">
+                                    <div class="p2p-fee-box__row">
+                                        <span>Số tiền giao dịch</span>
+                                        <span id="feeAmount">—</span>
+                                    </div>
+                                    <div class="p2p-fee-box__row">
+                                        <span>Phí dịch vụ (cố định)</span>
+                                        <span>10.000đ</span>
+                                    </div>
+                                    <div class="p2p-fee-box__row p2p-fee-box__row--total">
+                                        <span>Tổng cộng</span>
+                                        <span id="feeTotal">—</span>
+                                    </div>
+                                </div>
+
+                                <button class="p2p-btn p2p-btn--primary" onclick="createTransaction()">
+                                    <i class='bx bx-plus-circle'></i> Tạo Giao Dịch
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- PANEL THAM GIA -->
+                        <div id="panelJoin" style="display:none;">
+                            <p class="p2p-card__desc">Nhập mã giao dịch do đối tác gửi để xem thông tin và xác nhận tham gia.</p>
+
+                            <div class="p2p-form">
+                                <div class="p2p-form__group">
+                                    <label class="p2p-form__label" for="joinCode">Mã giao dịch <span class="required">*</span></label>
+                                    <div class="p2p-form__input-wrap">
+                                        <i class='bx bx-barcode'></i>
+                                        <input class="p2p-form__input" type="text" id="joinCode"
+                                            placeholder="VD: GD250531142210" style="text-transform:uppercase">
+                                    </div>
+                                    <span class="p2p-form__field-error" id="err-joinCode"></span>
+                                </div>
+
+                                <!-- PREVIEW -->
+                                <div class="p2p-preview" id="joinPreview" style="display:none;">
+                                    <div class="p2p-preview__row">
+                                        <span>Sản phẩm</span><strong id="previewProduct"></strong>
+                                    </div>
+                                    <div class="p2p-preview__row">
+                                        <span>Người tạo</span><strong id="previewCreator"></strong>
+                                    </div>
+                                    <div class="p2p-preview__row">
+                                        <span>Số tiền</span><strong id="previewAmount"></strong>
+                                    </div>
+                                    <div class="p2p-preview__row">
+                                        <span>Thời hạn</span><strong id="previewDeadline"></strong>
+                                    </div>
+                                    <div class="p2p-preview__terms" id="previewTerms"></div>
+                                    <label class="p2p-form__agree">
+                                        <input type="checkbox" id="agreeTerms">
+                                        <span>Tôi đã đọc và đồng ý với điều khoản giao dịch trên</span>
+                                    </label>
+                                </div>
+
+                                <button class="p2p-btn p2p-btn--secondary" onclick="lookupTransaction()">
+                                    <i class='bx bx-search'></i> Tra Cứu
+                                </button>
+                                <button class="p2p-btn p2p-btn--primary" id="joinBtn" onclick="joinTransaction()" style="display:none; margin-top:10px">
+                                    <i class='bx bx-check-circle'></i> Xác Nhận Tham Gia
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ====== RIGHT: DANH SÁCH GD ====== -->
+                <div class="p2p-sidebar">
+
+                    <!-- ĐANG THAM GIA -->
+                    <div class="p2p-sidebar__card">
+                        <div class="p2p-sidebar__header">
+                            <i class='bx bx-transfer-alt'></i>
+                            <h3>Đang tham gia</h3>
+                            <span class="p2p-sidebar__count" id="activeCount">0</span>
+                        </div>
+                        <div class="p2p-sidebar__list" id="activeList">
+                            <!-- render bởi JS -->
+                        </div>
+                    </div>
+
+                    <!-- LỊCH SỬ -->
+                    <div class="p2p-sidebar__card">
+                        <div class="p2p-sidebar__header">
+                            <i class='bx bx-history'></i>
+                            <h3>Lịch sử giao dịch</h3>
+                        </div>
+                        <div class="p2p-sidebar__list" id="historyList">
+                            <!-- render bởi JS -->
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ===================== PHẦN 2: CHI TIẾT GIAO DỊCH ===================== -->
+        <div class="p2p-detail" id="p2pDetail" style="display:none;">
+
+            <!-- NÚT QUAY LẠI -->
+            <button class="p2p-back-btn" onclick="backToEntry()">
+                <i class='bx bx-arrow-back'></i> Quay lại
+            </button>
+
+            <!-- PROGRESS BAR -->
+            <div class="p2p-progress" id="progressBar"></div>
+
+            <div class="p2p-detail__body">
+
+                <!-- LEFT -->
+                <div class="p2p-detail__left">
+                    <div class="p2p-info-card">
+                        <div class="p2p-info-card__header">
+                            <h3>Thông tin giao dịch</h3>
+                            <span class="p2p-info-card__id" id="detailCode"></span>
+                        </div>
+                        <div class="p2p-info-card__body" id="detailInfoBody"></div>
+                    </div>
+
+                    <div class="p2p-evidence-card">
+                        <div class="p2p-evidence-card__header">
+                            <h3><i class='bx bx-image'></i> Bằng Chứng</h3>
+                            <button class="p2p-btn-sm" onclick="document.getElementById('evidenceInput').click()">
+                                <i class='bx bx-upload'></i> Upload
+                            </button>
+                            <input type="file" id="evidenceInput" accept="image/*,video/*" multiple style="display:none" onchange="handleEvidenceUpload(this)">
+                        </div>
+                        <div class="p2p-evidence-card__list" id="evidenceList">
+                            <div class="p2p-evidence-card__empty">
+                                <i class='bx bx-image-add'></i>
+                                <span>Chưa có bằng chứng nào</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p2p-actions" id="detailActions"></div>
+                </div>
+
+                <!-- RIGHT: CHAT -->
+                <div class="p2p-chat">
+                    <div class="p2p-chat__header">
+                        <i class='bx bx-message-dots'></i>
+                        <h3>Tin nhắn</h3>
+                        <span class="p2p-chat__sub">Chỉ 2 bên giao dịch mới xem được</span>
+                    </div>
+                    <div class="p2p-chat__messages" id="chatMessages"></div>
+                    <div class="p2p-chat__input-wrap">
+                        <input class="p2p-chat__input" type="text" id="chatInput"
+                            placeholder="Nhập tin nhắn..." onkeydown="handleChatKey(event)">
+                        <button class="p2p-chat__send" onclick="sendMessage()">
+                            <i class='bx bx-send'></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+        <footer>
+            <!-- TOP -->
+            <div class="footer-top">
+
+                <!-- LEFT -->
+                <div class="footer-top__left">
+                    <h2 class="footer-top__logo">ESCROW</h2>
+                    <p class="footer-top__description">
+                        Hệ thống giao dịch trung gian an toàn hàng đầu,
+                        bảo vệ quyền lợi người mua và người bán.
+                    </p>
+                    <div class="footer-top__social">
+                        <a href="#"><i class="bx bxl-facebook-circle"></i></a>
+                        <a href="#"><i class="bx bxl-telegram"></i></a>
+                        <a href="#"><i class="bx bxl-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- Spacer div giữ theo bố cục mẫu 2 -->
+                <div></div>
+
+                <!-- RIGHT -->
+                <div class="footer-top__right">
+
+                    <!-- BOX -->
+                    <div class="footer-box">
+                        <h3 class="footer-box__title">Dịch Vụ</h3>
+                        <ul class="footer-box__list">
+                            <li><a href="#">Quy trình giao dịch</a></li>
+                            <li><a href="#">Biểu phí dịch vụ</a></li>
+                            <li><a href="#">Giao dịch P2P</a></li>
+                            <li><a href="#">Kiểm tra uy tín</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- BOX -->
+                    <div class="footer-box">
+                        <h3 class="footer-box__title">Hỗ Trợ & Pháp Lý</h3>
+                        <ul class="footer-box__list">
+                            <li><a href="#">Điều khoản sử dụng</a></li>
+                            <li><a href="#">Chính sách bảo mật</a></li>
+                            <li><a href="#">Giải quyết tranh chấp</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- BOX CONTACT -->
+                    <div class="footer-box footer-box--contact">
+                        <h3 class="footer-box__title">Liên Hệ</h3>
+                        <div class="footer-box__contact">
+                            <p><i class="bx bx-phone"></i> 1900 xxxx</p>
+                            <p><i class="bx bx-envelope"></i> support@escrow.vn</p>
+                            <p><i class="bx bx-map"></i> Quận 1, TP.HCM</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- BOTTOM -->
+            <div class="footer-bottom">
+                © 2026 ESCROW. All rights reserved.
+            </div>
+        </footer>
+</div>
+
+<!-- MODAL XÁC NHẬN -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+<div class="modal" id="modalConfirm">
+    <div class="modal__header">
+        <h3 class="modal__title" id="modalTitle"></h3>
+        <button class="modal__close" onclick="closeModal()"><i class='bx bx-x'></i></button>
+    </div>
+    <div class="modal__body" id="modalBody"></div>
+    <div class="modal__footer">
+        <button class="p2p-btn p2p-btn--ghost" onclick="closeModal()">Hủy</button>
+        <button class="p2p-btn p2p-btn--primary" id="modalConfirmBtn">Xác nhận</button>
+    </div>
+</div>
+
+<!-- TEMPLATE: PROGRESS STEP -->
+<template id="progressTemplate">
+    <div class="progress-step">
+        <div class="progress-step__dot">
+            <i class='bx bx-check'></i>
+            <span class="progress-step__num"></span>
+        </div>
+        <div class="progress-step__line"></div>
+        <div class="progress-step__label"></div>
+    </div>
+</template>
+
+<!-- TEMPLATE: SIDEBAR ITEM -->
+<template id="sidebarItemTemplate">
+    <div class="p2p-sidebar__item">
+        <div class="p2p-sidebar__item-badge"></div>
+        <div class="p2p-sidebar__item-info">
+            <span class="p2p-sidebar__item-product"></span>
+            <span class="p2p-sidebar__item-code"></span>
+        </div>
+        <div class="p2p-sidebar__item-right">
+            <span class="p2p-sidebar__item-status"></span>
+            <button class="p2p-btn-sm">Xem</button>
+        </div>
+    </div>
+</template>
+
+<script src="/js/global.js"></script>
+<script src="/js/local/p2p.js"></script>
+</body>
+</html>

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ví Của Tôi - ESCROW</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/local/wallet.css">
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-top">
+            <div class="header-top__left">
+                <a href="/html/index.html" class="header-top__link" data-page="home">Trang Chủ</a>
+                <span>|</span>
+                <a href="/html/pages/p2p.html" class="header-top__link" data-page="p2p">P2P</a>
+                <span>|</span>
+                <a href="/html/pages/wallet.html" class="header-top__link" data-page="wallet">Ví</a>
+                <span>|</span>
+                <a href="/html/pages/report.html" class="header-top__link" data-page="report">Tố Cáo</a>
+            </div>
+            <div class="header-top__right">
+                <a href="#" class="header-top__link"><i class="bx bx-bell-ring"></i> Thông Báo</a>
+                <a href="#" class="header-top__link"><i class="bx bx-help-circle"></i> Hỗ Trợ</a>
+                <a href="/html/pages/install.html" class="header-top__link"><i class="bx bx-cog"></i> Cài Đặt</a>
+                <a href="/html/pages/register.html" class="header-top__link">Đăng Ký</a>
+                <span>|</span>
+                <a href="/html/pages/login.html" class="header-top__link">Đăng Nhập</a>
+            </div>
+        </div>
+        <div class="header-mid">
+            <div class="header-mid__logo">ESCROW</div>
+            <div class="header-mid__search">
+                <input type="text" placeholder="Tra cứu STK, SĐT, link FB, mã giao dịch,...">
+                <button><i class="bx bx-search"></i></button>
+            </div>
+            <div class="header-mid__profile">
+                <a href="/html/pages/profile.html"><i class="bx bx-user-circle"></i></a>
+            </div>
+        </div>
+        <div class="header-bottom">
+            <div class="header-bottom__marquee">
+                Chào mừng bạn đến với Hệ Thống Giao Dịch Trung Gian ESCROW - An Toàn, Bảo Mật, Uy Tín hàng đầu Việt Nam.
+            </div>
+        </div>
+    </header>
+
+    <main class="wallet-main">
+
+        <!-- ===================== SETUP PROGRESS =====================
+             Hiện khi chưa hoàn thành tất cả bước setup
+             JS ẩn đi khi tất cả done
+        ============================================================ -->
+        <div class="setup-bar" id="setupBar">
+            <div class="setup-bar__steps" id="setupSteps">
+                <!-- render bởi JS -->
+            </div>
+        </div>
+
+        <!-- ===================== LOCKED STATE =====================
+             Hiện khi chưa KYC — ẩn toàn bộ nội dung ví
+             TODO (Java): kiểm tra user.kycStatus !== 'APPROVED'
+        ============================================================ -->
+        <div class="wallet-locked" id="walletLocked" style="display:none;">
+            <div class="wallet-locked__icon">
+                <i class='bx bx-lock'></i>
+            </div>
+            <h2 class="wallet-locked__title">Tài khoản chưa được xác minh</h2>
+            <p class="wallet-locked__desc">
+                Bạn cần hoàn thành xác minh danh tính (KYC) để sử dụng ví,
+                nạp/rút tiền và tham gia giao dịch P2P.
+            </p>
+            <button class="wallet-btn wallet-btn--primary" onclick="openKycModal()">
+                <i class='bx bx-shield-quarter'></i> Xác Minh Danh Tính Ngay
+            </button>
+        </div>
+
+        <!-- ===================== WALLET CONTENT =====================
+             Hiện khi đã KYC xong
+        ============================================================ -->
+        <div class="wallet-content" id="walletContent">
+
+            <div class="wallet-layout">
+
+                <!-- ====== LEFT: VÍ + NGÂN HÀNG + KYC ====== -->
+                <div class="wallet-left">
+
+                    <!-- SỐ DƯ -->
+                    <div class="wallet-balance-card">
+                        <div class="wallet-balance-card__top">
+                            <div>
+                                <p class="wallet-balance-card__label">Số dư khả dụng</p>
+                                <div class="wallet-balance-card__amount-wrap">
+                                    <span class="wallet-balance-card__amount wallet-balance-card__amount--escrow" id="balanceAmount">***</span>
+                                    <button class="wallet-eye" id="balanceEye" onclick="toggleBalance()">
+                                        <i class='bx bx-show' id="balanceIcon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="wallet-balance-card__escrow">
+                                <p class="wallet-balance-card__label">Đang ký quỹ</p>
+                                <div class="wallet-balance-card__amount-wrap">
+                                    <span class="wallet-balance-card__amount wallet-balance-card__amount--escrow" id="escrowAmount">***</span>
+                                    <button class="wallet-eye" id="escrowEye" onclick="toggleEscrow()">
+                                        <i class='bx bx-show' id="escrowIcon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="wallet-balance-card__actions">
+                            <button class="wallet-btn wallet-btn--primary" onclick="openDepositModal()">
+                                <i class='bx bx-plus-circle'></i> Nạp Tiền
+                            </button>
+                            <button class="wallet-btn wallet-btn--secondary" onclick="openWithdrawModal()">
+                                <i class='bx bx-minus-circle'></i> Rút Tiền
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- TÀI KHOẢN NGÂN HÀNG -->
+                    <div class="wallet-section-card">
+                        <div class="wallet-section-card__header">
+                            <i class='bx bx-buildings'></i>
+                            <h3>Tài khoản ngân hàng</h3>
+                            <button class="wallet-btn-sm" onclick="openAddBankModal()">
+                                <i class='bx bx-plus'></i> Thêm
+                            </button>
+                        </div>
+                        <div id="bankList">
+                            <!-- render bởi JS -->
+                        </div>
+                    </div>
+
+                    <!-- KYC STATUS -->
+                    <div class="wallet-section-card">
+                        <div class="wallet-section-card__header">
+                            <i class='bx bx-shield-quarter'></i>
+                            <h3>Xác minh danh tính (KYC)</h3>
+                        </div>
+                        <div id="kycStatus">
+                            <!-- render bởi JS -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ====== RIGHT: LỊCH SỬ VÍ ====== -->
+                <div class="wallet-right">
+                    <div class="wallet-history-card">
+                        <div class="wallet-history-card__header">
+                            <h3>Lịch sử giao dịch ví</h3>
+                            <!-- FILTER -->
+                            <div class="wallet-filter" id="walletFilter">
+                                <!-- render bởi JS -->
+                            </div>
+                        </div>
+                        <div class="wallet-history-list" id="historyList">
+                            <!-- render bởi JS -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+        <footer>
+            <!-- TOP -->
+            <div class="footer-top">
+
+                <!-- LEFT -->
+                <div class="footer-top__left">
+                    <h2 class="footer-top__logo">ESCROW</h2>
+                    <p class="footer-top__description">
+                        Hệ thống giao dịch trung gian an toàn hàng đầu,
+                        bảo vệ quyền lợi người mua và người bán.
+                    </p>
+                    <div class="footer-top__social">
+                        <a href="#"><i class="bx bxl-facebook-circle"></i></a>
+                        <a href="#"><i class="bx bxl-telegram"></i></a>
+                        <a href="#"><i class="bx bxl-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- Spacer div giữ theo bố cục mẫu 2 -->
+                <div></div>
+
+                <!-- RIGHT -->
+                <div class="footer-top__right">
+
+                    <!-- BOX -->
+                    <div class="footer-box">
+                        <h3 class="footer-box__title">Dịch Vụ</h3>
+                        <ul class="footer-box__list">
+                            <li><a href="#">Quy trình giao dịch</a></li>
+                            <li><a href="#">Biểu phí dịch vụ</a></li>
+                            <li><a href="#">Giao dịch P2P</a></li>
+                            <li><a href="#">Kiểm tra uy tín</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- BOX -->
+                    <div class="footer-box">
+                        <h3 class="footer-box__title">Hỗ Trợ & Pháp Lý</h3>
+                        <ul class="footer-box__list">
+                            <li><a href="#">Điều khoản sử dụng</a></li>
+                            <li><a href="#">Chính sách bảo mật</a></li>
+                            <li><a href="#">Giải quyết tranh chấp</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- BOX CONTACT -->
+                    <div class="footer-box footer-box--contact">
+                        <h3 class="footer-box__title">Liên Hệ</h3>
+                        <div class="footer-box__contact">
+                            <p><i class="bx bx-phone"></i> 1900 xxxx</p>
+                            <p><i class="bx bx-envelope"></i> support@escrow.vn</p>
+                            <p><i class="bx bx-map"></i> Quận 1, TP.HCM</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- BOTTOM -->
+            <div class="footer-bottom">
+                © 2026 ESCROW. All rights reserved.
+            </div>
+        </footer>
+
+</div>
+
+<!-- =====================================================================
+     MODAL NẠP TIỀN
+====================================================================== -->
+<div class="modal-overlay" id="depositOverlay" onclick="closeModal('deposit')"></div>
+<div class="wmodal" id="depositModal">
+    <div class="wmodal__header">
+        <h3>Nạp Tiền Vào Ví</h3>
+        <button class="wmodal__close" onclick="closeModal('deposit')"><i class='bx bx-x'></i></button>
+    </div>
+    <div class="wmodal__body">
+        <div class="wmodal__form-group">
+            <label>Số tiền nạp (VNĐ) <span class="required">*</span></label>
+            <div class="wmodal__input-wrap">
+                <i class='bx bx-money'></i>
+                <input type="text" id="depositAmount" placeholder="VD: 500.000" oninput="formatWalletAmount(this)">
+            </div>
+            <div class="wmodal__quick-amounts">
+                <button onclick="setQuickAmount('depositAmount', 100000)">100K</button>
+                <button onclick="setQuickAmount('depositAmount', 500000)">500K</button>
+                <button onclick="setQuickAmount('depositAmount', 1000000)">1 Triệu</button>
+                <button onclick="setQuickAmount('depositAmount', 5000000)">5 Triệu</button>
+            </div>
+        </div>
+        <div class="wmodal__form-group">
+            <label>Từ tài khoản ngân hàng <span class="required">*</span></label>
+            <select class="wmodal__select" id="depositBank">
+                <!-- render bởi JS -->
+            </select>
+        </div>
+        <div class="wmodal__info-box">
+            <i class='bx bx-info-circle'></i>
+            <span>Tiền sẽ được cộng vào ví sau khi giao dịch được xác nhận. Thường mất 5-15 phút.</span>
+        </div>
+    </div>
+    <div class="wmodal__footer">
+        <button class="wallet-btn wallet-btn--ghost" onclick="closeModal('deposit')">Hủy</button>
+        <button class="wallet-btn wallet-btn--primary" onclick="confirmDeposit()">
+            <i class='bx bx-check'></i> Xác Nhận Nạp
+        </button>
+    </div>
+</div>
+
+<!-- =====================================================================
+     MODAL RÚT TIỀN
+====================================================================== -->
+<div class="modal-overlay" id="withdrawOverlay" onclick="closeModal('withdraw')"></div>
+<div class="wmodal" id="withdrawModal">
+    <div class="wmodal__header">
+        <h3>Rút Tiền Về Ngân Hàng</h3>
+        <button class="wmodal__close" onclick="closeModal('withdraw')"><i class='bx bx-x'></i></button>
+    </div>
+    <div class="wmodal__body">
+        <div class="wmodal__form-group">
+            <label>Số tiền rút (VNĐ) <span class="required">*</span></label>
+            <div class="wmodal__input-wrap">
+                <i class='bx bx-money'></i>
+                <input type="text" id="withdrawAmount" placeholder="VD: 500.000" oninput="formatWalletAmount(this)">
+            </div>
+            <div class="wmodal__quick-amounts">
+                <button onclick="setQuickAmount('withdrawAmount', 100000)">100K</button>
+                <button onclick="setQuickAmount('withdrawAmount', 500000)">500K</button>
+                <button onclick="setQuickAmount('withdrawAmount', 1000000)">1 Triệu</button>
+                <button onclick="setQuickAmount('withdrawAmount', 5000000)">5 Triệu</button>
+            </div>
+        </div>
+        <div class="wmodal__form-group">
+            <label>Về tài khoản ngân hàng <span class="required">*</span></label>
+            <select class="wmodal__select" id="withdrawBank">
+                <!-- render bởi JS -->
+            </select>
+        </div>
+        <div class="wmodal__info-box wmodal__info-box--warn">
+            <i class='bx bx-error'></i>
+            <span>Yêu cầu rút tiền sẽ được xử lý trong 1-2 ngày làm việc.</span>
+        </div>
+    </div>
+    <div class="wmodal__footer">
+        <button class="wallet-btn wallet-btn--ghost" onclick="closeModal('withdraw')">Hủy</button>
+        <button class="wallet-btn wallet-btn--primary" onclick="confirmWithdraw()">
+            <i class='bx bx-check'></i> Xác Nhận Rút
+        </button>
+    </div>
+</div>
+
+<!-- =====================================================================
+     MODAL THÊM NGÂN HÀNG
+====================================================================== -->
+<div class="modal-overlay" id="bankOverlay" onclick="closeModal('bank')"></div>
+<div class="wmodal" id="bankModal">
+    <div class="wmodal__header">
+        <h3>Thêm Tài Khoản Ngân Hàng</h3>
+        <button class="wmodal__close" onclick="closeModal('bank')"><i class='bx bx-x'></i></button>
+    </div>
+    <div class="wmodal__body">
+        <div class="wmodal__form-group">
+            <label>Ngân hàng <span class="required">*</span></label>
+            <select class="wmodal__select" id="bankName">
+                <option value="">-- Chọn ngân hàng --</option>
+                <option value="VCB">Vietcombank (VCB)</option>
+                <option value="TCB">Techcombank (TCB)</option>
+                <option value="VPB">VPBank (VPB)</option>
+                <option value="ACB">ACB</option>
+                <option value="BIDV">BIDV</option>
+                <option value="MB">MBBank (MB)</option>
+                <option value="TPB">TPBank (TPB)</option>
+                <option value="STB">Sacombank (STB)</option>
+                <option value="MSB">MSB</option>
+                <option value="VIB">VIB</option>
+            </select>
+        </div>
+        <div class="wmodal__form-group">
+            <label>Số tài khoản <span class="required">*</span></label>
+            <div class="wmodal__input-wrap">
+                <i class='bx bx-credit-card'></i>
+                <input type="text" id="bankNumber" placeholder="Nhập số tài khoản">
+            </div>
+        </div>
+        <div class="wmodal__form-group">
+            <label>Tên chủ tài khoản <span class="required">*</span></label>
+            <div class="wmodal__input-wrap">
+                <i class='bx bx-user'></i>
+                <input type="text" id="bankOwner" placeholder="NGUYEN VAN A">
+            </div>
+            <span style="font-size:12px; color:#94a3b8; margin-top:4px; display:block">
+                Nhập đúng tên như trên thẻ ngân hàng (IN HOA, không dấu)
+            </span>
+        </div>
+        <div class="wmodal__error" id="bankError" style="display:none;"></div>
+    </div>
+    <div class="wmodal__footer">
+        <button class="wallet-btn wallet-btn--ghost" onclick="closeModal('bank')">Hủy</button>
+        <button class="wallet-btn wallet-btn--primary" onclick="confirmAddBank()">
+            <i class='bx bx-check'></i> Thêm Tài Khoản
+        </button>
+    </div>
+</div>
+
+<!-- =====================================================================
+     MODAL KYC — 4 BƯỚC
+====================================================================== -->
+<div class="modal-overlay" id="kycOverlay" onclick="closeModal('kyc')"></div>
+<div class="wmodal wmodal--kyc" id="kycModal">
+    <div class="wmodal__header">
+        <h3>Xác Minh Danh Tính (KYC)</h3>
+        <button class="wmodal__close" onclick="closeModal('kyc')"><i class='bx bx-x'></i></button>
+    </div>
+
+    <!-- KYC STEPS INDICATOR -->
+    <div class="kyc-steps" id="kycStepsBar">
+        <!-- render bởi JS -->
+    </div>
+
+    <div class="wmodal__body" id="kycBody">
+        <!-- render bởi JS theo từng bước -->
+    </div>
+
+    <div class="wmodal__footer" id="kycFooter">
+        <button class="wallet-btn wallet-btn--ghost" id="kycPrevBtn" onclick="kycPrev()" style="display:none;">
+            <i class='bx bx-arrow-back'></i> Quay lại
+        </button>
+        <button class="wallet-btn wallet-btn--primary" id="kycNextBtn" onclick="kycNext()">
+            Tiếp theo <i class='bx bx-right-arrow-alt'></i>
+        </button>
+    </div>
+</div>
+
+<!-- =====================================================================
+     TEMPLATE: BANK ITEM
+====================================================================== -->
+<template id="bankItemTemplate">
+    <div class="bank-item">
+        <div class="bank-item__logo"></div>
+        <div class="bank-item__info">
+            <span class="bank-item__name"></span>
+            <span class="bank-item__number"></span>
+            <span class="bank-item__owner"></span>
+        </div>
+        <div class="bank-item__actions">
+            <span class="bank-item__default-badge" style="display:none;">Mặc định</span>
+            <button class="wallet-btn-sm wallet-btn-sm--danger">Xóa</button>
+        </div>
+    </div>
+</template>
+
+<!-- =====================================================================
+     TEMPLATE: HISTORY ITEM
+     Backend mapping:
+       loai         → LichSuVi.LoaiGiaoDich (NAP/RUT/KY_QUY/GIAI_NGAN/HOAN_TIEN)
+       soTien       → LichSuVi.SoTien
+       moTa         → LichSuVi.MoTa
+       thoiGian     → LichSuVi.ThoiGian
+       trangThai    → LichSuVi.TrangThai
+====================================================================== -->
+<template id="historyItemTemplate">
+    <div class="wallet-history-item">
+        <div class="wallet-history-item__icon"></div>
+        <div class="wallet-history-item__info">
+            <span class="wallet-history-item__desc"></span>
+            <span class="wallet-history-item__time"></span>
+        </div>
+        <div class="wallet-history-item__right">
+            <span class="wallet-history-item__amount"></span>
+            <span class="wallet-history-item__status"></span>
+        </div>
+    </div>
+</template>
+
+<script src="/js/global.js"></script>
+<script src="/js/local/wallet.js"></script>
+</body>
+</html>
