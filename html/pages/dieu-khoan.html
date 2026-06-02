@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Điều khoản sử dụng</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --navy: #1e293b;
+            --blue: #0ea5e9;
+            --blue-light: #38bdf8;
+            --blue-pale: #f0f9ff;
+            --text: #1e293b;
+            --muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background: #f4f4f4;
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ── */
+        header {
+            background: var(--navy);
+            padding: 0 40px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+        }
+
+        .header__logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--blue-light);
+            text-decoration: none;
+        }
+
+        .header__back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .header__back:hover { color: white; }
+
+        .header__back svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            background: var(--navy);
+            padding: 60px 40px 80px;
+            text-align: center;
+        }
+
+        .hero__badge {
+            display: inline-block;
+            background: rgba(56,189,248,0.15);
+            border: 1px solid rgba(56,189,248,0.3);
+            color: var(--blue-light);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .hero__title {
+            color: white;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            line-height: 1.2;
+        }
+
+        .hero__title span { color: var(--blue-light); }
+
+        .hero__meta {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        /* ── LAYOUT ── */
+        .page-wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px 80px;
+            position: relative;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 40px;
+            align-items: start;
+            margin-top: -32px;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            position: sticky;
+            top: 84px;
+        }
+
+        .sidebar__card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .sidebar__title {
+            background: var(--blue-pale);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 18px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--blue);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .sidebar__nav { padding: 8px 0; }
+
+        .sidebar__link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            font-size: 13px;
+            color: var(--muted);
+            text-decoration: none;
+            transition: all 0.15s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar__link:hover,
+        .sidebar__link.active {
+            color: var(--blue);
+            background: var(--blue-pale);
+            border-left-color: var(--blue);
+        }
+
+        .sidebar__link::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            flex-shrink: 0;
+            opacity: 0.5;
+        }
+
+        /* ── MAIN CONTENT ── */
+        .content {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .content__header {
+            background: var(--blue-pale);
+            border-bottom: 1px solid var(--border);
+            padding: 24px 36px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .content__header-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--blue);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .content__header-icon svg {
+            width: 22px;
+            height: 22px;
+            stroke: white;
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .content__header-text h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .content__header-text p {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .content__body { padding: 36px; }
+
+        /* ── SECTIONS ── */
+        .section { margin-bottom: 40px; }
+        .section:last-child { margin-bottom: 0; }
+
+        .section__title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--blue-pale);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section__num {
+            width: 28px;
+            height: 28px;
+            background: var(--blue);
+            color: white;
+            border-radius: 50%;
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .section p {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #475569;
+            margin-bottom: 12px;
+        }
+
+        .section p:last-child { margin-bottom: 0; }
+
+        .section ul {
+            list-style: none;
+            margin: 10px 0;
+        }
+
+        .section ul li {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #475569;
+            padding: 6px 0 6px 24px;
+            position: relative;
+        }
+
+        .section ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 14px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--blue-light);
+        }
+
+        /* highlight box */
+        .highlight-box {
+            background: var(--blue-pale);
+            border: 1px solid rgba(56,189,248,0.3);
+            border-left: 4px solid var(--blue);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-size: 14px;
+            color: #0369a1;
+            line-height: 1.7;
+        }
+
+        /* warning box */
+        .warning-box {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-left: 4px solid #f59e0b;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-size: 14px;
+            color: #92400e;
+            line-height: 1.7;
+        }
+
+        /* ── FOOTER ── */
+        .page-footer {
+            background: white;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+            padding: 28px 36px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .page-footer__text { font-size: 13px; color: var(--muted); }
+
+        .page-footer__btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--blue);
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .page-footer__btn:hover { background: #0284c7; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            header { padding: 0 20px; }
+
+            .hero { padding: 40px 20px 60px; }
+            .hero__title { font-size: 28px; }
+
+            .page-wrapper { padding: 0 16px 60px; }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+                margin-top: -24px;
+            }
+
+            .sidebar { position: static; }
+
+            .content__body { padding: 24px 20px; }
+            .content__header { padding: 18px 20px; }
+
+            .page-footer {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <a href="/" class="header__logo">TradeApp</a>
+    <a href="/" class="header__back">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Về trang chủ
+    </a>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="hero__badge">Pháp lý</div>
+    <h1 class="hero__title">Điều khoản <span>sử dụng</span></h1>
+    <p class="hero__meta">Cập nhật lần cuối: 01/06/2026 &nbsp;·&nbsp; Phiên bản 2.1</p>
+</div>
+
+<!-- MAIN -->
+<div class="page-wrapper">
+    <div class="content-grid">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar__card">
+                <div class="sidebar__title">Mục lục</div>
+                <nav class="sidebar__nav">
+                    <a href="#s1" class="sidebar__link active">Chấp nhận điều khoản</a>
+                    <a href="#s2" class="sidebar__link">Tài khoản người dùng</a>
+                    <a href="#s3" class="sidebar__link">Sử dụng dịch vụ</a>
+                    <a href="#s4" class="sidebar__link">Rủi ro đầu tư</a>
+                    <a href="#s5" class="sidebar__link">Quyền sở hữu trí tuệ</a>
+                    <a href="#s6" class="sidebar__link">Giới hạn trách nhiệm</a>
+                    <a href="#s7" class="sidebar__link">Chấm dứt dịch vụ</a>
+                    <a href="#s8" class="sidebar__link">Liên hệ</a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- CONTENT -->
+        <main class="content">
+            <div class="content__header">
+                <div class="content__header-icon">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                </div>
+                <div class="content__header-text">
+                    <h2>Điều khoản sử dụng dịch vụ</h2>
+                    <p>Vui lòng đọc kỹ trước khi sử dụng nền tảng</p>
+                </div>
+            </div>
+
+            <div class="content__body">
+
+                <div class="highlight-box">
+                    Bằng cách truy cập hoặc sử dụng dịch vụ của chúng tôi, bạn đồng ý bị ràng buộc bởi các điều khoản này. Nếu không đồng ý, vui lòng không sử dụng dịch vụ.
+                </div>
+
+                <div class="section" id="s1">
+                    <h3 class="section__title"><span class="section__num">1</span> Chấp nhận điều khoản</h3>
+                    <p>Khi đăng ký tài khoản hoặc sử dụng bất kỳ tính năng nào của nền tảng TradeApp, bạn xác nhận rằng bạn đã đọc, hiểu và đồng ý tuân thủ toàn bộ các điều khoản sử dụng này cùng với Chính sách bảo mật của chúng tôi.</p>
+                    <p>Chúng tôi có quyền cập nhật điều khoản này bất kỳ lúc nào. Thay đổi sẽ có hiệu lực ngay khi được đăng tải lên nền tảng. Việc tiếp tục sử dụng dịch vụ sau khi thay đổi đồng nghĩa với việc bạn chấp nhận điều khoản mới.</p>
+                </div>
+
+                <div class="section" id="s2">
+                    <h3 class="section__title"><span class="section__num">2</span> Tài khoản người dùng</h3>
+                    <p>Để sử dụng đầy đủ các tính năng, bạn cần đăng ký tài khoản với thông tin chính xác và cập nhật. Bạn chịu trách nhiệm:</p>
+                    <ul>
+                        <li>Bảo mật thông tin đăng nhập và mật khẩu tài khoản</li>
+                        <li>Mọi hoạt động diễn ra dưới tài khoản của bạn</li>
+                        <li>Thông báo ngay cho chúng tôi nếu phát hiện truy cập trái phép</li>
+                        <li>Không chia sẻ tài khoản với người khác</li>
+                    </ul>
+                    <p>Chúng tôi có quyền tạm khóa hoặc chấm dứt tài khoản nếu phát hiện vi phạm điều khoản.</p>
+                </div>
+
+                <div class="section" id="s3">
+                    <h3 class="section__title"><span class="section__num">3</span> Sử dụng dịch vụ</h3>
+                    <p>Bạn cam kết sử dụng dịch vụ đúng mục đích và tuân thủ pháp luật hiện hành. Nghiêm cấm các hành vi sau:</p>
+                    <ul>
+                        <li>Thao túng thị trường hoặc giao dịch nội gián</li>
+                        <li>Sử dụng bot hoặc phần mềm tự động chưa được cấp phép</li>
+                        <li>Cố ý làm gián đoạn hoạt động của hệ thống</li>
+                        <li>Giả mạo danh tính hoặc cung cấp thông tin sai lệch</li>
+                        <li>Rửa tiền hoặc các hoạt động tài chính bất hợp pháp</li>
+                    </ul>
+                </div>
+
+                <div class="section" id="s4">
+                    <h3 class="section__title"><span class="section__num">4</span> Rủi ro đầu tư</h3>
+                    <div class="warning-box">
+                        ⚠️ Đầu tư luôn tiềm ẩn rủi ro. Giá trị tài sản có thể tăng hoặc giảm. Kết quả trong quá khứ không đảm bảo cho hiệu suất tương lai.
+                    </div>
+                    <p>TradeApp cung cấp nền tảng giao dịch, không phải dịch vụ tư vấn tài chính. Mọi quyết định đầu tư đều thuộc trách nhiệm cá nhân của bạn. Chúng tôi khuyến nghị bạn:</p>
+                    <ul>
+                        <li>Chỉ đầu tư số tiền bạn có thể chấp nhận mất</li>
+                        <li>Tìm hiểu kỹ về sản phẩm trước khi giao dịch</li>
+                        <li>Tham khảo ý kiến chuyên gia tài chính khi cần thiết</li>
+                    </ul>
+                </div>
+
+                <div class="section" id="s5">
+                    <h3 class="section__title"><span class="section__num">5</span> Quyền sở hữu trí tuệ</h3>
+                    <p>Toàn bộ nội dung trên nền tảng bao gồm logo, giao diện, dữ liệu, phần mềm và tài liệu đều thuộc quyền sở hữu của TradeApp hoặc các đối tác được cấp phép.</p>
+                    <p>Bạn không được sao chép, phân phối, chỉnh sửa hoặc sử dụng bất kỳ nội dung nào cho mục đích thương mại mà không có sự đồng ý bằng văn bản từ chúng tôi.</p>
+                </div>
+
+                <div class="section" id="s6">
+                    <h3 class="section__title"><span class="section__num">6</span> Giới hạn trách nhiệm</h3>
+                    <p>Trong phạm vi tối đa được pháp luật cho phép, TradeApp không chịu trách nhiệm về các thiệt hại gián tiếp, ngẫu nhiên hoặc hậu quả phát sinh từ:</p>
+                    <ul>
+                        <li>Gián đoạn hoặc lỗi hệ thống ngoài tầm kiểm soát</li>
+                        <li>Tổn thất tài chính do quyết định giao dịch của người dùng</li>
+                        <li>Truy cập trái phép vào tài khoản do lỗi của người dùng</li>
+                        <li>Thông tin từ bên thứ ba trên nền tảng</li>
+                    </ul>
+                </div>
+
+                <div class="section" id="s7">
+                    <h3 class="section__title"><span class="section__num">7</span> Chấm dứt dịch vụ</h3>
+                    <p>Chúng tôi có quyền tạm ngưng hoặc chấm dứt quyền truy cập của bạn vào dịch vụ bất kỳ lúc nào nếu bạn vi phạm các điều khoản này, mà không cần thông báo trước.</p>
+                    <p>Bạn cũng có thể yêu cầu xóa tài khoản bất kỳ lúc nào bằng cách liên hệ bộ phận hỗ trợ. Dữ liệu của bạn sẽ được xử lý theo Chính sách bảo mật.</p>
+                </div>
+
+                <div class="section" id="s8">
+                    <h3 class="section__title"><span class="section__num">8</span> Liên hệ</h3>
+                    <p>Nếu có câu hỏi về điều khoản này, vui lòng liên hệ chúng tôi qua:</p>
+                    <ul>
+                        <li>Email: legal@tradeapp.vn</li>
+                        <li>Địa chỉ: Tầng 10, 123 Nguyễn Huệ, Quận 1, TP.HCM</li>
+                        <li>Hotline: 1800 1234 (miễn phí, 8:00 – 22:00)</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- PAGE FOOTER -->
+            <div class="page-footer">
+                <p class="page-footer__text">© 2026 TradeApp. Tất cả quyền được bảo lưu.</p>
+                <a href="/" class="page-footer__btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                    Về trang chủ
+                </a>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<script>
+    // Active sidebar link khi scroll
+    const sections = document.querySelectorAll('.section[id]');
+    const links = document.querySelectorAll('.sidebar__link');
+
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(s => {
+            if (window.scrollY >= s.offsetTop - 120) current = s.id;
+        });
+        links.forEach(l => {
+            l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+        });
+    });
+
+    // Smooth scroll
+    links.forEach(l => {
+        l.addEventListener('click', e => {
+            e.preventDefault();
+            const target = document.querySelector(l.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+</script>
+
+</body>
+</html>
