@@ -288,7 +288,45 @@ body {
         RESPONSIVE
 ======================== */
 @media (max-width: 480px) {
-    .otp-card__body { padding: 28px 24px; }
+
+    body {
+        padding: 0;
+        align-items: flex-start;
+    }
+
+    .otp-card {
+        border-radius: 0;
+        min-height: 100vh;
+        box-shadow: none;
+    }
+
     .otp-card__banner { padding: 28px 24px; }
-    .otp-inputs input { width: 44px; height: 54px; font-size: 22px; }
+
+    .otp-card__banner-icon {
+        width: 70px;
+        height: 70px;
+    }
+
+    .otp-card__banner-icon i { font-size: 36px; }
+
+    .otp-card__banner-title { font-size: 18px; }
+
+    .otp-card__body { padding: 28px 20px; }
+
+    .otp-inputs {
+        gap: 8px;
+    }
+
+    .otp-inputs input {
+        width: 100%;
+        max-width: 52px;
+        height: 56px;
+        font-size: 24px;
+        border-radius: 10px;
+    }
+
+    .back-home {
+        top: 12px;
+        right: 12px;
+    }
 }
