@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông Báo - ESCROW</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/local/notification.css">
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+        <header>
+            <!-- HEADER TOP -->
+            <div class="header-top">
+                <div class="header-top__left">
+                    <a href="/html/index.html" class="header-top__link" data-page="home">Trang Chủ</a>
+                    <span>|</span>
+                    <a href="/html/pages/p2p.html" class="header-top__link">P2P</a>
+                    <span>|</span>
+                    <a href="/html/pages/wallet.html" class="header-top__link">Ví</a>
+                    <span>|</span>
+                    <a href="/html/pages/report.html" class="header-top__link">Tố Cáo</a>
+                </div>
+
+                <div class="header-top__right">
+                    <a href="/html/pages/notification.html" class="header-top__link"><i class="bx bx-bell-ring"></i> Thông Báo</a>
+                    <a href="/html/pages/support.html" class="header-top__link"><i class="bx bx-help-circle"></i> Hỗ Trợ</a>
+                    <a href="/html/pages/settings.html" class="header-top__link"><i class="bx bx-cog"></i> Cài Đặt</a>
+                    <a href="/html/pages/register.html" class="header-top__link">Đăng Ký</a>
+                    <span>|</span>
+                    <a href="/html/pages/login.html" class="header-top__link">Đăng Nhập</a>
+                </div>
+            </div>
+
+            <!-- HEADER MID -->
+            <div class="header-mid">
+                <!-- LOGO -->
+                <div class="header-mid__logo">ESCROW</div>
+
+                <!-- SEARCH -->
+                <div class="header-mid__search">
+                    <input type="text" placeholder="Tra cứu STK, SĐT, link FB,...">
+                    <button><i class="bx bx-search"></i></button>
+                </div>
+
+                <!-- ACCOUNT -->
+                <div class="header-mid__profile">
+                    <a href="/html/pages/profile.html"><i class="bx bx-user-circle"></i></a>
+                </div>
+            </div>
+
+            <!-- HEADER BOTTOM -->
+            <div class="header-bottom">
+                <div class="header-bottom__marquee">
+                    Chào mừng bạn đến với Hệ Thống Giao Dịch Trung Gian ESCROW - 
+                    An Toàn, Bảo Mật, Uy Tín hàng đầu Việt Nam. Hỗ trợ giao dịch 24/7!
+                </div>
+            </div>
+        </header>
+
+    <main class="notif-main">
+
+        <!-- HEADER ROW -->
+        <div class="notif-header-row">
+            <div>
+                <h1 class="notif-title">Thông Báo</h1>
+                <p class="notif-subtitle">
+                    Bạn có <strong id="unreadCount">0</strong> thông báo chưa đọc
+                </p>
+            </div>
+            <button class="notif-btn notif-btn--ghost" onclick="markAllRead()">
+                <i class='bx bx-check-double'></i> Đánh dấu tất cả đã đọc
+            </button>
+        </div>
+
+        <!-- TOOLBAR -->
+        <div class="notif-toolbar">
+            <!-- CUSTOM DROPDOWN -->
+            <div class="custom-dropdown" id="notifDropdown">
+                <div class="custom-dropdown__trigger" id="notifDropdownTrigger" onclick="toggleNotifDropdown()">
+                    <i class='bx bx-filter-alt'></i>
+                    <span class="custom-dropdown__label" id="notifDropdownLabel">Tất cả</span>
+                    <i class='bx bx-chevron-down custom-dropdown__arrow'></i>
+                </div>
+                <div class="custom-dropdown__menu" id="notifDropdownMenu">
+                    <!-- render bởi JS -->
+                </div>
+            </div>
+
+            <!-- DATE FROM -->
+            <div class="notif-filter-group">
+                <div class="notif-date-wrap">
+                    <i class='bx bx-calendar'></i>
+                    <input type="date" id="dateFrom" class="notif-date-input" onchange="filterByDate()">
+                </div>
+            </div>
+
+            <!-- DATE TO -->
+            <div class="notif-filter-group">
+                <div class="notif-date-wrap">
+                    <i class='bx bx-calendar'></i>
+                    <input type="date" id="dateTo" class="notif-date-input" onchange="filterByDate()">
+                </div>
+            </div>
+
+            <button class="notif-btn notif-btn--ghost" onclick="clearDateFilter()">
+                <i class='bx bx-x'></i> Xóa lọc
+            </button>
+        </div>
+
+        <!-- DANH SÁCH -->
+        <div class="notif-list-wrap">
+            <div class="notif-list" id="notifList">
+                <!-- render bởi JS -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+        <footer>
+            <!-- TOP -->
+            <div class="footer-top">
+
+                <!-- LEFT -->
+                <div class="footer-top__left">
+                    <h2 class="footer-top__logo">ESCROW</h2>
+                    <p class="footer-top__description">
+                        Hệ thống giao dịch trung gian an toàn hàng đầu,
+                        bảo vệ quyền lợi người mua và người bán.
+                    </p>
+                    <div class="footer-top__social">
+                        <a href="#"><i class="bx bxl-facebook-circle"></i></a>
+                        <a href="#"><i class="bx bxl-telegram"></i></a>
+                        <a href="#"><i class="bx bxl-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- Spacer div giữ theo bố cục mẫu 2 -->
+                <div></div>
+
+                <!-- RIGHT -->
+                <div class="footer-top__right">
+
+                    <!-- BOX -->
+                    <div class="footer-box">
+                        <h3 class="footer-box__title">Dịch Vụ</h3>
+                        <ul class="footer-box__list">
+                            <li><a href="#">Quy trình giao dịch</a></li>
+                            <li><a href="#">Biểu phí dịch vụ</a></li>
+                            <li><a href="#">Giao dịch P2P</a></li>
+                            <li><a href="#">Kiểm tra uy tín</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- BOX -->
+                    <div class="footer-box">
+                        <h3 class="footer-box__title">Hỗ Trợ & Pháp Lý</h3>
+                        <ul class="footer-box__list">
+                            <li><a href="#">Điều khoản sử dụng</a></li>
+                            <li><a href="#">Chính sách bảo mật</a></li>
+                            <li><a href="#">Giải quyết tranh chấp</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- BOX CONTACT -->
+                    <div class="footer-box footer-box--contact">
+                        <h3 class="footer-box__title">Liên Hệ</h3>
+                        <div class="footer-box__contact">
+                            <p><i class="bx bx-phone"></i> 1900 xxxx</p>
+                            <p><i class="bx bx-envelope"></i> support@escrow.vn</p>
+                            <p><i class="bx bx-map"></i> Quận 1, TP.HCM</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- BOTTOM -->
+            <div class="footer-bottom">
+                © 2026 ESCROW. All rights reserved.
+            </div>
+        </footer>
+
+</div>
+
+<!-- =====================================================================
+     TEMPLATE: NOTIFICATION ITEM
+     Backend mapping:
+       id            → ThongBao.MaThongBao
+       loai          → ThongBao.LoaiThongBao
+       tieuDe        → ThongBao.TieuDe
+       noiDung       → ThongBao.NoiDung
+       thoiGian      → ThongBao.ThoiGian
+       daDoc         → ThongBao.DaDoc
+       duongDan      → ThongBao.DuongDanLienKet
+====================================================================== -->
+<template id="notifTemplate">
+    <div class="notif-item">
+        <div class="notif-item__icon-wrap">
+            <div class="notif-item__icon"></div>
+        </div>
+        <div class="notif-item__body">
+            <div class="notif-item__title"></div>
+            <div class="notif-item__desc"></div>
+            <div class="notif-item__time"></div>
+        </div>
+        <div class="notif-item__right">
+            <span class="notif-item__dot"></span>
+        </div>
+    </div>
+</template>
+
+<script src="/js/global.js"></script>
+<script src="/js/local/notification.js"></script>
+</body>
+</html>

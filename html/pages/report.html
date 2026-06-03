@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tố Cáo - ESCROW</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/local/report.css">
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+        <header>
+            <!-- HEADER TOP -->
+            <div class="header-top">
+                <div class="header-top__left">
+                    <a href="/html/index.html" class="header-top__link" data-page="home">Trang Chủ</a>
+                    <span>|</span>
+                    <a href="/html/pages/p2p.html" class="header-top__link">P2P</a>
+                    <span>|</span>
+                    <a href="/html/pages/wallet.html" class="header-top__link">Ví</a>
+                    <span>|</span>
+                    <a href="/html/pages/report.html" class="header-top__link">Tố Cáo</a>
+                </div>
+
+                <div class="header-top__right">
+                    <a href="/html/pages/notification.html" class="header-top__link"><i class="bx bx-bell-ring"></i> Thông Báo</a>
+                    <a href="/html/pages/support.html" class="header-top__link"><i class="bx bx-help-circle"></i> Hỗ Trợ</a>
+                    <a href="/html/pages/settings.html" class="header-top__link"><i class="bx bx-cog"></i> Cài Đặt</a>
+                    <a href="/html/pages/register.html" class="header-top__link">Đăng Ký</a>
+                    <span>|</span>
+                    <a href="/html/pages/login.html" class="header-top__link">Đăng Nhập</a>
+                </div>
+            </div>
+
+            <!-- HEADER MID -->
+            <div class="header-mid">
+                <!-- LOGO -->
+                <div class="header-mid__logo">ESCROW</div>
+
+                <!-- SEARCH -->
+                <div class="header-mid__search">
+                    <input type="text" placeholder="Tra cứu STK, SĐT, link FB,...">
+                    <button><i class="bx bx-search"></i></button>
+                </div>
+
+                <!-- ACCOUNT -->
+                <div class="header-mid__profile">
+                    <a href="/html/pages/profile.html"><i class="bx bx-user-circle"></i></a>
+                </div>
+            </div>
+
+            <!-- HEADER BOTTOM -->
+            <div class="header-bottom">
+                <div class="header-bottom__marquee">
+                    Chào mừng bạn đến với Hệ Thống Giao Dịch Trung Gian ESCROW - 
+                    An Toàn, Bảo Mật, Uy Tín hàng đầu Việt Nam. Hỗ trợ giao dịch 24/7!
+                </div>
+            </div>
+        </header>
+
+    <main class="report-main">
+
+        <!-- HEADER ROW -->
+        <div class="report-header-row">
+            <div>
+                <h1 class="report-title">Tố Cáo</h1>
+                <p class="report-subtitle">Quản lý các tố cáo bạn đã gửi đến hệ thống</p>
+            </div>
+            <button class="report-btn report-btn--primary" onclick="openCreateModal()">
+                <i class='bx bx-error-circle'></i> Tạo Tố Cáo Mới
+            </button>
+        </div>
+
+        <!-- TOOLBAR: FILTER + SEARCH -->
+        <div class="report-toolbar">
+            <!-- CUSTOM DROPDOWN -->
+            <div class="custom-dropdown" id="reportDropdown">
+                <div class="custom-dropdown__trigger" id="reportDropdownTrigger" onclick="toggleReportDropdown()">
+                    <i class='bx bx-filter-alt'></i>
+                    <span class="custom-dropdown__label" id="reportDropdownLabel">Tất cả</span>
+                    <i class='bx bx-chevron-down custom-dropdown__arrow'></i>
+                </div>
+                <div class="custom-dropdown__menu" id="reportDropdownMenu">
+                    <!-- render bởi JS -->
+                </div>
+            </div>
+
+            <!-- DATE FROM -->
+            <div class="notif-filter-group">
+                <div class="notif-date-wrap">
+                    <i class='bx bx-calendar'></i>
+                    <input type="date" id="reportDateFrom" class="notif-date-input"
+                        placeholder="Từ ngày" onchange="filterReportsByDate()">
+                </div>
+            </div>
+
+            <!-- DATE TO -->
+            <div class="notif-filter-group">
+                <div class="notif-date-wrap">
+                    <i class='bx bx-calendar'></i>
+                    <input type="date" id="reportDateTo" class="notif-date-input"
+                        placeholder="Đến ngày" onchange="filterReportsByDate()">
+                </div>
+            </div>
+
+            <button class="report-btn report-btn--ghost" style="height:40px" onclick="clearReportFilter()">
+                <i class='bx bx-x'></i> Xóa lọc
+            </button>
+
+            <!-- SEARCH -->
+            <div class="report-search">
+                <i class='bx bx-search'></i>
+                <input type="text" id="searchInput" placeholder="Tìm mã giao dịch..." oninput="filterReports()">
+            </div>
+        </div>
+
+        <!-- THỐNG KÊ -->
+        <div class="report-stats" id="reportStats">
+            <!-- render bởi JS -->
+        </div>
+
+        <!-- DANH SÁCH TỐ CÁO -->
+        <div class="report-list-wrap">
+            <div class="report-list-wrap__header">
+                <span class="report-list-wrap__title" id="listTitle">Tất cả tố cáo</span>
+                <span class="report-list-wrap__count" id="listCount"></span>
+            </div>
+            <div class="report-list" id="reportList">
+                <!-- render bởi JS -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+        <footer>
+            <!-- TOP -->
+            <div class="footer-top">
+
+                <!-- LEFT -->
+                <div class="footer-top__left">
+                    <h2 class="footer-top__logo">ESCROW</h2>
+                    <p class="footer-top__description">
+                        Hệ thống giao dịch trung gian an toàn hàng đầu,
+                        bảo vệ quyền lợi người mua và người bán.
+                    </p>
+                    <div class="footer-top__social">
+                        <a href="#"><i class="bx bxl-facebook-circle"></i></a>
+                        <a href="#"><i class="bx bxl-telegram"></i></a>
+                        <a href="#"><i class="bx bxl-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- Spacer div giữ theo bố cục mẫu 2 -->
+                <div></div>
+
+                <!-- RIGHT -->
+                <div class="footer-top__right">
+
+                    <!-- BOX -->
+                    <div class="footer-box">
+                        <h3 class="footer-box__title">Dịch Vụ</h3>
+                        <ul class="footer-box__list">
+                            <li><a href="#">Quy trình giao dịch</a></li>
+                            <li><a href="#">Biểu phí dịch vụ</a></li>
+                            <li><a href="#">Giao dịch P2P</a></li>
+                            <li><a href="#">Kiểm tra uy tín</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- BOX -->
+                    <div class="footer-box">
+                        <h3 class="footer-box__title">Hỗ Trợ & Pháp Lý</h3>
+                        <ul class="footer-box__list">
+                            <li><a href="#">Điều khoản sử dụng</a></li>
+                            <li><a href="#">Chính sách bảo mật</a></li>
+                            <li><a href="#">Giải quyết tranh chấp</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- BOX CONTACT -->
+                    <div class="footer-box footer-box--contact">
+                        <h3 class="footer-box__title">Liên Hệ</h3>
+                        <div class="footer-box__contact">
+                            <p><i class="bx bx-phone"></i> 1900 xxxx</p>
+                            <p><i class="bx bx-envelope"></i> support@escrow.vn</p>
+                            <p><i class="bx bx-map"></i> Quận 1, TP.HCM</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- BOTTOM -->
+            <div class="footer-bottom">
+                © 2026 ESCROW. All rights reserved.
+            </div>
+        </footer>
+
+</div>
+
+<!-- =====================================================================
+     MODAL TẠO TỐ CÁO
+====================================================================== -->
+<div class="modal-overlay" id="createOverlay" onclick="closeModal('create')"></div>
+<div class="rmodal" id="createModal">
+    <div class="rmodal__header">
+        <h3><i class='bx bx-error-circle'></i> Tạo Tố Cáo Mới</h3>
+        <button class="rmodal__close" onclick="closeModal('create')"><i class='bx bx-x'></i></button>
+    </div>
+    <div class="rmodal__body">
+
+        <div class="rmodal__form-group">
+            <label>Mã giao dịch liên quan <span class="required">*</span></label>
+            <div class="rmodal__input-wrap">
+                <i class='bx bx-barcode'></i>
+                <input type="text" id="createGdCode" placeholder="VD: GD250531142210"
+                    style="text-transform:uppercase" oninput="lookupGdForReport()">
+            </div>
+            <div class="rmodal__gd-preview" id="gdPreview" style="display:none;">
+                <!-- render bởi JS -->
+            </div>
+            <span class="rmodal__field-error" id="err-gdCode"></span>
+        </div>
+
+        <div class="rmodal__form-group">
+            <label>Lý do tố cáo <span class="required">*</span></label>
+            <div class="rmodal__reason-list">
+                <label class="rmodal__reason">
+                    <input type="radio" name="reason" value="Không giao hàng">
+                    <span>Không giao hàng</span>
+                </label>
+                <label class="rmodal__reason">
+                    <input type="radio" name="reason" value="Hàng không đúng mô tả">
+                    <span>Hàng không đúng mô tả</span>
+                </label>
+                <label class="rmodal__reason">
+                    <input type="radio" name="reason" value="Không phản hồi">
+                    <span>Người bán/mua không phản hồi</span>
+                </label>
+                <label class="rmodal__reason">
+                    <input type="radio" name="reason" value="Gian lận, lừa đảo">
+                    <span>Gian lận, lừa đảo</span>
+                </label>
+                <label class="rmodal__reason">
+                    <input type="radio" name="reason" value="Khác">
+                    <span>Khác</span>
+                </label>
+            </div>
+            <span class="rmodal__field-error" id="err-reason"></span>
+        </div>
+
+        <div class="rmodal__form-group">
+            <label>Mô tả chi tiết <span class="required">*</span></label>
+            <textarea class="rmodal__textarea" id="createDesc"
+                placeholder="Mô tả chi tiết sự việc, thời gian, bằng chứng bạn có..."></textarea>
+            <span class="rmodal__field-error" id="err-desc"></span>
+        </div>
+
+        <div class="rmodal__form-group">
+            <label>Bằng chứng (ảnh/video)</label>
+            <div class="rmodal__upload-area" id="createUploadArea"
+                onclick="document.getElementById('createEvidenceInput').click()">
+                <i class='bx bx-image-add'></i>
+                <span>Nhấn để chọn ảnh/video</span>
+                <small>JPG, PNG, MP4 — tối đa 5MB mỗi file</small>
+            </div>
+            <input type="file" id="createEvidenceInput" accept="image/*,video/*"
+                multiple style="display:none" onchange="handleCreateEvidence(this)">
+            <div class="rmodal__preview-list" id="createPreviewList"></div>
+        </div>
+
+    </div>
+    <div class="rmodal__footer">
+        <button class="report-btn report-btn--ghost" onclick="closeModal('create')">Hủy</button>
+        <button class="report-btn report-btn--primary" onclick="submitReport()">
+            <i class='bx bx-send'></i> Gửi Tố Cáo
+        </button>
+    </div>
+</div>
+
+<!-- =====================================================================
+     MODAL CHI TIẾT TỐ CÁO
+====================================================================== -->
+<div class="modal-overlay" id="detailOverlay" onclick="closeModal('detail')"></div>
+<div class="rmodal rmodal--wide" id="detailModal">
+    <div class="rmodal__header">
+        <h3 id="detailModalTitle">Chi tiết tố cáo</h3>
+        <button class="rmodal__close" onclick="closeModal('detail')"><i class='bx bx-x'></i></button>
+    </div>
+    <div class="rmodal__body" id="detailModalBody">
+        <!-- render bởi JS -->
+    </div>
+    <div class="rmodal__footer" id="detailModalFooter">
+        <!-- render bởi JS theo trạng thái -->
+    </div>
+</div>
+
+<!-- =====================================================================
+     MODAL BỔ SUNG BẰNG CHỨNG
+====================================================================== -->
+<div class="modal-overlay" id="evidenceOverlay" onclick="closeModal('evidence')"></div>
+<div class="rmodal" id="evidenceModal">
+    <div class="rmodal__header">
+        <h3><i class='bx bx-image-add'></i> Bổ Sung Bằng Chứng</h3>
+        <button class="rmodal__close" onclick="closeModal('evidence')"><i class='bx bx-x'></i></button>
+    </div>
+    <div class="rmodal__body">
+        <div class="rmodal__form-group">
+            <label>Ghi chú bổ sung</label>
+            <textarea class="rmodal__textarea" id="evidenceNote"
+                placeholder="Mô tả thêm về bằng chứng bạn bổ sung..."></textarea>
+        </div>
+        <div class="rmodal__form-group">
+            <label>Bằng chứng mới <span class="required">*</span></label>
+            <div class="rmodal__upload-area"
+                onclick="document.getElementById('extraEvidenceInput').click()">
+                <i class='bx bx-image-add'></i>
+                <span>Nhấn để chọn ảnh/video</span>
+            </div>
+            <input type="file" id="extraEvidenceInput" accept="image/*,video/*"
+                multiple style="display:none" onchange="handleExtraEvidence(this)">
+            <div class="rmodal__preview-list" id="extraPreviewList"></div>
+        </div>
+        <div class="rmodal__info-box">
+            <i class='bx bx-info-circle'></i>
+            <span>Bằng chứng bổ sung sẽ được gửi đến admin đang xử lý tố cáo của bạn.</span>
+        </div>
+    </div>
+    <div class="rmodal__footer">
+        <button class="report-btn report-btn--ghost" onclick="closeModal('evidence')">Hủy</button>
+        <button class="report-btn report-btn--primary" onclick="submitExtraEvidence()">
+            <i class='bx bx-send'></i> Gửi Bổ Sung
+        </button>
+    </div>
+</div>
+
+<!-- =====================================================================
+     MODAL XÁC NHẬN RÚT TỐ CÁO
+====================================================================== -->
+<div class="modal-overlay" id="withdrawOverlay" onclick="closeModal('withdraw')"></div>
+<div class="rmodal rmodal--sm" id="withdrawModal">
+    <div class="rmodal__header">
+        <h3><i class='bx bx-undo'></i> Rút Tố Cáo</h3>
+        <button class="rmodal__close" onclick="closeModal('withdraw')"><i class='bx bx-x'></i></button>
+    </div>
+    <div class="rmodal__body">
+        <div class="rmodal__warn-box">
+            <i class='bx bx-error'></i>
+            <div>
+                <strong>Bạn có chắc muốn rút tố cáo này?</strong>
+                <p>Sau khi rút, tố cáo sẽ bị đóng và không thể mở lại. Chỉ được rút khi admin chưa tiếp nhận xử lý.</p>
+            </div>
+        </div>
+        <div class="rmodal__form-group" style="margin-top:16px">
+            <label>Lý do rút tố cáo</label>
+            <textarea class="rmodal__textarea" id="withdrawReason"
+                placeholder="VD: Hai bên đã tự giải quyết được..."></textarea>
+        </div>
+    </div>
+    <div class="rmodal__footer">
+        <button class="report-btn report-btn--ghost" onclick="closeModal('withdraw')">Hủy</button>
+        <button class="report-btn report-btn--danger" onclick="confirmWithdrawReport()">
+            <i class='bx bx-undo'></i> Xác Nhận Rút
+        </button>
+    </div>
+</div>
+
+<!-- =====================================================================
+     TEMPLATE: REPORT ITEM
+     Backend mapping:
+       id          → TranhChap.MaTranhChap
+       maGiaoDich  → TranhChap.MaGiaoDich
+       lyDo        → TranhChap.LyDoKhieuNai
+       moTa        → TranhChap.MoTa
+       thoiGianTao → TranhChap.ThoiGianTao
+       trangThai   → TranhChap.TrangThai
+       ketQua      → TranhChap.KetLuan (admin nhập)
+       adminXuLy   → NguoiDung.HoTen (TranhChap.MaAdminXuLy)
+       thoiGianXuLy→ TranhChap.ThoiGianXuLy
+====================================================================== -->
+<template id="reportItemTemplate">
+    <div class="report-item">
+        <div class="report-item__left">
+            <div class="report-item__status-dot"></div>
+        </div>
+        <div class="report-item__body">
+            <div class="report-item__top-row">
+                <span class="report-item__gd-code"></span>
+                <span class="report-item__status-badge"></span>
+            </div>
+            <p class="report-item__reason"></p>
+            <p class="report-item__desc"></p>
+            <div class="report-item__meta">
+                <span class="report-item__date"></span>
+                <span class="report-item__admin"></span>
+            </div>
+        </div>
+        <div class="report-item__actions">
+            <button class="report-btn report-btn--outline report-item__detail-btn">
+                <i class='bx bx-detail'></i> Chi tiết
+            </button>
+        </div>
+    </div>
+</template>
+
+<script src="/js/global.js"></script>
+<script src="/js/local/report.js"></script>
+</body>
+</html>

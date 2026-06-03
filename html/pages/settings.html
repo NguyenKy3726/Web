@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cài Đặt - ESCROW</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/local/settings.css">
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+        <header>
+            <!-- HEADER TOP -->
+            <div class="header-top">
+                <div class="header-top__left">
+                    <a href="/html/index.html" class="header-top__link" data-page="home">Trang Chủ</a>
+                    <span>|</span>
+                    <a href="/html/pages/p2p.html" class="header-top__link">P2P</a>
+                    <span>|</span>
+                    <a href="/html/pages/wallet.html" class="header-top__link">Ví</a>
+                    <span>|</span>
+                    <a href="/html/pages/report.html" class="header-top__link">Tố Cáo</a>
+                </div>
+
+                <div class="header-top__right">
+                    <a href="/html/pages/notification.html" class="header-top__link"><i class="bx bx-bell-ring"></i> Thông Báo</a>
+                    <a href="/html/pages/support.html" class="header-top__link"><i class="bx bx-help-circle"></i> Hỗ Trợ</a>
+                    <a href="/html/pages/settings.html" class="header-top__link"><i class="bx bx-cog"></i> Cài Đặt</a>
+                    <a href="/html/pages/register.html" class="header-top__link">Đăng Ký</a>
+                    <span>|</span>
+                    <a href="/html/pages/login.html" class="header-top__link">Đăng Nhập</a>
+                </div>
+            </div>
+
+            <!-- HEADER MID -->
+            <div class="header-mid">
+                <!-- LOGO -->
+                <div class="header-mid__logo">ESCROW</div>
+
+                <!-- SEARCH -->
+                <div class="header-mid__search">
+                    <input type="text" placeholder="Tra cứu STK, SĐT, link FB,...">
+                    <button><i class="bx bx-search"></i></button>
+                </div>
+
+                <!-- ACCOUNT -->
+                <div class="header-mid__profile">
+                    <a href="/html/pages/profile.html"><i class="bx bx-user-circle"></i></a>
+                </div>
+            </div>
+
+            <!-- HEADER BOTTOM -->
+            <div class="header-bottom">
+                <div class="header-bottom__marquee">
+                    Chào mừng bạn đến với Hệ Thống Giao Dịch Trung Gian ESCROW - 
+                    An Toàn, Bảo Mật, Uy Tín hàng đầu Việt Nam. Hỗ trợ giao dịch 24/7!
+                </div>
+            </div>
+        </header>
+
+    <main class="settings-main">
+        <div class="settings-layout">
+
+            <!-- ====== SIDEBAR TRÁI ====== -->
+            <aside class="settings-sidebar">
+                <div class="settings-sidebar__title">Cài Đặt</div>
+
+                <nav class="settings-nav">
+                    <button class="settings-nav__item settings-nav__item--active"
+                        onclick="switchSection('profile')" id="nav-profile">
+                        <i class='bx bx-user-circle'></i>
+                        <span>Thông tin cá nhân</span>
+                    </button>
+                    <button class="settings-nav__item"
+                        onclick="switchSection('security')" id="nav-security">
+                        <i class='bx bx-lock-alt'></i>
+                        <span>Bảo mật</span>
+                    </button>
+                    <button class="settings-nav__item"
+                        onclick="switchSection('notification')" id="nav-notification">
+                        <i class='bx bx-bell'></i>
+                        <span>Thông báo</span>
+                    </button>
+                    <button class="settings-nav__item"
+                        onclick="switchSection('privacy')" id="nav-privacy">
+                        <i class='bx bx-shield'></i>
+                        <span>Quyền riêng tư</span>
+                    </button>
+                </nav>
+
+                <!-- USER INFO MINI -->
+                <div class="settings-sidebar__user">
+                    <div class="settings-sidebar__avatar" id="sidebarAvatar">NH</div>
+                    <div class="settings-sidebar__user-info">
+                        <span class="settings-sidebar__user-name" id="sidebarName">Nguyễn Văn A</span>
+                        <span class="settings-sidebar__user-email" id="sidebarEmail">nguyenvana@gmail.com</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- ====== NỘI DUNG PHẢI ====== -->
+            <div class="settings-content">
+
+                <!-- ==================== THÔNG TIN CÁ NHÂN ==================== -->
+                <section class="settings-section" id="section-profile">
+                    <div class="settings-section__header">
+                        <h2>Thông tin cá nhân</h2>
+                        <p>Cập nhật thông tin hiển thị trên hồ sơ của bạn</p>
+                    </div>
+
+                    <!-- AVATAR -->
+                    <div class="settings-card">
+                        <div class="settings-card__title">Ảnh đại diện</div>
+                        <div class="settings-avatar-row">
+                            <div class="settings-avatar" id="profileAvatar">NH</div>
+                            <div class="settings-avatar-actions">
+                                <button class="settings-btn settings-btn--outline"
+                                    onclick="document.getElementById('avatarInput').click()">
+                                    <i class='bx bx-upload'></i> Tải ảnh lên
+                                </button>
+                                <input type="file" id="avatarInput" accept="image/*"
+                                    style="display:none" onchange="handleAvatarChange(this)">
+                                <p class="settings-hint">JPG, PNG. Tối đa 2MB</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- THÔNG TIN CƠ BẢN -->
+                    <div class="settings-card">
+                        <div class="settings-card__title">Thông tin cơ bản</div>
+
+                        <div class="settings-field">
+                            <label>Họ và tên</label>
+                            <input type="text" id="hoTen" value="Nguyễn Văn A"
+                                class="settings-input" placeholder="Nhập họ tên">
+                        </div>
+
+                        <div class="settings-field">
+                            <label>Facebook</label>
+                            <div class="settings-input-wrap">
+                                <i class='bx bxl-facebook-circle'></i>
+                                <input type="text" id="facebook" value="fb.com/nguyenvana"
+                                    class="settings-input settings-input--icon" placeholder="Link Facebook">
+                            </div>
+                        </div>
+
+                        <div class="settings-field">
+                            <label>TikTok</label>
+                            <div class="settings-input-wrap">
+                                <i class='bx bxl-tiktok'></i>
+                                <input type="text" id="tiktok" value="@nguyenvana"
+                                    class="settings-input settings-input--icon" placeholder="@tên tài khoản">
+                            </div>
+                        </div>
+
+                        <div class="settings-card__footer">
+                            <button class="settings-btn settings-btn--primary" onclick="saveProfile()">
+                                <i class='bx bx-save'></i> Lưu thay đổi
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ĐỔI SĐT -->
+                    <div class="settings-card">
+                        <div class="settings-card__title">Số điện thoại</div>
+                        <div class="settings-field">
+                            <label>Số hiện tại</label>
+                            <div class="settings-current-value">
+                                <span>0123 456 789</span>
+                                <span class="settings-verified"><i class='bx bx-check-circle'></i> Đã xác minh</span>
+                            </div>
+                        </div>
+                        <div class="settings-field">
+                            <label>Số điện thoại mới</label>
+                            <input type="tel" id="newPhone" class="settings-input"
+                                placeholder="Nhập số điện thoại mới">
+                        </div>
+                        <div class="settings-card__footer">
+                            <button class="settings-btn settings-btn--outline" onclick="requestPhoneOtp()">
+                                <i class='bx bx-mobile'></i> Gửi mã xác minh
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ĐỔI EMAIL -->
+                    <div class="settings-card">
+                        <div class="settings-card__title">Email</div>
+                        <div class="settings-field">
+                            <label>Email hiện tại</label>
+                            <div class="settings-current-value">
+                                <span>nguyenvana@gmail.com</span>
+                                <span class="settings-verified"><i class='bx bx-check-circle'></i> Đã xác minh</span>
+                            </div>
+                        </div>
+                        <div class="settings-field">
+                            <label>Email mới</label>
+                            <input type="email" id="newEmail" class="settings-input"
+                                placeholder="Nhập email mới">
+                        </div>
+                        <div class="settings-card__footer">
+                            <button class="settings-btn settings-btn--outline" onclick="requestEmailOtp()">
+                                <i class='bx bx-envelope'></i> Gửi mã xác minh
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== BẢO MẬT ==================== -->
+                <section class="settings-section" id="section-security" style="display:none;">
+                    <div class="settings-section__header">
+                        <h2>Bảo mật</h2>
+                        <p>Quản lý mật khẩu và bảo mật tài khoản</p>
+                    </div>
+
+                    <!-- ĐỔI MẬT KHẨU -->
+                    <div class="settings-card">
+                        <div class="settings-card__title">Đổi mật khẩu</div>
+
+                        <div class="settings-field">
+                            <label>Mật khẩu hiện tại</label>
+                            <div class="settings-input-wrap">
+                                <i class='bx bx-lock-alt'></i>
+                                <input type="password" id="currentPw" class="settings-input settings-input--icon"
+                                    placeholder="Nhập mật khẩu hiện tại">
+                                <button class="settings-eye" onclick="togglePw('currentPw', this)">
+                                    <i class='bx bx-hide'></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="settings-field">
+                            <label>Mật khẩu mới</label>
+                            <div class="settings-input-wrap">
+                                <i class='bx bx-lock-open-alt'></i>
+                                <input type="password" id="newPw" class="settings-input settings-input--icon"
+                                    placeholder="Tối thiểu 8 ký tự" oninput="checkPwStrength(this)">
+                                <button class="settings-eye" onclick="togglePw('newPw', this)">
+                                    <i class='bx bx-hide'></i>
+                                </button>
+                            </div>
+                            <div class="settings-pw-strength" id="pwStrength" style="display:none;">
+                                <div class="settings-pw-strength__bar">
+                                    <div class="settings-pw-strength__fill" id="pwFill"></div>
+                                </div>
+                                <span id="pwStrengthText"></span>
+                            </div>
+                        </div>
+
+                        <div class="settings-field">
+                            <label>Xác nhận mật khẩu mới</label>
+                            <div class="settings-input-wrap">
+                                <i class='bx bx-lock-open-alt'></i>
+                                <input type="password" id="confirmPw" class="settings-input settings-input--icon"
+                                    placeholder="Nhập lại mật khẩu mới">
+                                <button class="settings-eye" onclick="togglePw('confirmPw', this)">
+                                    <i class='bx bx-hide'></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="settings-card__footer">
+                            <button class="settings-btn settings-btn--primary" onclick="changePassword()">
+                                <i class='bx bx-check'></i> Đổi mật khẩu
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- LỊCH SỬ ĐĂNG NHẬP -->
+                    <div class="settings-card">
+                        <div class="settings-card__title">Lịch sử đăng nhập</div>
+                        <div class="settings-login-list" id="loginHistoryList">
+                            <!-- render bởi JS -->
+                        </div>
+                        <div class="settings-card__footer">
+                            <button class="settings-btn settings-btn--danger" onclick="logoutAllDevices()">
+                                <i class='bx bx-log-out'></i> Đăng xuất tất cả thiết bị
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== THÔNG BÁO ==================== -->
+                <section class="settings-section" id="section-notification" style="display:none;">
+                    <div class="settings-section__header">
+                        <h2>Thông báo</h2>
+                        <p>Chọn loại thông báo bạn muốn nhận</p>
+                    </div>
+
+                    <div class="settings-card">
+                        <div class="settings-card__title">Thông báo Email</div>
+
+                        <div class="settings-toggle-row">
+                            <div>
+                                <span class="settings-toggle-label">Giao dịch mới</span>
+                                <span class="settings-toggle-desc">Khi có người tham gia giao dịch của bạn</span>
+                            </div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" id="notif-new-tx" checked>
+                                <span class="settings-toggle__slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-toggle-row">
+                            <div>
+                                <span class="settings-toggle-label">Cập nhật trạng thái GD</span>
+                                <span class="settings-toggle-desc">Khi giao dịch thay đổi trạng thái</span>
+                            </div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" id="notif-tx-status" checked>
+                                <span class="settings-toggle__slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-toggle-row">
+                            <div>
+                                <span class="settings-toggle-label">Tố cáo</span>
+                                <span class="settings-toggle-desc">Khi có tố cáo liên quan đến bạn</span>
+                            </div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" id="notif-report" checked>
+                                <span class="settings-toggle__slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-toggle-row">
+                            <div>
+                                <span class="settings-toggle-label">Nạp / Rút tiền</span>
+                                <span class="settings-toggle-desc">Khi ví có biến động</span>
+                            </div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" id="notif-wallet" checked>
+                                <span class="settings-toggle__slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-toggle-row">
+                            <div>
+                                <span class="settings-toggle-label">Tin tức & Khuyến mãi</span>
+                                <span class="settings-toggle-desc">Thông tin cập nhật từ ESCROW</span>
+                            </div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" id="notif-news">
+                                <span class="settings-toggle__slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-card__footer">
+                            <button class="settings-btn settings-btn--primary" onclick="saveNotification()">
+                                <i class='bx bx-save'></i> Lưu cài đặt
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== QUYỀN RIÊNG TƯ ==================== -->
+                <section class="settings-section" id="section-privacy" style="display:none;">
+                    <div class="settings-section__header">
+                        <h2>Quyền riêng tư</h2>
+                        <p>Kiểm soát thông tin hiển thị với người khác khi họ xem hồ sơ của bạn</p>
+                    </div>
+
+                    <div class="settings-card">
+                        <div class="settings-card__title">Hiển thị thông tin</div>
+
+                        <div class="settings-toggle-row">
+                            <div>
+                                <span class="settings-toggle-label">Số điện thoại</span>
+                                <span class="settings-toggle-desc">Cho phép người khác xem SĐT của bạn</span>
+                            </div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" id="privacy-phone">
+                                <span class="settings-toggle__slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-toggle-row">
+                            <div>
+                                <span class="settings-toggle-label">Email</span>
+                                <span class="settings-toggle-desc">Cho phép người khác xem email của bạn</span>
+                            </div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" id="privacy-email">
+                                <span class="settings-toggle__slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-toggle-row">
+                            <div>
+                                <span class="settings-toggle-label">Facebook</span>
+                                <span class="settings-toggle-desc">Hiển thị link Facebook trên hồ sơ</span>
+                            </div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" id="privacy-fb" checked>
+                                <span class="settings-toggle__slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-toggle-row">
+                            <div>
+                                <span class="settings-toggle-label">TikTok</span>
+                                <span class="settings-toggle-desc">Hiển thị tài khoản TikTok trên hồ sơ</span>
+                            </div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" id="privacy-tiktok" checked>
+                                <span class="settings-toggle__slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-toggle-row">
+                            <div>
+                                <span class="settings-toggle-label">Lịch sử giao dịch</span>
+                                <span class="settings-toggle-desc">Cho phép người khác xem lịch sử GD của bạn</span>
+                            </div>
+                            <label class="settings-toggle">
+                                <input type="checkbox" id="privacy-history" checked>
+                                <span class="settings-toggle__slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="settings-card__footer">
+                            <button class="settings-btn settings-btn--primary" onclick="savePrivacy()">
+                                <i class='bx bx-save'></i> Lưu cài đặt
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+        <footer>
+            <!-- TOP -->
+            <div class="footer-top">
+
+                <!-- LEFT -->
+                <div class="footer-top__left">
+                    <h2 class="footer-top__logo">ESCROW</h2>
+                    <p class="footer-top__description">
+                        Hệ thống giao dịch trung gian an toàn hàng đầu,
+                        bảo vệ quyền lợi người mua và người bán.
+                    </p>
+                    <div class="footer-top__social">
+                        <a href="#"><i class="bx bxl-facebook-circle"></i></a>
+                        <a href="#"><i class="bx bxl-telegram"></i></a>
+                        <a href="#"><i class="bx bxl-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- Spacer div giữ theo bố cục mẫu 2 -->
+                <div></div>
+
+                <!-- RIGHT -->
+                <div class="footer-top__right">
+
+                    <!-- BOX -->
+                    <div class="footer-box">
+                        <h3 class="footer-box__title">Dịch Vụ</h3>
+                        <ul class="footer-box__list">
+                            <li><a href="#">Quy trình giao dịch</a></li>
+                            <li><a href="#">Biểu phí dịch vụ</a></li>
+                            <li><a href="#">Giao dịch P2P</a></li>
+                            <li><a href="#">Kiểm tra uy tín</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- BOX -->
+                    <div class="footer-box">
+                        <h3 class="footer-box__title">Hỗ Trợ & Pháp Lý</h3>
+                        <ul class="footer-box__list">
+                            <li><a href="#">Điều khoản sử dụng</a></li>
+                            <li><a href="#">Chính sách bảo mật</a></li>
+                            <li><a href="#">Giải quyết tranh chấp</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- BOX CONTACT -->
+                    <div class="footer-box footer-box--contact">
+                        <h3 class="footer-box__title">Liên Hệ</h3>
+                        <div class="footer-box__contact">
+                            <p><i class="bx bx-phone"></i> 1900 xxxx</p>
+                            <p><i class="bx bx-envelope"></i> support@escrow.vn</p>
+                            <p><i class="bx bx-map"></i> Quận 1, TP.HCM</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- BOTTOM -->
+            <div class="footer-bottom">
+                © 2026 ESCROW. All rights reserved.
+            </div>
+        </footer>
+
+</div>
+<div class="smodal" id="deleteModal">
+    <div class="smodal__header">
+        <h3><i class='bx bx-error-circle'></i> Xóa tài khoản</h3>
+        <button class="smodal__close" onclick="closeDeleteModal()"><i class='bx bx-x'></i></button>
+    </div>
+    <div class="smodal__body">
+        <div class="smodal__warn">
+            <p>Hành động này <strong>không thể hoàn tác</strong>. Toàn bộ dữ liệu sẽ bị xóa vĩnh viễn bao gồm:</p>
+            <ul>
+                <li>Lịch sử giao dịch</li>
+                <li>Số dư trong ví</li>
+                <li>Thông tin KYC</li>
+                <li>Lịch sử tố cáo</li>
+            </ul>
+        </div>
+        <div class="settings-field" style="margin-top:16px">
+            <label>Nhập mật khẩu để xác nhận</label>
+            <input type="password" id="deleteConfirmPw" class="settings-input" placeholder="Mật khẩu của bạn">
+        </div>
+    </div>
+    <div class="smodal__footer">
+        <button class="settings-btn settings-btn--ghost" onclick="closeDeleteModal()">Hủy</button>
+        <button class="settings-btn settings-btn--danger" onclick="deleteAccount()">
+            <i class='bx bx-trash'></i> Xác nhận xóa
+        </button>
+    </div>
+</div>
+
+<script src="/js/global.js"></script>
+<script src="/js/local/settings.js"></script>
+</body>
+</html>

@@ -31,7 +31,7 @@
 // Map: tên file → data-page tương ứng
 const PAGE_MAP = {
     'index.html':     'home',
-    'p2p.html': 'p2p',
+    'dashboard.html': 'p2p',
     'wallet.html':    'wallet',
     'report.html':    'report',
 };

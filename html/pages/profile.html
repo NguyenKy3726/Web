@@ -12,43 +12,54 @@
 <div class="container">
 
     <!-- HEADER -->
-    <header>
-        <div class="header-top">
-            <div class="header-top__left">
-                <a href="/html/index.html" class="header-top__link">Trang Chủ</a>
-                <span>|</span>
-                <a href="/html/pages/p2p.html" class="header-top__link">P2P</a>
-                <span>|</span>
-                <a href="/html/pages/wallet.html" class="header-top__link">Ví</a>
-                <span>|</span>
-                <a href="/html/pages/report.html" class="header-top__link">Tố Cáo</a>
+        <header>
+            <!-- HEADER TOP -->
+            <div class="header-top">
+                <div class="header-top__left">
+                    <a href="/html/index.html" class="header-top__link" data-page="home">Trang Chủ</a>
+                    <span>|</span>
+                    <a href="/html/pages/p2p.html" class="header-top__link">P2P</a>
+                    <span>|</span>
+                    <a href="/html/pages/wallet.html" class="header-top__link">Ví</a>
+                    <span>|</span>
+                    <a href="/html/pages/report.html" class="header-top__link">Tố Cáo</a>
+                </div>
+
+                <div class="header-top__right">
+                    <a href="/html/pages/notification.html" class="header-top__link"><i class="bx bx-bell-ring"></i> Thông Báo</a>
+                    <a href="/html/pages/support.html" class="header-top__link"><i class="bx bx-help-circle"></i> Hỗ Trợ</a>
+                    <a href="/html/pages/settings.html" class="header-top__link"><i class="bx bx-cog"></i> Cài Đặt</a>
+                    <a href="/html/pages/register.html" class="header-top__link">Đăng Ký</a>
+                    <span>|</span>
+                    <a href="/html/pages/login.html" class="header-top__link">Đăng Nhập</a>
+                </div>
             </div>
-            <div class="header-top__right">
-                <a href="#" class="header-top__link"><i class="bx bx-bell-ring"></i> Thông Báo</a>
-                <a href="#" class="header-top__link"><i class="bx bx-help-circle"></i> Hỗ Trợ</a>
-                <a href="/html/pages/install.html" class="header-top__link"><i class="bx bx-cog"></i> Cài Đặt</a>
-                <a href="/html/pages/register.html" class="header-top__link">Đăng Ký</a>
-                <span>|</span>
-                <a href="/html/pages/login.html" class="header-top__link">Đăng Nhập</a>
+
+            <!-- HEADER MID -->
+            <div class="header-mid">
+                <!-- LOGO -->
+                <div class="header-mid__logo">ESCROW</div>
+
+                <!-- SEARCH -->
+                <div class="header-mid__search">
+                    <input type="text" placeholder="Tra cứu STK, SĐT, link FB,...">
+                    <button><i class="bx bx-search"></i></button>
+                </div>
+
+                <!-- ACCOUNT -->
+                <div class="header-mid__profile">
+                    <a href="/html/pages/profile.html"><i class="bx bx-user-circle"></i></a>
+                </div>
             </div>
-        </div>
-        <div class="header-mid">
-            <div class="header-mid__logo">ESCROW</div>
-            <div class="header-mid__search">
-                <input type="text" placeholder="Tra cứu STK, SĐT, link FB, mã giao dịch,...">
-                <button><i class="bx bx-search"></i></button>
-            </div>              
-            <div class="header-mid__profile">
-                <a href="/html/pages/profile.html"><i class="bx bx-user-circle"></i></a>
+
+            <!-- HEADER BOTTOM -->
+            <div class="header-bottom">
+                <div class="header-bottom__marquee">
+                    Chào mừng bạn đến với Hệ Thống Giao Dịch Trung Gian ESCROW - 
+                    An Toàn, Bảo Mật, Uy Tín hàng đầu Việt Nam. Hỗ trợ giao dịch 24/7!
+                </div>
             </div>
-        </div>
-        <div class="header-bottom">
-            <div class="header-bottom__marquee">
-                Chào mừng bạn đến với Hệ Thống Giao Dịch Trung Gian ESCROW -
-                An Toàn, Bảo Mật, Uy Tín hàng đầu Việt Nam. Hỗ trợ giao dịch 24/7!
-            </div>
-        </div>
-    </header>
+        </header>
 
     <!-- MAIN -->
     <main class="profile-main">
@@ -213,52 +224,71 @@
     </main>
 
     <!-- FOOTER -->
-    <footer>
-        <div class="footer-top">
-            <div class="footer-top__left">
-                <h2 class="footer-top__logo">ESCROW</h2>
-                <p class="footer-top__description">
-                    Hệ thống giao dịch trung gian an toàn hàng đầu,
-                    bảo vệ quyền lợi người mua và người bán.
-                </p>
-                <div class="footer-top__social">
-                    <a href="#"><i class="bx bxl-facebook-circle"></i></a>
-                    <a href="#"><i class="bx bxl-telegram"></i></a>
-                    <a href="#"><i class="bx bxl-youtube"></i></a>
-                </div>
-            </div>
-            <div></div>
-            <div class="footer-top__right">
-                <div class="footer-box">
-                    <h3 class="footer-box__title">Dịch Vụ</h3>
-                    <ul class="footer-box__list">
-                        <li><a href="#">Quy trình giao dịch</a></li>
-                        <li><a href="#">Biểu phí dịch vụ</a></li>
-                        <li><a href="#">Giao dịch P2P</a></li>
-                        <li><a href="#">Kiểm tra uy tín</a></li>
-                    </ul>
-                </div>
-                <div class="footer-box">
-                    <h3 class="footer-box__title">Hỗ Trợ & Pháp Lý</h3>
-                    <ul class="footer-box__list">
-                        <li><a href="#">Điều khoản sử dụng</a></li>
-                        <li><a href="#">Chính sách bảo mật</a></li>
-                        <li><a href="#">Giải quyết tranh chấp</a></li>
-                        <li><a href="#">FAQ</a></li>
-                    </ul>
-                </div>
-                <div class="footer-box footer-box--contact">
-                    <h3 class="footer-box__title">Liên Hệ</h3>
-                    <div class="footer-box__contact">
-                        <p><i class="bx bx-phone"></i> 1900 xxxx</p>
-                        <p><i class="bx bx-envelope"></i> support@escrow.vn</p>
-                        <p><i class="bx bx-map"></i> Quận 1, TP.HCM</p>
+        <footer>
+            <!-- TOP -->
+            <div class="footer-top">
+
+                <!-- LEFT -->
+                <div class="footer-top__left">
+                    <h2 class="footer-top__logo">ESCROW</h2>
+                    <p class="footer-top__description">
+                        Hệ thống giao dịch trung gian an toàn hàng đầu,
+                        bảo vệ quyền lợi người mua và người bán.
+                    </p>
+                    <div class="footer-top__social">
+                        <a href="#"><i class="bx bxl-facebook-circle"></i></a>
+                        <a href="#"><i class="bx bxl-telegram"></i></a>
+                        <a href="#"><i class="bx bxl-youtube"></i></a>
                     </div>
                 </div>
+
+                <!-- Spacer div giữ theo bố cục mẫu 2 -->
+                <div></div>
+
+                <!-- RIGHT -->
+                <div class="footer-top__right">
+
+                    <!-- BOX -->
+                    <div class="footer-box">
+                        <h3 class="footer-box__title">Dịch Vụ</h3>
+                        <ul class="footer-box__list">
+                            <li><a href="#">Quy trình giao dịch</a></li>
+                            <li><a href="#">Biểu phí dịch vụ</a></li>
+                            <li><a href="#">Giao dịch P2P</a></li>
+                            <li><a href="#">Kiểm tra uy tín</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- BOX -->
+                    <div class="footer-box">
+                        <h3 class="footer-box__title">Hỗ Trợ & Pháp Lý</h3>
+                        <ul class="footer-box__list">
+                            <li><a href="#">Điều khoản sử dụng</a></li>
+                            <li><a href="#">Chính sách bảo mật</a></li>
+                            <li><a href="#">Giải quyết tranh chấp</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- BOX CONTACT -->
+                    <div class="footer-box footer-box--contact">
+                        <h3 class="footer-box__title">Liên Hệ</h3>
+                        <div class="footer-box__contact">
+                            <p><i class="bx bx-phone"></i> 1900 xxxx</p>
+                            <p><i class="bx bx-envelope"></i> support@escrow.vn</p>
+                            <p><i class="bx bx-map"></i> Quận 1, TP.HCM</p>
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
-        </div>
-        <div class="footer-bottom">© 2026 ESCROW. All rights reserved.</div>
-    </footer>
+
+            <!-- BOTTOM -->
+            <div class="footer-bottom">
+                © 2026 ESCROW. All rights reserved.
+            </div>
+        </footer>
 
 </div>
 
