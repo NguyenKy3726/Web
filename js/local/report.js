@@ -18,6 +18,24 @@ function toggleReportDropdown() {
     menu.classList.toggle('open', !isOpen);
 }
 
+function renderDropdown() {
+    const menu = document.getElementById('reportDropdownMenu');
+    if (!menu) return;
+    menu.innerHTML = TABS.map(t => {
+        const iconInfo = REPORT_DROPDOWN_ICONS[t.key] || { icon: 'bx-circle', color: '#64748b' };
+        const count = t.key === 'ALL'
+            ? mockReports.length
+            : mockReports.filter(r => r.trangThai === t.key).length;
+        return `
+        <div class="custom-dropdown__item ${t.key === currentTab ? 'custom-dropdown__item--active' : ''}"
+            onclick="selectReportTab('${t.key}', '${t.label}')">
+            <i class='bx ${iconInfo.icon}' style="color:${iconInfo.color}"></i>
+            <span>${t.label}</span>
+            <span class="custom-dropdown__badge">${count}</span>
+        </div>`;
+    }).join('');
+}
+
 function selectReportTab(key, label) {
     document.getElementById('reportDropdownMenu').classList.remove('open');
     document.getElementById('reportDropdownTrigger').classList.remove('open');
@@ -35,37 +53,6 @@ document.addEventListener('click', e => {
     }
 });
 
-// ============================================================
-//  THỐNG KÊ
-// ============================================================
-const STAT_CARDS = [
-    { key: 'ALL',         label: 'Tổng tố cáo',    icon: 'bx-list-ul',      cls: 'stat-icon--all'         },
-    { key: 'PENDING',     label: 'Chờ tiếp nhận',  icon: 'bx-time',         cls: 'stat-icon--pending'     },
-    { key: 'IN_PROGRESS', label: 'Đang xử lý',     icon: 'bx-loader-alt',   cls: 'stat-icon--in_progress' },
-    { key: 'RESOLVED',    label: 'Đã giải quyết',  icon: 'bx-check-circle', cls: 'stat-icon--resolved'    },
-    { key: 'REJECTED',    label: 'Bị từ chối',     icon: 'bx-x-circle',     cls: 'stat-icon--rejected'    },
-];
-
-function renderStats() {
-    const container = document.getElementById('reportStats');
-    if (!container) return;
-    container.innerHTML = STAT_CARDS.map(s => {
-        const count = s.key === 'ALL'
-            ? mockReports.length
-            : mockReports.filter(r => r.trangThai === s.key).length;
-        return `
-        <div class="report-stat-card ${s.key === currentTab ? 'report-stat-card--active' : ''}"
-            onclick="setTab('${s.key}')">
-            <div class="report-stat-card__icon ${s.cls}">
-                <i class='bx ${s.icon}'></i>
-            </div>
-            <div class="report-stat-card__info">
-                <div class="report-stat-card__num">${count}</div>
-                <div class="report-stat-card__label">${s.label}</div>
-            </div>
-        </div>`;
-    }).join('');
-}
 
 // ============================================================
 //  report.js — Trang Tố Cáo
@@ -175,6 +162,31 @@ let currentReportId = null;
 // Filter hiện tại
 let currentTab = 'ALL';
 
+// Filter ngày
+let reportDateFrom = null;
+let reportDateTo   = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const fromInput = document.getElementById('reportDateFrom');
+    const toInput   = document.getElementById('reportDateTo');
+    if (fromInput) fromInput.addEventListener('change', () => {
+        reportDateFrom = fromInput.value ? new Date(fromInput.value) : null;
+        renderList();
+    });
+    if (toInput) toInput.addEventListener('change', () => {
+        reportDateTo = toInput.value ? new Date(toInput.value + 'T23:59:59') : null;
+        renderList();
+    });
+});
+
+function parseReportDate(str) {
+    // Format: "25/05/2026 · 09:30"
+    if (!str) return null;
+    const match = str.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    if (!match) return null;
+    return new Date(`${match[3]}-${match[2]}-${match[1]}`);
+}
+
 
 // ============================================================
 //  TABS FILTER
@@ -188,18 +200,10 @@ const TABS = [
     { key: 'WITHDRAWN',   label: 'Đã rút'        },
 ];
 
-function renderTabs() {
-    const container = document.getElementById('reportTabs');
-    container.innerHTML = TABS.map(t => `
-        <button class="report-tab ${t.key === currentTab ? 'report-tab--active' : ''}"
-            onclick="setTab('${t.key}')">${t.label}</button>
-    `).join('');
-}
 
 function setTab(key) {
     currentTab = key;
-    renderTabs();
-    renderStats();
+    renderDropdown();
     renderList();
 }
 
@@ -378,8 +382,7 @@ function submitReport() {
 
     mockReports.unshift(newReport);
     closeModal('create');
-    renderStats();
-    renderTabs();
+    renderDropdown();
     renderList();
 }
 
@@ -603,8 +606,7 @@ function confirmWithdrawReport() {
     if (report) report.trangThai = 'WITHDRAWN';
 
     closeModal('withdraw');
-    renderStats();
-    renderTabs();
+    renderDropdown();
     renderList();
     alert(`Tố cáo ${currentReportId} đã được rút thành công.`);
 }
@@ -666,12 +668,11 @@ function formatVND(num) {
 //  KHỞI ĐỘNG
 //  TODO (Java): fetch('/api/reports/me').then(r=>r.json()).then(data => {
 //    mockReports = data;
-//    renderTabs();
+//    renderDropdown();
 //    renderList();
 //  });
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
-    renderTabs();
-    renderStats();
+    renderDropdown();
     renderList();
 });
