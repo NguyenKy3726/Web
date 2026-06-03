@@ -778,3 +778,430 @@
     color: #ef4444;
     background: #fef2f2;
 }
+
+/* ==================================
+   RESPONSIVE TOÀN BỘ PROFILE PAGE
+================================== */
+
+@media screen and (max-width: 768px){
+
+    /* CONTAINER */
+
+    .container{
+        width:100%;
+        max-width:100%;
+        overflow-x:hidden;
+    }
+
+    /* =====================
+       HEADER TOP
+    ===================== */
+
+    .header-top{
+    display:block;
+}
+
+.header-top__left,
+.header-top__right{
+
+    position:fixed;
+
+    top:0;
+    left:-270px;
+
+    width:260px;
+    height:100vh;
+
+    background:#1c2b4a;
+
+    display:flex;
+    flex-direction:column;
+
+    gap:12px;
+
+    padding:20px;
+
+    z-index:9999;
+
+    transition:.25s ease;
+}
+
+.header-top__left.mobile-open,
+.header-top__right.mobile-open{
+    left:0;
+}
+
+.header-top__link{
+    color:#fff;
+    text-decoration:none;
+    padding:10px 0;
+}
+
+.header-top span{
+    display:none;
+}
+
+
+    /* =====================
+       HEADER MID
+    ===================== */
+
+    .header-mid{
+        display:grid !important;
+
+        grid-template-columns:minmax(0,1fr) 50px;
+
+        grid-template-areas:
+            "logo logo"
+            "search profile";
+
+        align-items:center;
+
+        column-gap:8px;
+        row-gap:10px;
+
+        padding:10px;
+    }
+
+    /* ESCROW */
+
+    .header-mid__logo{
+        grid-area:logo;
+
+        width:100%;
+        text-align:center;
+
+        font-size:28px;
+        line-height:1;
+
+        margin-bottom:5px;
+    }
+
+    /* SEARCH */
+
+    .header-mid__search{
+        grid-area:search;
+
+        width:100%;
+        min-width:0;
+
+        display:flex;
+        align-items:center;
+    }
+
+    .header-mid__search input{
+        flex:1;
+        width:100%;
+        min-width:0;
+
+        font-size:13px;
+    }
+
+    .header-mid__search button{
+        width:45px;
+        flex-shrink:0;
+    }
+
+    /* MENU ☰ */
+
+    .header-mid__profile{
+        grid-area:profile;
+
+        width:50px !important;
+        min-width:50px;
+
+        display:flex !important;
+        justify-content:center;
+        align-items:center;
+
+        margin:0 !important;
+        padding:0 !important;
+
+        cursor:pointer;
+    }
+
+    .header-mid__profile.active{
+        display:flex !important;
+        justify-content:center;
+        align-items:center;
+    }
+
+    .header-mid__profile a{
+        display:none;
+    }
+
+    .header-mid__profile::before{
+        content:"☰";
+
+        font-size:30px;
+        line-height:1;
+
+        color:#2cb8ff;
+    }
+
+    /* =====================
+       HEADER BOTTOM
+    ===================== */
+
+    .header-bottom{
+        display:block;
+    }
+
+    .header-bottom__marquee{
+        width:90%;
+        margin:auto;
+        display:block;
+        font-size:11px;
+    }
+
+    /* =====================
+       MAIN
+    ===================== */
+
+    .profile-main{
+        padding:10px;
+    }
+
+    .profile-layout{
+        display:flex;
+        flex-direction:column;
+        gap:15px;
+    }
+
+    .profile-card,
+    .profile-history{
+        width:100%;
+        max-width:100%;
+    }
+
+    /* =====================
+       PROFILE CARD
+    ===================== */
+
+    .profile-card{
+        padding:15px;
+        border-radius:16px;
+    }
+
+    .profile-card__top{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .profile-card__stats,
+    .profile-card__reputation{
+        flex-direction:column;
+        gap:10px;
+    }
+
+    /* =====================
+       LỊCH SỬ GIAO DỊCH
+    ===================== */
+
+    .history-toolbar{
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .history-search{
+        width:100%;
+    }
+
+    .history-search input{
+        width:100%;
+    }
+
+    .history-tabs{
+        overflow-x:auto;
+        white-space:nowrap;
+    }
+
+    .gd-item,
+    .tc-item{
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+    }
+
+    .gd-item__row2,
+    .gd-item__row3{
+        flex-wrap:wrap;
+    }
+
+    /* =====================
+       FOOTER
+    ===================== */
+
+.footer-content{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+/* chỉ giữ cột ESCROW */
+
+.footer-column:not(:first-child){
+    display:none;
+}
+
+.footer-column{
+    width:100%;
+    max-width:100%;
+}
+
+/* ẩn các box phụ nếu có */
+
+.footer-box{
+    display:none;
+}
+
+/* logo */
+
+.footer-logo{
+    margin-bottom:12px;
+}
+
+/* mô tả */
+
+.footer-description{
+    margin-bottom:16px;
+    line-height:1.6;
+}
+
+/* social */
+
+.footer-social{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.footer-social a{
+    font-size:24px;
+}
+}
+/* ==================================
+   ĐIỆN THOẠI NHỎ
+================================== */
+
+@media screen and (max-width:480px){
+
+    html{
+        font-size:14px;
+    }
+
+    /* HEADER MID */
+
+    .header-mid{
+        display:grid !important;
+
+        grid-template-columns:minmax(0,1fr) 40px;
+
+        grid-template-areas:
+            "logo logo"
+            "search profile";
+
+        align-items:center;
+
+        column-gap:0;
+        row-gap:10px;
+
+        width:100%;
+
+        padding:10px;
+    }
+
+    .header-mid__logo{
+        grid-area:logo;
+
+        width:100%;
+        text-align:center;
+
+        font-size:22px;
+    }
+
+    .header-mid__search{
+        grid-area:search;
+
+        width:100%;
+        min-width:0;
+
+        display:flex;
+        align-items:center;
+
+        justify-self:stretch;
+    }
+
+    .header-mid__search input{
+        flex:1;
+        width:100%;
+        min-width:0;
+
+        font-size:12px;
+    }
+
+    .header-mid__search button{
+        width:40px;
+        flex-shrink:0;
+    }
+
+    .header-mid__profile{
+        grid-area:profile;
+
+        width:40px !important;
+        min-width:40px;
+
+        display:flex !important;
+        justify-content:flex-end;
+        align-items:center;
+
+        justify-self:end;
+
+        margin:0 !important;
+        padding:0 !important;
+
+        cursor:pointer;
+    }
+
+    .header-mid__profile a{
+        display:none;
+    }
+
+    .header-mid__profile::before{
+        content:"☰";
+
+        font-size:28px;
+        line-height:1;
+
+        color:#2cb8ff;
+    }
+
+    /* HEADER BOTTOM */
+
+    .header-bottom__marquee{
+        width:90%;
+        margin:auto;
+        font-size:10px;
+
+        animation:marquee 8s linear infinite;
+    }
+
+    /* PROFILE */
+
+    .profile-card{
+        padding:12px;
+    }
+
+    /* HISTORY */
+
+    .history-tab{
+        font-size:12px;
+        padding:6px 10px;
+    }
+
+    .gd-item,
+    .tc-item{
+        padding:10px;
+    }
+}

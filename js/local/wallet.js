@@ -712,3 +712,25 @@ function formatWalletAmount(input) {
 function setQuickAmount(inputId, amount) {
     document.getElementById(inputId).value = amount.toLocaleString('vi-VN');
 }
+/* =========================
+   MOBILE MENU
+========================= */
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const menuBtn = document.querySelector('.header-mid__profile');
+    const menuLeft = document.querySelector('.header-top__left');
+    const menuRight = document.querySelector('.header-top__right');
+
+    if (!menuBtn || !menuLeft || !menuRight) return;
+
+    menuBtn.addEventListener('click', function(e){
+
+        e.preventDefault();
+
+        menuLeft.classList.toggle('mobile-open');
+        menuRight.classList.toggle('mobile-open');
+
+    });
+
+}); 

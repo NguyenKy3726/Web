@@ -588,3 +588,22 @@ setupPrivacyToggle('tiktokToggle', 'tiktokValue', 'tiktokHidden', 'tiktokIcon');
 
 renderTransactions(mockTransactions);
 renderReports(mockReports);
+/* them menu mobile */
+document.addEventListener('DOMContentLoaded', () => {
+
+    const menuBtn = document.querySelector('.header-mid__profile');
+    const menuLeft = document.querySelector('.header-top__left');
+    const menuRight = document.querySelector('.header-top__right');
+
+    if (!menuBtn || !menuLeft || !menuRight) return;
+
+    menuBtn.addEventListener('click', (e) => {
+
+        e.preventDefault();
+
+        menuLeft.classList.toggle('mobile-open');
+        menuRight.classList.toggle('mobile-open');
+
+    });
+
+});

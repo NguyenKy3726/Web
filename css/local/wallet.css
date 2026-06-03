@@ -965,3 +965,182 @@
     .setup-bar__steps { flex-wrap: wrap; gap: 12px; }
     .setup-step__line { display: none; }
 }
+/* ==================================
+   WALLET MOBILE HEADER + FOOTER
+   CHỈ ẢNH HƯỞNG MOBILE
+================================== */
+
+@media screen and (max-width:768px){
+
+    /* chống tràn ngang */
+    html,
+    body{
+        overflow-x:hidden;
+    }
+
+    .container{
+        overflow-x:hidden;
+    }
+
+    /* =========================
+            HEADER
+    ========================= */
+
+    /* Ẩn menu text cũ */
+    .header-top__left,
+    .header-top__right{
+        display:flex    ;
+    }
+
+    /* KHÔNG ẨN .header-top */
+    .header-top{
+        display:block;
+        min-height:auto;
+    }
+
+    .header-mid{
+        display:grid;
+        grid-template-columns:1fr 44px;
+        grid-template-areas:
+            "logo logo"
+            "search menu";
+        gap:12px;
+        align-items:center;
+        padding:15px;
+    }
+
+    /* ESCROW */
+    .header-mid__logo{
+        grid-area:logo;
+        text-align:center;
+        margin:0 auto 10px;
+    }
+
+    /* SEARCH */
+    .header-mid__search{
+        grid-area:search;
+        width:100%;
+        margin:0;
+    }
+
+    .header-mid__search form,
+    .header-mid__search input{
+        width:100%;
+    }
+
+    /* MENU ☰ */
+    /* MENU MOBILE */
+
+.header-top__left,
+.header-top__right{
+
+    position:fixed;
+
+    top:0;
+    left:-280px;
+
+    width:260px;
+    height:100vh;
+
+    background:#1c2b4a;
+
+    flex-direction:column;
+
+    gap:12px;
+
+    padding:20px;
+
+    z-index:9999;
+
+    transition:.3s;
+}
+
+.header-top__left.mobile-open,
+.header-top__right.mobile-open{
+    left:0;
+}
+    
+
+    /* ẩn icon user */
+    .header-mid__profile a,
+    .header-mid__profile i{
+        display:none;
+    }
+
+    .header-mid__profile::before{
+        content:"☰";
+        font-size:30px;
+        line-height:1;
+        color:#2cb8ff;
+    }
+
+    /* GIỮ CHỮ CHẠY */
+    .header-bottom{
+        display:block;
+        padding:0 15px 10px;
+    }
+
+    .header-bottom marquee,
+    .header-bottom__marquee{
+        display:block;
+        width:100%;
+        font-size:13px;
+        white-space:nowrap;
+    }
+
+    /* =========================
+            MAIN
+    ========================= */
+
+    .wallet-main{
+        padding:16px;
+    }
+
+    .wallet-layout{
+        grid-template-columns:1fr;
+        gap:16px;
+    }
+
+    .wallet-right{
+        position:static;
+    }
+
+    /* =========================
+            FOOTER
+    ========================= */
+
+    .footer-top{
+        display:block;
+        padding:24px 20px;
+    }
+
+    /* Ẩn toàn bộ cột phụ */
+    .footer-top__right,
+    .footer-box,
+    .footer-box--contact{
+        display:none;
+    }
+
+    .footer-top__left{
+        width:100%;
+        text-align:left;
+    }
+
+    .footer-top__logo{
+        margin-bottom:12px;
+    }
+
+    .footer-top__description{
+        margin-bottom:16px;
+    }
+
+    .footer-top__social{
+        display:flex;
+        gap:18px;
+    }
+
+    .footer-bottom{
+        text-align:center;
+        font-size:12px;
+    }
+}
