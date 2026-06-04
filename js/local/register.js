@@ -148,7 +148,7 @@ document.getElementById('registerBtn').addEventListener('click', async () => {
     // Lưu tài khoản mới vào Store
     // TODO: Thay bằng fetch POST /api/auth/register khi có backend
     setTimeout(() => {
-        const newUser = Store.createUser({
+        Store.createUser({
             tenDangNhap,
             matKhau,
             hoTen,
@@ -156,14 +156,10 @@ document.getElementById('registerBtn').addEventListener('click', async () => {
             soDienThoai,
             role: 'USER',
             kycStatus: 'NONE',
-            emailVerified: true,
+            emailVerified: false,
         });
 
-        // Tự đăng nhập luôn sau khi tạo tài khoản
-        const { matKhau: _, ...userToStore } = newUser;
-        localStorage.setItem('escrow_token', 'token-' + newUser.id + '-' + Date.now());
-        localStorage.setItem('escrow_user', JSON.stringify(userToStore));
-
-        window.location.href = '/Web/html/index.html';
+        // Chuyển sang trang xác thực OTP, chưa đăng nhập
+        window.location.href = 'verify-otp.html?email=' + encodeURIComponent(email);
     }, 800);
 });

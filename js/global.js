@@ -275,6 +275,76 @@ const Store = (() => {
             save(data);
             return t;
         },
+        updateTransaction(id, fields) {
+            const data = load();
+            const idx  = data.p2pTransactions.findIndex(t => t.id === Number(id));
+            if (idx === -1) return false;
+            data.p2pTransactions[idx] = { ...data.p2pTransactions[idx], ...fields };
+            save(data);
+            return data.p2pTransactions[idx];
+        },
+
+        // Đóng băng tiền người mua vào ký quỹ khi giao dịch CONFIRMED
+        freezeAmount(userId, amount) {
+            const data   = load();
+            const wallet = data.wallets.find(w => w.userId === Number(userId));
+            if (!wallet || wallet.soDuKhaDung < amount) return false;
+            const before = wallet.soDuKhaDung;
+            wallet.soDuKhaDung -= amount;
+            wallet.soDuKyQuy   += amount;
+            this._recordWalletChange(data, {
+                userId, performedBy: userId,
+                loai: 'FREEZE', soTien: amount,
+                soDuTruoc: before, soDuSau: wallet.soDuKhaDung,
+                ghiChu: 'Đóng băng chờ xác nhận giao dịch ký quỹ',
+            });
+            save(data);
+            return true;
+        },
+
+        // Giải ngân: chuyển từ ký quỹ người mua sang khả dụng người bán
+        releaseEscrow(buyerId, sellerId, amount) {
+            const data         = load();
+            const buyerWallet  = data.wallets.find(w => w.userId === Number(buyerId));
+            const sellerWallet = data.wallets.find(w => w.userId === Number(sellerId));
+            if (!buyerWallet || !sellerWallet || buyerWallet.soDuKyQuy < amount) return false;
+            const bBefore = buyerWallet.soDuKyQuy;
+            const sBefore = sellerWallet.soDuKhaDung;
+            buyerWallet.soDuKyQuy    -= amount;
+            sellerWallet.soDuKhaDung += amount;
+            this._recordWalletChange(data, {
+                userId: buyerId, performedBy: buyerId,
+                loai: 'RELEASE', soTien: amount,
+                soDuTruoc: bBefore, soDuSau: buyerWallet.soDuKyQuy,
+                ghiChu: 'Giải ngân ký quỹ cho người bán',
+            });
+            this._recordWalletChange(data, {
+                userId: sellerId, performedBy: buyerId,
+                loai: 'DEPOSIT', soTien: amount,
+                soDuTruoc: sBefore, soDuSau: sellerWallet.soDuKhaDung,
+                ghiChu: 'Nhận tiền từ giao dịch ký quỹ',
+            });
+            save(data);
+            return true;
+        },
+
+        // Hoàn tiền ký quỹ về khả dụng người mua khi hủy giao dịch
+        refundEscrow(buyerId, amount) {
+            const data   = load();
+            const wallet = data.wallets.find(w => w.userId === Number(buyerId));
+            if (!wallet || wallet.soDuKyQuy < amount) return false;
+            const before = wallet.soDuKyQuy;
+            wallet.soDuKyQuy   -= amount;
+            wallet.soDuKhaDung += amount;
+            this._recordWalletChange(data, {
+                userId: buyerId, performedBy: buyerId,
+                loai: 'REFUND', soTien: amount,
+                soDuTruoc: before, soDuSau: wallet.soDuKhaDung,
+                ghiChu: 'Hoàn tiền ký quỹ do hủy giao dịch',
+            });
+            save(data);
+            return true;
+        },
 
         // ── REPORTS ────────────────────────────────────────────
         getMyReports(userId) {
@@ -418,10 +488,23 @@ function isLoggedIn() {
     return !!getAuthToken() && !!getAuthUser();
 }
 
+// Tính prefix để quay về thư mục html/ từ trang hiện tại.
+// html/index.html         → depth 0 → prefix ''
+// html/pages/p2p.html     → depth 1 → prefix '../'
+// html/pages/admin/x.html → depth 2 → prefix '../../'
+const _ROOT = (() => {
+    const path = window.location.pathname;
+    const idx  = path.indexOf('/html/');
+    if (idx === -1) return '';
+    const afterHtml = path.substring(idx + 6); // e.g. 'index.html' | 'pages/p2p.html'
+    const depth = afterHtml.split('/').length - 1;
+    return '../'.repeat(depth);
+})();
+
 function logout() {
     localStorage.removeItem('escrow_token');
     localStorage.removeItem('escrow_user');
-    window.location.href = '/Web/html/index.html';
+    window.location.href = _ROOT + 'index.html';
 }
 
 // ============================================================
@@ -445,13 +528,13 @@ function renderHeaderAuth() {
 
     // Xây dựng các link mới
 const dashUrl = user.role === 'OWNER'
-    ? '/Web/html/pages/admin/owner-dashboard.html'
+    ? _ROOT + 'pages/admin/owner-dashboard.html'
     : user.role === 'ADMIN'
-    ? '/Web/html/pages/admin/admin-dashboard.html'
+    ? _ROOT + 'pages/admin/admin-dashboard.html'
     : null;
 
 const html = [
-    `<a href="/Web/html/pages/profile.html" class="header-top__link">
+    `<a href="${_ROOT}pages/profile.html" class="header-top__link">
         <i class="bx bx-user-circle"></i> ${user.hoTen}
     </a>`,
     dashUrl
@@ -483,7 +566,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const doSearch = () => {
             const q = searchInput.value.trim();
             if (!q) return;
-            window.location.href = `/Web/html/pages/profile.html?q=${encodeURIComponent(q)}`;
+            window.location.href = _ROOT + `pages/profile.html?q=${encodeURIComponent(q)}`;
         };
         searchBtn.addEventListener('click', doSearch);
         searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
@@ -511,10 +594,10 @@ function showLoginGate(mainEl) {
                     Vui lòng đăng nhập để sử dụng tính năng này.
                 </p>
                 <div class="auth-gate__actions">
-                    <a href="/Web/html/pages/login.html" class="auth-gate__btn auth-gate__btn--primary">
+                    <a href="${_ROOT}pages/login.html" class="auth-gate__btn auth-gate__btn--primary">
                         <i class="bx bx-log-in-circle"></i> Đăng Nhập
                     </a>
-                    <a href="/Web/html/pages/register.html" class="auth-gate__btn auth-gate__btn--secondary">
+                    <a href="${_ROOT}pages/register.html" class="auth-gate__btn auth-gate__btn--secondary">
                         Tạo tài khoản mới
                     </a>
                 </div>
@@ -543,7 +626,7 @@ function showKYCGate(mainEl) {
                 </p>
                 ${!isPending ? `
                 <div class="auth-gate__actions">
-                    <a href="/Web/html/pages/settings.html?section=kyc" class="auth-gate__btn auth-gate__btn--primary">
+                    <a href="${_ROOT}pages/settings.html?section=kyc" class="auth-gate__btn auth-gate__btn--primary">
                         <i class="bx bx-id-card"></i> Xác Minh Ngay
                     </a>
                 </div>` : ''}

@@ -244,22 +244,38 @@ function lookupTransaction() {
         return;
     }
 
-    // TODO: fetch(`/api/transactions/${code}`).then(r=>r.json()).then(showPreview)
-    const data = mockLookup[code];
-    if (!data) {
-        err.textContent = 'Không tìm thấy giao dịch. Kiểm tra lại mã.';
+    // Parse id từ mã: GD000001 → 1
+    const storeId = parseInt(code.replace(/^GD0*/, '') || '0', 10);
+    const stored  = Store.getAllTransactions().find(t => t.id === storeId);
+
+    if (!stored || stored.trangThai !== 'PENDING') {
+        err.textContent = stored
+            ? 'Giao dịch này không còn ở trạng thái chờ đối tác.'
+            : 'Không tìm thấy giao dịch. Kiểm tra lại mã.';
         err.classList.add('show');
         return;
     }
 
-    document.getElementById('previewProduct').textContent  = data.product;
-    document.getElementById('previewCreator').textContent  = data.creator;
-    document.getElementById('previewAmount').textContent   = formatVND(data.amount);
-    document.getElementById('previewDeadline').textContent = data.deadline;
-    document.getElementById('previewTerms').textContent    = data.terms;
+    // Không cho tham gia giao dịch của chính mình
+    const myId = Number(_p2pAuthUser.id);
+    if (stored.nguoiMuaId === myId || stored.nguoiBanId === myId) {
+        err.textContent = 'Bạn không thể tham gia giao dịch do chính mình tạo.';
+        err.classList.add('show');
+        return;
+    }
+
+    const creatorId = stored.nguoiMuaId || stored.nguoiBanId;
+    const creator   = Store.getUserById(creatorId);
+
+    document.getElementById('previewProduct').textContent  = stored.sanPham;
+    document.getElementById('previewCreator').textContent  = creator ? creator.hoTen : '—';
+    document.getElementById('previewAmount').textContent   = formatVND(stored.soTien);
+    document.getElementById('previewDeadline').textContent = stored.deadline;
+    document.getElementById('previewTerms').textContent    = stored.dieuKhoan;
     document.getElementById('joinPreview').style.display   = 'block';
     document.getElementById('joinBtn').style.display       = 'flex';
     document.getElementById('joinBtn').dataset.code        = code;
+    document.getElementById('joinBtn').dataset.storeId     = storeId;
 }
 
 
@@ -272,27 +288,84 @@ function joinTransaction() {
         alert('Vui lòng đồng ý với điều khoản giao dịch trước khi tham gia.');
         return;
     }
-    const code = document.getElementById('joinBtn').dataset.code;
-    const data = mockLookup[code];
+
+    // Yêu cầu có tài khoản ngân hàng để tham gia
+    if (!Store.hasBankAccount(_p2pAuthUser.id)) {
+        alert('Bạn cần liên kết tài khoản ngân hàng trước khi tham gia giao dịch P2P.\nVui lòng vào trang Ví để thêm tài khoản.');
+        return;
+    }
+
+    const code    = document.getElementById('joinBtn').dataset.code;
+    const storeId = parseInt(document.getElementById('joinBtn').dataset.storeId, 10);
+    const stored  = Store.getAllTransactions().find(t => t.id === storeId);
+    if (!stored) { alert('Giao dịch không còn tồn tại.'); return; }
+
+    const creatorId = stored.nguoiMuaId || stored.nguoiBanId;
+    const creator   = Store.getUserById(creatorId);
+
+    // Xác định vai trò: creator là seller → joiner là buyer (và ngược lại)
+    const isBuyer = stored.nguoiBanId !== null;
+    const buyerId = isBuyer ? Number(_p2pAuthUser.id) : stored.nguoiMuaId;
+
+    // Kiểm tra số dư người mua trước khi hiện modal
+    const buyerWallet = Store.getWallet(buyerId);
+    if (!buyerWallet || buyerWallet.soDuKhaDung < stored.soTien) {
+        const err = document.getElementById('err-joinCode');
+        err.textContent = isBuyer
+            ? `Số dư của bạn không đủ. Cần ${formatVND(stored.soTien)}.`
+            : 'Người tạo giao dịch chưa có đủ số dư để ký quỹ.';
+        err.classList.add('show');
+        return;
+    }
+
+    // Thông tin tài khoản ngân hàng của đối phương
+    const partnerBanks  = Store.getBankAccounts(creatorId);
+    const defaultBank   = partnerBanks.find(b => b.laMacDinh) || partnerBanks[0];
+    const bankInfoHtml  = defaultBank
+        ? `<div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:10px;margin:10px 0">
+               <div style="font-size:12px;font-weight:600;color:#0369a1;margin-bottom:6px">
+                   <i class="bx bx-bank"></i> Tài khoản ngân hàng đối phương
+               </div>
+               <div style="font-size:13px;color:#1e293b">
+                   <strong>${defaultBank.tenNganHang}</strong><br>
+                   STK: <strong>${defaultBank.soTaiKhoan}</strong><br>
+                   Chủ TK: ${defaultBank.tenChuTK}
+               </div>
+           </div>`
+        : `<div style="background:#fef9c3;border:1px solid #fde047;border-radius:8px;padding:10px;margin:10px 0;font-size:13px;color:#854d0e">
+               <i class="bx bx-error-circle"></i> Đối phương chưa liên kết tài khoản ngân hàng.
+           </div>`;
 
     showConfirmModal(
         'Xác nhận tham gia giao dịch',
-        `Sản phẩm: <strong>${data.product}</strong><br>
-         Số tiền: <strong>${formatVND(data.amount)}</strong><br>
-         Phí dịch vụ: <strong>${formatVND(FEE)}</strong><br><br>
-         Sau khi xác nhận, tiền sẽ được giữ trong ví ký quỹ.`,
+        `Sản phẩm: <strong>${stored.sanPham}</strong><br>
+         Số tiền: <strong>${formatVND(stored.soTien)}</strong><br>
+         Phí dịch vụ: <strong>${formatVND(FEE)}</strong>
+         ${bankInfoHtml}
+         Sau khi xác nhận, <strong>${formatVND(stored.soTien)}</strong> của người mua sẽ bị đóng băng vào ký quỹ.`,
         () => {
-            // TODO: fetch(`/api/transactions/${code}/join`, { method:'POST' })
+            Store.updateTransaction(storeId, {
+                ...(isBuyer ? { nguoiMuaId: Number(_p2pAuthUser.id) } : { nguoiBanId: Number(_p2pAuthUser.id) }),
+                trangThai: 'CONFIRMED',
+            });
+            Store.freezeAmount(buyerId, stored.soTien);
+
             closeModal();
             const tx = {
-                maGiaoDich: code, type: 'BUY',
-                product: data.product, amount: data.amount,
-                deadline: data.deadline, terms: data.terms,
-                status: 'CONFIRMED', creator: data.creator, partner: 'Bạn',
+                maGiaoDich: code,
+                _storeId:   storeId,
+                type:       isBuyer ? 'BUY' : 'SELL',
+                product:    stored.sanPham,
+                amount:     stored.soTien,
+                deadline:   stored.deadline,
+                terms:      stored.dieuKhoan,
+                status:     'CONFIRMED',
+                creator:    creator ? creator.hoTen : '—',
+                partner:    _p2pAuthUser.hoTen,
             };
+            renderSidebar(getStoreActive(), getStoreHistory());
             showDetail(tx, [
-                { sender: 'SYSTEM', text: 'Bạn đã tham gia giao dịch thành công.', time: now(), isMe: null },
-                { sender: data.creator, text: 'Chào bạn! Mình sẽ chuẩn bị hàng ngay.', time: now(), isMe: false },
+                { sender: 'SYSTEM', text: `Bạn đã tham gia giao dịch. ${formatVND(stored.soTien)} đã được đóng băng vào ký quỹ.`, time: now(), isMe: null },
             ]);
         }
     );
@@ -303,6 +376,7 @@ function joinTransaction() {
 //  HIỆN / ẨN PHẦN CHI TIẾT
 // ============================================================
 function showDetail(tx, messages) {
+    window._currentTx = tx; // lưu để các action function đọc
     document.getElementById('p2pEntry').style.display  = 'none';
     document.getElementById('p2pDetail').style.display = 'block';
     renderProgress(tx.status);
@@ -310,6 +384,13 @@ function showDetail(tx, messages) {
     renderMessages(messages);
     renderActions(tx);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Lấy bản ghi giao dịch từ Store theo _currentTx
+function _getStoredTx() {
+    const tx = window._currentTx;
+    if (!tx || !tx._storeId) return null;
+    return Store.getAllTransactions().find(t => t.id === tx._storeId) || null;
 }
 
 function backToEntry() {
@@ -371,9 +452,28 @@ function renderSidebarList(containerId, list, isActive) {
         statusEl.textContent = info.label;
         statusEl.classList.add(info.cls);
 
-        // Nhấn Xem → mở chi tiết
+        // Nhấn Xem → mở chi tiết từ Store
         el.querySelector('.p2p-btn-sm').addEventListener('click', () => {
-            showDetail(mockDetail, mockMessages);
+            const stored = Store.getAllTransactions().find(t => t.id === item._storeId);
+            if (!stored) return;
+            const isBuyer   = item.type === 'BUY';
+            const partnerId = isBuyer ? stored.nguoiBanId : stored.nguoiMuaId;
+            const partner   = partnerId ? Store.getUserById(partnerId) : null;
+            const tx = {
+                maGiaoDich: item.id,
+                _storeId:   item._storeId,
+                type:       item.type,
+                product:    stored.sanPham,
+                amount:     stored.soTien,
+                deadline:   stored.deadline,
+                terms:      stored.dieuKhoan,
+                status:     stored.trangThai,
+                creator:    isBuyer ? (partner ? partner.hoTen : 'Chờ đối tác...') : _p2pAuthUser.hoTen,
+                partner:    isBuyer ? _p2pAuthUser.hoTen : (partner ? partner.hoTen : 'Chờ đối tác...'),
+            };
+            showDetail(tx, [
+                { sender: 'SYSTEM', text: 'Xem chi tiết giao dịch #' + item.id, time: now(), isMe: null },
+            ]);
         });
 
         container.appendChild(clone);
@@ -495,28 +595,49 @@ function startCountdown() {
 // ============================================================
 function renderActions(tx) {
     const container = document.getElementById('detailActions');
+    const isBuyer   = tx.type === 'BUY';
+
+    const waitMsg = (msg) => `
+        <div style="text-align:center; padding:16px; color:#f59e0b; font-size:14px">
+            <i class='bx bx-time-five' style="font-size:28px; display:block; margin-bottom:6px"></i>
+            ${msg}
+        </div>`;
+
     const map = {
         PENDING: `
             <button class="p2p-btn p2p-btn--danger" onclick="cancelTransaction()">
                 <i class='bx bx-x-circle'></i> Hủy Giao Dịch
             </button>`,
-        CONFIRMED: `
-            <button class="p2p-btn p2p-btn--primary" onclick="confirmComplete()">
-                <i class='bx bx-check-double'></i> Xác Nhận Hoàn Thành
+
+        // CONFIRMED: tiền đã đóng băng — người bán xác nhận giao hàng trước
+        CONFIRMED: !isBuyer ? `
+            <button class="p2p-btn p2p-btn--primary" onclick="confirmShipped()">
+                <i class='bx bx-package'></i> Xác Nhận Đã Giao Hàng
             </button>
             <button class="p2p-btn p2p-btn--warning" onclick="reportDispute()">
                 <i class='bx bx-error'></i> Tố Cáo / Tranh Chấp
             </button>
             <button class="p2p-btn p2p-btn--danger" onclick="cancelTransaction()">
                 <i class='bx bx-x-circle'></i> Hủy Giao Dịch
+            </button>` : `
+            ${waitMsg('Tiền đã được đóng băng. Đang chờ người bán xác nhận đã giao hàng.')}
+            <button class="p2p-btn p2p-btn--danger" onclick="cancelTransaction()">
+                <i class='bx bx-x-circle'></i> Hủy Giao Dịch
             </button>`,
-        IN_PROGRESS: `
+
+        // IN_PROGRESS: hàng đã giao — người mua xác nhận đã nhận
+        IN_PROGRESS: isBuyer ? `
             <button class="p2p-btn p2p-btn--primary" onclick="confirmComplete()">
-                <i class='bx bx-check-double'></i> Xác Nhận Hoàn Thành
+                <i class='bx bx-check-double'></i> Xác Nhận Đã Nhận Hàng
             </button>
             <button class="p2p-btn p2p-btn--warning" onclick="reportDispute()">
                 <i class='bx bx-error'></i> Tố Cáo / Tranh Chấp
+            </button>` : `
+            ${waitMsg('Đã xác nhận giao hàng. Đang chờ người mua xác nhận đã nhận.')}
+            <button class="p2p-btn p2p-btn--warning" onclick="reportDispute()">
+                <i class='bx bx-error'></i> Tố Cáo / Tranh Chấp
             </button>`,
+
         COMPLETED: `
             <div style="text-align:center; padding:16px; color:#16a34a; font-weight:700; font-size:15px">
                 <i class='bx bx-check-circle' style="font-size:32px; display:block; margin-bottom:6px"></i>
@@ -539,16 +660,48 @@ function renderActions(tx) {
 // ============================================================
 //  HÀNH ĐỘNG
 // ============================================================
+
+// Người bán xác nhận đã giao hàng → CONFIRMED → IN_PROGRESS
+function confirmShipped() {
+    showConfirmModal(
+        'Xác nhận đã giao hàng',
+        'Bạn xác nhận đã giao hàng/dịch vụ cho người mua?<br><br>Người mua sẽ được yêu cầu xác nhận đã nhận để giải ngân.',
+        () => {
+            const stored = _getStoredTx();
+            if (!stored) { closeModal(); return; }
+            Store.updateTransaction(stored.id, { trangThai: 'IN_PROGRESS' });
+            closeModal();
+            addSystemMessage('Người bán đã xác nhận giao hàng. Đang chờ người mua xác nhận đã nhận.');
+            const updated = { ...window._currentTx, status: 'IN_PROGRESS' };
+            window._currentTx = updated;
+            renderProgress('IN_PROGRESS');
+            renderActions(updated);
+        }
+    );
+}
+
+// Người mua xác nhận đã nhận hàng → IN_PROGRESS → COMPLETED + giải ngân
 function confirmComplete() {
     showConfirmModal(
-        'Xác nhận hoàn thành',
-        'Bạn xác nhận đã nhận được hàng/dịch vụ đúng thỏa thuận?<br><br>Tiền sẽ được giải ngân cho người bán.',
+        'Xác nhận đã nhận hàng',
+        'Bạn xác nhận đã nhận được hàng/dịch vụ đúng thỏa thuận?<br><br>Tiền ký quỹ sẽ được giải ngân cho người bán. Hành động này <strong>không thể hoàn tác</strong>.',
         () => {
-            // TODO: POST /api/transactions/{id}/complete
+            const stored = _getStoredTx();
+            if (!stored) { closeModal(); return; }
+            const ok = Store.releaseEscrow(stored.nguoiMuaId, stored.nguoiBanId, stored.soTien);
+            if (!ok) {
+                alert('Lỗi giải ngân. Vui lòng liên hệ admin.');
+                closeModal();
+                return;
+            }
+            Store.updateTransaction(stored.id, { trangThai: 'COMPLETED' });
             closeModal();
-            addSystemMessage('Giao dịch đã hoàn tất thành công!');
+            addSystemMessage('Giao dịch hoàn tất! Tiền đã được giải ngân cho người bán.');
+            const updated = { ...window._currentTx, status: 'COMPLETED' };
+            window._currentTx = updated;
             renderProgress('COMPLETED');
-            renderActions({ status: 'COMPLETED' });
+            renderActions(updated);
+            renderSidebar(getStoreActive(), getStoreHistory());
         }
     );
 }
@@ -556,13 +709,22 @@ function confirmComplete() {
 function cancelTransaction() {
     showConfirmModal(
         'Xác nhận hủy giao dịch',
-        'Bạn có chắc muốn hủy giao dịch này?<br>Tiền ký quỹ sẽ được hoàn trả.',
+        'Bạn có chắc muốn hủy giao dịch này?<br>Tiền ký quỹ (nếu đã đóng băng) sẽ được hoàn trả ngay.',
         () => {
-            // TODO: POST /api/transactions/{id}/cancel
+            const stored = _getStoredTx();
+            if (!stored) { closeModal(); return; }
+            // Hoàn tiền nếu đã đóng băng (CONFIRMED hoặc IN_PROGRESS)
+            if (['CONFIRMED', 'IN_PROGRESS'].includes(stored.trangThai) && stored.nguoiMuaId) {
+                Store.refundEscrow(stored.nguoiMuaId, stored.soTien);
+            }
+            Store.updateTransaction(stored.id, { trangThai: 'CANCELLED' });
             closeModal();
-            addSystemMessage('Giao dịch đã bị hủy.');
+            addSystemMessage('Giao dịch đã bị hủy. Tiền ký quỹ đã được hoàn trả.');
+            const updated = { ...window._currentTx, status: 'CANCELLED' };
+            window._currentTx = updated;
             renderProgress('CANCELLED');
-            renderActions({ status: 'CANCELLED' });
+            renderActions(updated);
+            renderSidebar(getStoreActive(), getStoreHistory());
         }
     );
 }
@@ -572,11 +734,15 @@ function reportDispute() {
         'Tố cáo / Tranh chấp',
         'Gửi yêu cầu tranh chấp đến admin?<br><br>Admin sẽ xem xét trong 24 giờ và yêu cầu cả 2 bên cung cấp bằng chứng.',
         () => {
-            // TODO: POST /api/disputes { maGiaoDich, lyDoKhieuNai }
+            const stored = _getStoredTx();
+            if (!stored) { closeModal(); return; }
+            Store.updateTransaction(stored.id, { trangThai: 'DISPUTED' });
             closeModal();
             addSystemMessage('Yêu cầu tranh chấp đã được gửi. Admin sẽ liên hệ sớm.');
+            const updated = { ...window._currentTx, status: 'DISPUTED' };
+            window._currentTx = updated;
             renderProgress('DISPUTED');
-            renderActions({ status: 'DISPUTED' });
+            renderActions(updated);
         }
     );
 }
