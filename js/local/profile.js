@@ -130,6 +130,42 @@ const mockReports = [
     },
 ];
 
+// ============================================================
+//  MOCK DATA — TRA CỨU CÔNG KHAI (khi có ?q=...)
+//  TODO (Java): GET /api/users/lookup?q=<query>
+//  Backend tìm theo SĐT / Facebook / TikTok / STK ngân hàng
+// ============================================================
+const mockSearchedUser = {
+    hoTen:         'Trần Thị B',
+    soDienThoai:   '0987 654 321',
+    email:         'tranthib@gmail.com',
+    facebook:      'fb.com/tranthib',
+    tiktok:        '@tranthib',
+    thoiGianTao:   '22/07/2024',
+    trangThai:     'Tài khoản đang hoạt động',
+    soGDThanhCong: 38,
+    tongGD:        42,
+    diemDanhGia:   4.6,
+    soToCao:       0,
+};
+
+const mockSearchedTransactions = [
+    {
+        id: 'GD250601091500', type: 'SELL', partner: 'buyer_demo1',
+        date: '01/06/2025 · 09:15', amount: '+800.000đ',
+        status: 'SUCCESS', rating: 5,
+        comment: 'Nhanh, uy tín!',
+        product: 'Tai nghe Sony WH-1000XM5',
+    },
+    {
+        id: 'GD250528143010', type: 'BUY',  partner: 'seller_demo2',
+        date: '28/05/2025 · 14:30', amount: '-1.500.000đ',
+        status: 'SUCCESS', rating: 4,
+        comment: 'Hàng đúng mô tả.',
+        product: 'iPad Air M1',
+    },
+];
+
 
 // ============================================================
 //  LOAD PROFILE CARD
@@ -152,16 +188,17 @@ function loadUserProfile(user) {
     document.getElementById('joinDate').textContent    = user.thoiGianTao;
 
     // Thống kê
-    const rate = Math.round((user.soGDThanhCong / user.tongGD) * 100);
+    const rate = user.tongGD > 0 ? Math.round((user.soGDThanhCong / user.tongGD) * 100) : 0;
     document.getElementById('successCount').textContent = user.soGDThanhCong;
     document.getElementById('totalCount').textContent   = user.tongGD;
     document.getElementById('rateFill').style.width     = rate + '%';
     document.getElementById('rateText').textContent     = rate + '%';
 
     // Uy tín
-    document.getElementById('avgRating').textContent  = user.diemDanhGia;
-    document.getElementById('repStars').innerHTML     = renderStars(user.diemDanhGia);
-    document.getElementById('reportCount').textContent = user.soToCao;
+    const rating = user.diemDanhGia || 0;
+    document.getElementById('avgRating').textContent   = rating > 0 ? rating : '—';
+    document.getElementById('repStars').innerHTML      = rating > 0 ? renderStars(rating) : '<span style="font-size:13px;color:#94a3b8;">Chưa có đánh giá</span>';
+    document.getElementById('reportCount').textContent = user.soToCao || 0;
 }
 
 
@@ -579,15 +616,107 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
 //      renderReports(reports);
 //    });
 // ============================================================
-loadUserProfile(mockUser);
+// ============================================================
+//  HELPERS — TRA CỨU CÔNG KHAI
+// ============================================================
 
-setupPrivacyToggle('phoneToggle',  'phoneValue',  'phoneHidden',  'phoneIcon');
-setupPrivacyToggle('emailToggle',  'emailValue',  'emailHidden',  'emailIcon');
-setupPrivacyToggle('fbToggle',     'fbValue',     'fbHidden',     'fbIcon');
-setupPrivacyToggle('tiktokToggle', 'tiktokValue', 'tiktokHidden', 'tiktokIcon');
+// Hiện tất cả thông tin, ẩn nút toggle (dùng khi xem hồ sơ người khác)
+function showAllPublicFields() {
+    ['phone', 'email', 'fb', 'tiktok'].forEach(key => {
+        const valueEl  = document.getElementById(key + 'Value');
+        const hiddenEl = document.getElementById(key + 'Hidden');
+        const toggleEl = document.getElementById(key + 'Toggle');
+        if (valueEl)  valueEl.style.display  = '';
+        if (hiddenEl) hiddenEl.style.display = 'none';
+        if (toggleEl) toggleEl.style.display = 'none';
+    });
+}
 
-renderTransactions(mockTransactions);
-renderReports(mockReports);
+// Thêm banner "Kết quả tra cứu" lên đầu profile card
+function prependLookupBanner(query) {
+    const card = document.querySelector('.profile-card');
+    if (!card) return;
+    const banner = document.createElement('div');
+    banner.className = 'profile-lookup-banner';
+    banner.innerHTML = `<i class='bx bx-search-alt-2'></i> Kết quả tra cứu: <strong>${query}</strong>`;
+    card.prepend(banner);
+}
+
+// ============================================================
+//  KHỞI ĐỘNG — 3 MODE
+// ============================================================
+const __q           = new URLSearchParams(window.location.search).get('q');
+const __profileMain = document.querySelector('main');
+
+if (__q) {
+    // MODE 1: TRA CỨU CÔNG KHAI — tìm trong Store theo SĐT / email / tên đăng nhập
+    const foundUser = Store.getUserByLogin(__q) ||
+        Store.getUsers().find(u => u.soDienThoai === __q || u.hoTen === __q || u.facebook === __q || u.tiktok === __q);
+    const pubUser = foundUser ? {
+        ...foundUser,
+        trangThai:     'Tài khoản đang hoạt động',
+        soGDThanhCong: Store.getMyTransactions(foundUser.id).filter(t => t.trangThai === 'COMPLETED').length,
+        tongGD:        Store.getMyTransactions(foundUser.id).length,
+        diemDanhGia:   4.5,
+        soToCao:       Store.getMyReports(foundUser.id).length,
+    } : mockSearchedUser;
+
+    loadUserProfile(pubUser);
+    showAllPublicFields();
+    if (foundUser) {
+        const txs = Store.getMyTransactions(foundUser.id).map(t => ({
+            id: 'GD' + String(t.id).padStart(6,'0'), type: t.nguoiMuaId === foundUser.id ? 'BUY' : 'SELL',
+            partner: '—', date: t.thoiGianTao, amount: '***', status: t.trangThai === 'COMPLETED' ? 'SUCCESS' : 'FAIL',
+            rating: null, comment: null, product: t.sanPham,
+        }));
+        renderTransactions(txs);
+    } else {
+        renderTransactions(mockSearchedTransactions);
+    }
+    renderReports([]);
+    prependLookupBanner(__q);
+
+} else if (isLoggedIn()) {
+    // MODE 2: HỒ SƠ CÁ NHÂN — đọc từ Store
+    const _profileAuth = getAuthUser() || {};
+    const _storeUser   = Store.getUserById(_profileAuth.id) || _profileAuth;
+    const _profileUser = {
+        ..._storeUser,
+        trangThai:     'Tài khoản đang hoạt động',
+        soGDThanhCong: Store.getMyTransactions(_storeUser.id).filter(t => t.trangThai === 'COMPLETED').length,
+        tongGD:        Store.getMyTransactions(_storeUser.id).length,
+        diemDanhGia:   0,
+        soToCao:       Store.getMyReports(_storeUser.id).length,
+    };
+    loadUserProfile(_profileUser);
+    setupPrivacyToggle('phoneToggle',  'phoneValue',  'phoneHidden',  'phoneIcon');
+    setupPrivacyToggle('emailToggle',  'emailValue',  'emailHidden',  'emailIcon');
+    setupPrivacyToggle('fbToggle',     'fbValue',     'fbHidden',     'fbIcon');
+    setupPrivacyToggle('tiktokToggle', 'tiktokValue', 'tiktokHidden', 'tiktokIcon');
+    const _myTxs = Store.getMyTransactions(_storeUser.id).map(t => ({
+        id: 'GD' + String(t.id).padStart(6,'0'), type: t.nguoiMuaId === _storeUser.id ? 'BUY' : 'SELL',
+        partner: '—', date: t.thoiGianTao, amount: t.soTien ? t.soTien.toLocaleString('vi-VN') + 'đ' : '—',
+        status: t.trangThai === 'COMPLETED' ? 'SUCCESS' : 'FAIL',
+        rating: null, comment: null, product: t.sanPham,
+    }));
+    const _myReports = Store.getMyReports(_storeUser.id).map(r => ({
+        id: 'TC' + String(r.id).padStart(3,'0'), maGiaoDich: 'GD' + String(r.maGiaoDichId || '').padStart(6,'0'),
+        type: 'BUY', partner: '—', date: r.thoiGianTao, content: r.lyDo,
+        status: r.trangThai, adminXuLy: null, thoiGianXuLy: null, ketQua: null,
+    }));
+    renderTransactions(_myTxs);
+    renderReports(_myReports);
+
+} else {
+    // MODE 3: CHƯA ĐĂNG NHẬP, KHÔNG CÓ QUERY — hiện trang trống
+    loadUserProfile({
+        hoTen: '', soDienThoai: '', email: '', facebook: '', tiktok: '',
+        thoiGianTao: '', trangThai: '', soGDThanhCong: 0, tongGD: 0,
+        diemDanhGia: 0, soToCao: 0,
+    });
+    renderTransactions([]);
+    renderReports([]);
+}
 /* them menu mobile */
 document.addEventListener('DOMContentLoaded', () => {
 

@@ -1,26 +1,26 @@
 // ============================================================
-//  admin.js — Logic trang Admin Panel
+//  owner.js — Logic trang Owner Panel
 //  Đọc/ghi dữ liệu qua Store (localStorage)
 // ============================================================
 
-const currentAdmin = getAuthUser() || { hoTen: 'Admin', email: 'admin@escrow.vn', role: 'ADMIN' };
+const currentUser = getAuthUser() || {};
 
 // ============================================================
 //  KHỞI TẠO
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
     const avatar = document.getElementById('sidebarAvatar');
-    if (currentAdmin.hoTen) {
-        avatar.textContent = currentAdmin.hoTen.charAt(0).toUpperCase();
-        document.getElementById('sidebarName').textContent = currentAdmin.hoTen;
+    if (currentUser.hoTen) {
+        avatar.textContent = currentUser.hoTen.charAt(0).toUpperCase();
+        document.getElementById('sidebarName').textContent = currentUser.hoTen;
     }
     renderSidebar();
-    switchSection('users', document.querySelector('.admin-nav__item--active'));
+    switchSection('overview', document.querySelector('.admin-nav__item--active'));
 });
 
 function renderSidebar() {
-    const pendingReports = Store.getAllReports().filter(r => r.trangThai === 'PENDING').length;
-    const pendingWallet  = Store.getAllWalletRequests().filter(w => w.trangThai === 'PENDING').length;
+    const pendingReports  = Store.getAllReports().filter(r => r.trangThai === 'PENDING').length;
+    const pendingWallet   = Store.getAllWalletRequests().filter(w => w.trangThai === 'PENDING').length;
     const badgeR = document.getElementById('badgeReports');
     const badgeW = document.getElementById('badgeWallet');
     if (badgeR) { badgeR.textContent = pendingReports; badgeR.style.display = pendingReports ? '' : 'none'; }
@@ -32,10 +32,13 @@ function renderSidebar() {
 //  CHUYỂN SECTION
 // ============================================================
 const PAGE_INFO = {
+    overview:     { title: 'Thống kê hệ thống',     sub: 'Tổng quan hoạt động toàn hệ thống' },
     users:        { title: 'Quản lý người dùng',    sub: 'Xem, khóa/mở khóa tài khoản người dùng' },
     transactions: { title: 'Giao dịch P2P',         sub: 'Theo dõi và quản lý các giao dịch P2P' },
     reports:      { title: 'Tố cáo',                sub: 'Tiếp nhận và xử lý tố cáo từ người dùng' },
     wallet:       { title: 'Nạp / Rút tiền',        sub: 'Duyệt yêu cầu nạp và rút tiền' },
+    roles:        { title: 'Phân quyền',            sub: 'Thay đổi vai trò người dùng trong hệ thống' },
+    admins:       { title: 'Quản lý Admin',         sub: 'Tạo và quản lý tài khoản Admin' },
 };
 
 let currentSection = '';
@@ -57,8 +60,9 @@ function switchSection(name, el) {
     document.getElementById('pageSub').textContent   = info.sub   || '';
 
     const renders = {
-        users: renderUsers, transactions: renderTransactions,
+        overview: renderOverview, users: renderUsers, transactions: renderTransactions,
         reports: renderAdminReports, wallet: renderWalletRequests,
+        roles: renderRoles, admins: renderAdmins,
     };
     if (renders[name]) renders[name]();
     return false;
@@ -66,11 +70,47 @@ function switchSection(name, el) {
 
 
 // ============================================================
+//  SECTION: THỐNG KÊ
+// ============================================================
+function renderOverview() {
+    const users   = Store.getUsers();
+    const txs     = Store.getAllTransactions();
+    const reports = Store.getAllReports();
+
+    const el = id => document.getElementById(id);
+    if (el('stat-users'))   el('stat-users').textContent   = users.length.toLocaleString('vi-VN');
+    if (el('stat-txs'))     el('stat-txs').textContent     = txs.length.toLocaleString('vi-VN');
+    if (el('stat-reports')) el('stat-reports').textContent = reports.filter(r => r.trangThai === 'PENDING').length;
+
+    const totalBalance = Store.getAllWallets().reduce((s, w) => s + w.soDuKhaDung + w.soDuKyQuy, 0);
+    if (el('stat-volume'))  el('stat-volume').textContent  = formatVND(totalBalance);
+
+    // Hoạt động gần đây = wallet history gần nhất
+    const history = Store.getAllWalletHistory().slice(-10).reverse();
+    const tbody = document.getElementById('overviewActivityBody');
+    if (!tbody) return;
+    if (!history.length) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:20px;">Chưa có hoạt động nào.</td></tr>`;
+        return;
+    }
+    tbody.innerHTML = history.map(h => {
+        const actor = Store.getUserById(h.performedBy);
+        const target = Store.getUserById(h.userId);
+        return `<tr>
+            <td style="color:#94a3b8;white-space:nowrap;font-size:12px;">${h.thoiGian}</td>
+            <td><span class="badge badge--role-admin">${h.loai === 'DEPOSIT' ? 'Nạp tiền' : 'Rút tiền'}</span></td>
+            <td>${actor ? actor.hoTen : '?'} → ${target ? target.hoTen : '?'}: ${formatVND(h.soTien)}</td>
+            <td><span class="badge badge--approved">Hoàn tất</span></td>
+        </tr>`;
+    }).join('');
+}
+
+
+// ============================================================
 //  SECTION: NGƯỜI DÙNG
 // ============================================================
 function renderUsers(list) {
-    // Admin chỉ thấy USER (không thấy OWNER, ADMIN)
-    list = list !== undefined ? list : Store.getUsers().filter(u => u.role === 'USER');
+    list = list !== undefined ? list : Store.getUsers();
     const tbody = document.getElementById('userTableBody');
     document.getElementById('userCount').textContent = list.length + ' người dùng';
     if (!list.length) { tbody.innerHTML = emptyRow(7); return; }
@@ -108,11 +148,10 @@ function renderUsers(list) {
 function filterUsers() {
     const kw     = document.getElementById('userSearch').value.toLowerCase();
     const status = document.getElementById('userStatusFilter').value;
-    // Admin chỉ lọc trong nhóm USER
+    const role   = document.getElementById('userRoleFilter').value;
     renderUsers(Store.getUsers().filter(u => {
-        if (u.role !== 'USER') return false;
         const matchKw = !kw || u.hoTen.toLowerCase().includes(kw) || u.email.toLowerCase().includes(kw) || (u.soDienThoai || '').includes(kw);
-        return matchKw && (status === 'ALL' || u.trangThai === status);
+        return matchKw && (status === 'ALL' || u.trangThai === status) && (role === 'ALL' || u.role === role);
     }));
 }
 
@@ -121,6 +160,7 @@ function openUserDetail(id) {
     if (!u) return;
     const w = Store.getWallet(id);
 
+    // Block KYC nếu có hồ sơ PENDING
     const kycBlock = u.kycStatus === 'PENDING' ? `
         <div style="margin-top:16px;padding:14px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;">
             <div style="font-weight:700;color:#92400e;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
@@ -157,21 +197,20 @@ function openUserDetail(id) {
         <div class="detail-row"><span class="detail-row__label">Ngày tạo</span><span class="detail-row__value">${u.ngayTao}</span></div>
         ${kycBlock}
     `;
-    // Admin chỉ được khóa USER, không được khóa OWNER/ADMIN
-    const canLock = u.role === 'USER';
+    const isSelf = Number(u.id) === Number(currentUser.id);
     document.getElementById('userDetailFooter').innerHTML = `
         <button class="admin-btn admin-btn--ghost" onclick="closeModal('userDetail')">Đóng</button>
-        ${canLock ? (u.trangThai === 'LOCKED'
+        ${!isSelf ? (u.trangThai === 'LOCKED'
             ? `<button class="admin-btn admin-btn--success" onclick="toggleLock(${u.id});closeModal('userDetail')"><i class='bx bx-lock-open'></i> Mở khóa</button>`
             : `<button class="admin-btn admin-btn--danger"  onclick="toggleLock(${u.id});closeModal('userDetail')"><i class='bx bx-lock'></i> Khóa tài khoản</button>`)
-        : ''}
+        : '<span style="font-size:13px;color:#94a3b8;">Đây là tài khoản của bạn</span>'}
     `;
     openModal('userDetail');
 }
 
 function approveKYC(userId) {
     if (!confirm('Duyệt KYC cho người dùng này?')) return;
-    Store.approveKYC(userId, currentAdmin.id, true);
+    Store.approveKYC(userId, currentUser.id, true);
     closeModal('userDetail');
     filterUsers();
     showToast('Đã duyệt KYC thành công!', 'success');
@@ -179,7 +218,7 @@ function approveKYC(userId) {
 
 function rejectKYC(userId) {
     const reason = prompt('Lý do từ chối KYC:') || 'Hồ sơ không hợp lệ.';
-    Store.approveKYC(userId, currentAdmin.id, false, reason);
+    Store.approveKYC(userId, currentUser.id, false, reason);
     closeModal('userDetail');
     filterUsers();
     showToast('Đã từ chối KYC.', 'error');
@@ -188,7 +227,7 @@ function rejectKYC(userId) {
 function toggleLock(id) {
     const u = Store.getUserById(id);
     if (!u) return;
-    if (u.role !== 'USER') { showToast('Không có quyền khóa tài khoản này.', 'error'); return; }
+    if (Number(id) === Number(currentUser.id)) { showToast('Không thể khóa tài khoản của chính mình.', 'error'); return; }
     const newStatus = u.trangThai === 'LOCKED' ? 'ACTIVE' : 'LOCKED';
     Store.updateUser(id, { trangThai: newStatus });
     filterUsers();
@@ -287,9 +326,13 @@ function openReportAction(id) {
 }
 
 function resolveReport(id, trangThai) {
+    const reports = Store.getAllReports();
+    const r = reports.find(x => x.id === id);
+    if (!r) return;
+    // Update in store — need a method for this
     const data = JSON.parse(localStorage.getItem('escrow_store_v1'));
     const idx  = data.reports.findIndex(x => x.id === id);
-    if (idx !== -1) { data.reports[idx].trangThai = trangThai; data.reports[idx].adminId = currentAdmin.id; }
+    if (idx !== -1) { data.reports[idx].trangThai = trangThai; data.reports[idx].adminId = currentUser.id; }
     localStorage.setItem('escrow_store_v1', JSON.stringify(data));
     closeModal('reportAction');
     renderAdminReports();
@@ -318,8 +361,8 @@ function renderWalletRequests(list) {
             <td style="color:#94a3b8;font-size:12px;white-space:nowrap;">${w.thoiGian}</td>
             <td>${w.trangThai === 'PENDING' ? `
                 <div class="admin-action-btns">
-                    <button class="admin-action-btn admin-action-btn--approve" onclick="approveWallet(${w.id},'APPROVED')"><i class='bx bx-check'></i></button>
-                    <button class="admin-action-btn admin-action-btn--reject"  onclick="approveWallet(${w.id},'REJECTED')"><i class='bx bx-x'></i></button>
+                    <button class="admin-action-btn admin-action-btn--approve" title="Duyệt"     onclick="approveWallet(${w.id},'APPROVED')"><i class='bx bx-check'></i></button>
+                    <button class="admin-action-btn admin-action-btn--reject"  title="Từ chối"   onclick="approveWallet(${w.id},'REJECTED')"><i class='bx bx-x'></i></button>
                 </div>` : '<span style="font-size:12px;color:#94a3b8;">—</span>'}</td>
         </tr>`;
     }).join('');
@@ -338,13 +381,200 @@ function filterWalletRequests() {
 
 function approveWallet(id, trangThai) {
     const ok = trangThai === 'APPROVED'
-        ? Store.approveWalletRequest(id, currentAdmin.id)
-        : Store.rejectWalletRequest(id, currentAdmin.id);
+        ? Store.approveWalletRequest(id, currentUser.id)
+        : Store.rejectWalletRequest(id, currentUser.id);
     if (ok === 'INSUFFICIENT_OWNER') return showToast('Ví Owner không đủ tiền để duyệt yêu cầu này.', 'error');
     if (!ok) return showToast('Không thể thực hiện thao tác này.', 'error');
     filterWalletRequests();
     renderSidebar();
     showToast(trangThai === 'APPROVED' ? 'Đã duyệt yêu cầu' : 'Đã từ chối yêu cầu', trangThai === 'APPROVED' ? 'success' : 'error');
+}
+
+
+// ============================================================
+//  SECTION: PHÂN QUYỀN
+// ============================================================
+function renderRoles(list) {
+    // Không hiện tài khoản OWNER trong phân quyền
+    const all  = list !== undefined ? list : Store.getUsers().filter(u => u.role !== 'OWNER');
+    const tbody = document.getElementById('roleTableBody');
+    if (!all.length) { tbody.innerHTML = emptyRow(5); return; }
+    tbody.innerHTML = all.map(u => `
+        <tr>
+            <td><div class="admin-user-cell"><div class="admin-user-cell__avatar" style="background:${avatarColor(u.hoTen)}">${u.hoTen.charAt(0)}</div><span style="font-weight:600;">${u.hoTen}</span></div></td>
+            <td style="color:#64748b;">${u.email}</td>
+            <td>${roleBadge(u.role)}</td>
+            <td>
+                <select class="role-select" id="roleSelect-${u.id}">
+                    <option value="USER"  ${u.role === 'USER'  ? 'selected' : ''}>User</option>
+                    <option value="ADMIN" ${u.role === 'ADMIN' ? 'selected' : ''}>Admin</option>
+                </select>
+            </td>
+            <td><button class="admin-btn admin-btn--primary" style="padding:6px 12px;font-size:12px;" onclick="saveRoleChange(${u.id})"><i class='bx bx-save'></i> Lưu</button></td>
+        </tr>
+    `).join('');
+}
+
+function filterRoleUsers() {
+    const kw = document.getElementById('roleSearch').value.toLowerCase();
+    renderRoles(Store.getUsers().filter(u => u.role !== 'OWNER' && (!kw || u.hoTen.toLowerCase().includes(kw) || u.email.toLowerCase().includes(kw))));
+}
+
+function saveRoleChange(id) {
+    const u       = Store.getUserById(id);
+    const newRole = document.getElementById('roleSelect-' + id).value;
+    if (!u || u.role === newRole) return;
+    Store.updateUser(id, { role: newRole });
+    renderRoles();
+    showToast('Đã cập nhật vai trò của ' + u.hoTen + ' thành ' + newRole, 'success');
+}
+
+
+// ============================================================
+//  SECTION: QUẢN LÝ ADMIN
+// ============================================================
+function renderAdmins(list) {
+    list = list !== undefined ? list : Store.getUsers().filter(u => u.role === 'ADMIN');
+    const tbody = document.getElementById('adminTableBody');
+    document.getElementById('adminListCount').textContent = list.length + ' admin';
+    if (!list.length) { tbody.innerHTML = emptyRow(6); return; }
+
+    tbody.innerHTML = list.map(a => {
+        const w = Store.getWallet(a.id);
+        return `<tr>
+            <td><div class="admin-user-cell"><div class="admin-user-cell__avatar" style="background:${avatarColor(a.hoTen)}">${a.hoTen.charAt(0)}</div>
+                <div><div class="admin-user-cell__name">${a.hoTen}</div><div class="admin-user-cell__sub">${a.tenDangNhap}</div></div></div></td>
+            <td style="color:#64748b;">${a.email}</td>
+            <td style="font-weight:700;color:#10b981;">${w ? formatVND(w.soDuKhaDung) : '0đ'}</td>
+            <td>${userStatusBadge(a.trangThai)}</td>
+            <td style="color:#94a3b8;white-space:nowrap;">${a.ngayTao}</td>
+            <td>
+                <div class="admin-action-btns">
+                    <button class="admin-action-btn admin-action-btn--approve" title="Nạp tiền trực tiếp" onclick="openDirectDeposit(${a.id})"><i class='bx bx-wallet'></i></button>
+                    ${a.trangThai === 'LOCKED'
+                        ? `<button class="admin-action-btn admin-action-btn--unlock" onclick="toggleAdminLock(${a.id})"><i class='bx bx-lock-open'></i></button>`
+                        : `<button class="admin-action-btn admin-action-btn--lock"   onclick="toggleAdminLock(${a.id})"><i class='bx bx-lock'></i></button>`}
+                </div>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+function filterAdmins() {
+    const kw = document.getElementById('adminSearch').value.toLowerCase();
+    renderAdmins(Store.getUsers().filter(a => a.role === 'ADMIN' && (!kw || a.hoTen.toLowerCase().includes(kw) || a.email.toLowerCase().includes(kw))));
+}
+
+function toggleAdminLock(id) {
+    const a = Store.getUserById(id);
+    if (!a) return;
+    const newStatus = a.trangThai === 'LOCKED' ? 'ACTIVE' : 'LOCKED';
+    Store.updateUser(id, { trangThai: newStatus });
+    renderAdmins();
+    showToast(newStatus === 'LOCKED' ? 'Đã khóa admin ' + a.hoTen : 'Đã mở khóa admin ' + a.hoTen, newStatus === 'LOCKED' ? 'error' : 'success');
+}
+
+// Nạp tiền trực tiếp từ Owner vào Admin
+let _depositTargetId = null;
+function openDirectDeposit(adminId) {
+    const a = Store.getUserById(adminId);
+    if (!a) return;
+    _depositTargetId = adminId;
+    const w = Store.getWallet(adminId);
+    document.getElementById('directDepositTarget').textContent = a.hoTen + ' (Số dư hiện tại: ' + (w ? formatVND(w.soDuKhaDung) : '0đ') + ')';
+    document.getElementById('directDepositAmount').value = '';
+    document.getElementById('directDepositNote').value   = '';
+    openModal('directDeposit');
+}
+
+function submitDirectDeposit() {
+    const amountRaw = document.getElementById('directDepositAmount').value.replace(/\D/g, '');
+    const amount    = parseInt(amountRaw);
+    const note      = document.getElementById('directDepositNote').value.trim();
+    if (!amount || amount <= 0) return showToast('Vui lòng nhập số tiền hợp lệ.', 'error');
+
+    Store.directDeposit({
+        toUserId: _depositTargetId,
+        amount,
+        performedBy: currentUser.id,
+        ghiChu: note || 'Nạp tiền trực tiếp từ Owner',
+    });
+
+    const target = Store.getUserById(_depositTargetId);
+    Store.addNotification({
+        userId: _depositTargetId,
+        tieuDe: 'Ví được nạp tiền',
+        noiDung: `Owner đã nạp ${formatVND(amount)} vào ví của bạn. ${note ? 'Ghi chú: ' + note : ''}`,
+        loai: 'VI',
+    });
+
+    closeModal('directDeposit');
+    renderAdmins();
+    renderSidebar();
+    showToast('Đã nạp ' + formatVND(amount) + ' cho ' + (target ? target.hoTen : ''), 'success');
+}
+
+// Tạo tài khoản Admin mới
+function openCreateAdminModal() {
+    ['newAdminUsername','newAdminName','newAdminEmail','newAdminPassword'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    ['err-newAdminUsername','err-newAdminName','err-newAdminEmail','err-newAdminPassword'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.textContent = ''; el.classList.remove('show'); }
+    });
+    openModal('createAdmin');
+}
+
+function submitCreateAdmin() {
+    const username = document.getElementById('newAdminUsername').value.trim();
+    const name     = document.getElementById('newAdminName').value.trim();
+    const email    = document.getElementById('newAdminEmail').value.trim();
+    const pw       = document.getElementById('newAdminPassword').value;
+    let valid = true;
+
+    const setErr = (id, msg) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = msg; el.classList.toggle('show', !!msg);
+        if (msg) valid = false;
+    };
+
+    setErr('err-newAdminUsername', !username ? 'Vui lòng nhập tên đăng nhập.' : '');
+    setErr('err-newAdminName',     !name     ? 'Vui lòng nhập họ tên.' : '');
+    setErr('err-newAdminEmail',    !email    ? 'Vui lòng nhập email.'   : '');
+    setErr('err-newAdminPassword', pw.length < 6 ? 'Mật khẩu tối thiểu 6 ký tự.' : '');
+
+    if (!valid) return;
+
+    // Kiểm tra trùng username/email
+    const existing = Store.getUserByLogin(username) || Store.getUserByLogin(email);
+    if (existing) {
+        setErr('err-newAdminUsername', 'Tên đăng nhập hoặc email đã tồn tại.');
+        return;
+    }
+
+    const newAdmin = Store.createUser({
+        tenDangNhap: username,
+        matKhau: pw,
+        hoTen: name,
+        email,
+        role: 'ADMIN',
+        kycStatus: 'APPROVED',
+        emailVerified: true,
+    });
+
+    Store.addNotification({
+        userId: newAdmin.id,
+        tieuDe: 'Chào mừng đến với ESCROW',
+        noiDung: 'Tài khoản Admin của bạn đã được tạo bởi Owner.',
+        loai: 'HE_THONG',
+    });
+
+    closeModal('createAdmin');
+    renderAdmins();
+    showToast('Đã tạo tài khoản admin ' + name + ' (đăng nhập: ' + username + ')', 'success');
 }
 
 
@@ -360,7 +590,7 @@ function closeModal(name) {
     document.getElementById(name + 'Modal').classList.remove('show');
 }
 document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') ['userDetail','reportAction','walletAction'].forEach(closeModal);
+    if (e.key === 'Escape') ['userDetail','reportAction','walletAction','createAdmin','directDeposit'].forEach(closeModal);
 });
 
 function formatVND(num) { return Number(num).toLocaleString('vi-VN') + 'đ'; }

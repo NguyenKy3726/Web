@@ -129,35 +129,41 @@ document.getElementById('registerBtn').addEventListener('click', async () => {
         showError('Bạn cần đồng ý với điều khoản sử dụng để tiếp tục.'); hasError = true;
     }
 
+    // Kiểm tra trùng tên đăng nhập hoặc email
+    if (Store.getUserByLogin(tenDangNhap)) {
+        showFieldError('tenDangNhap', 'Tên đăng nhập này đã được sử dụng.');
+        hasError = true;
+    }
+    if (Store.getUserByLogin(email)) {
+        showFieldError('email', 'Email này đã được đăng ký.');
+        hasError = true;
+    }
+
     if (hasError) return;
 
     const btn = document.getElementById('registerBtn');
     btn.disabled = true;
     btn.textContent = 'Đang tạo tài khoản...';
 
-    // TODO: Thay đoạn này bằng API call thực
-    // try {
-    //     const res = await fetch('/api/auth/register', {
-    //         method: 'POST',
-    //         headers: { 'Content-Type': 'application/json' },
-    //         body: JSON.stringify({ hoTen, tenDangNhap, email, soDienThoai, matKhau })
-    //     });
-    //     const data = await res.json();
-    //     if (!res.ok) {
-    //         showError(data.message || 'Đăng ký thất bại.');
-    //         btn.disabled = false;
-    //         btn.innerHTML = '<i class="bx bx-user-plus"></i> Tạo Tài Khoản';
-    //         return;
-    //     }
-    //     window.location.href = `/html/pages/verify-otp.html?email=${encodeURIComponent(email)}`;
-    // } catch (err) {
-    //     showError('Lỗi kết nối. Vui lòng thử lại.');
-    //     btn.disabled = false;
-    //     btn.innerHTML = '<i class="bx bx-user-plus"></i> Tạo Tài Khoản';
-    // }
-
-    // DEMO
+    // Lưu tài khoản mới vào Store
+    // TODO: Thay bằng fetch POST /api/auth/register khi có backend
     setTimeout(() => {
-        window.location.href = `/html/pages/verify-otp.html?email=${encodeURIComponent(email)}`;
-    }, 1000);
+        const newUser = Store.createUser({
+            tenDangNhap,
+            matKhau,
+            hoTen,
+            email,
+            soDienThoai,
+            role: 'USER',
+            kycStatus: 'NONE',
+            emailVerified: true,
+        });
+
+        // Tự đăng nhập luôn sau khi tạo tài khoản
+        const { matKhau: _, ...userToStore } = newUser;
+        localStorage.setItem('escrow_token', 'token-' + newUser.id + '-' + Date.now());
+        localStorage.setItem('escrow_user', JSON.stringify(userToStore));
+
+        window.location.href = '/html/index.html';
+    }, 800);
 });

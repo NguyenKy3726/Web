@@ -81,7 +81,22 @@ let currentTab = 'ALL';
  *   daDoc    → ThongBao.DaDoc
  *   duongDan → ThongBao.DuongDanLienKet
  */
-let mockNotifs = [
+// Đọc thông báo từ Store
+const _notifAuthUser = getAuthUser() || {};
+
+function getNotifs() {
+    return Store.getNotifications(_notifAuthUser.id).map(n => ({
+        ...n,
+        ngay: n.thoiGian ? n.thoiGian.split(',')[0] : '',
+        duongDan: n.loai === 'GD' ? '/html/pages/p2p.html'
+                : n.loai === 'VI' ? '/html/pages/wallet.html'
+                : n.loai === 'TO_CAO' ? '/html/pages/report.html'
+                : '#',
+    }));
+}
+
+// Giữ lại để không lỗi các đoạn code cũ — sẽ không dùng
+const _mockNotifs_unused = [
     {
         id: 'N001', loai: 'GD', daDoc: false,
         tieuDe: 'Giao dịch hoàn tất',
@@ -162,7 +177,7 @@ let mockNotifs = [
         ngay: '15/05/2026',
         duongDan: '/html/pages/settings.html',
     },
-];
+]; // _mockNotifs_unused end
 
 
 // ============================================================
@@ -174,9 +189,10 @@ function renderTabs() {
 
     menu.innerHTML = TABS.map(t => {
         let count = 0;
-        if (t.key === 'ALL')         count = mockNotifs.length;
-        else if (t.key === 'UNREAD') count = mockNotifs.filter(n => !n.daDoc).length;
-        else                         count = mockNotifs.filter(n => n.loai === t.key).length;
+        const notifs = getNotifs();
+        if (t.key === 'ALL')         count = notifs.length;
+        else if (t.key === 'UNREAD') count = notifs.filter(n => !n.daDoc).length;
+        else                         count = notifs.filter(n => n.loai === t.key).length;
 
         const info    = NOTIF_DROPDOWN_ICONS[t.key] || NOTIF_DROPDOWN_ICONS['ALL'];
         const isActive = t.key === currentTab;
@@ -242,7 +258,7 @@ function renderList() {
     container.innerHTML = '';
 
     // Lọc theo tab
-    let filtered = mockNotifs.filter(n => {
+    let filtered = getNotifs().filter(n => {
         if (currentTab === 'ALL')    return true;
         if (currentTab === 'UNREAD') return !n.daDoc;
         return n.loai === currentTab;
@@ -324,27 +340,18 @@ function renderList() {
 //  TODO (Java): PUT /api/notifications/{id}/read
 // ============================================================
 function markRead(id) {
-    const notif = mockNotifs.find(n => n.id === id);
-    if (notif && !notif.daDoc) {
-        notif.daDoc = true;
-        // TODO: fetch(`/api/notifications/${id}/read`, { method:'PUT' })
-        renderTabs();
-        renderList();
-    }
+    Store.markNotificationRead(id);
+    renderTabs();
+    renderList();
 }
 
 
 // ============================================================
 //  ĐÁNH DẤU TẤT CẢ ĐÃ ĐỌC
-//  TODO (Java): PUT /api/notifications/read-all
 // ============================================================
 function markAllRead() {
-    const unread = mockNotifs.filter(n => !n.daDoc);
-    if (unread.length === 0) return;
-
-    mockNotifs.forEach(n => n.daDoc = true);
-    // TODO: fetch('/api/notifications/read-all', { method:'PUT' })
-
+    if (getNotifs().filter(n => !n.daDoc).length === 0) return;
+    Store.markAllNotificationsRead(_notifAuthUser.id);
     renderTabs();
     renderList();
 }
@@ -354,7 +361,7 @@ function markAllRead() {
 //  CẬP NHẬT SỐ CHƯA ĐỌC
 // ============================================================
 function updateUnreadCount() {
-    const count = mockNotifs.filter(n => !n.daDoc).length;
+    const count = getNotifs().filter(n => !n.daDoc).length;
     const el    = document.getElementById('unreadCount');
     if (el) el.textContent = count;
 }
@@ -371,6 +378,8 @@ function updateUnreadCount() {
 //    });
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
+    const main = document.querySelector('main');
+    if (!isLoggedIn()) return showLoginGate(main);
     renderTabs();
     renderList();
 });

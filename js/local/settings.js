@@ -4,68 +4,8 @@
 // ============================================================
 
 
-// ============================================================
-//  MOCK DATA — XÓA KHI KẾT NỐI BACKEND
-// ============================================================
-
-/**
- * TODO (Java): GET /api/users/me/settings
- * Response mapping:
- *   hoTen        → NguoiDung.HoTen
- *   email        → NguoiDung.Email
- *   soDienThoai  → NguoiDung.SoDienThoai
- *   facebook     → NguoiDung.Facebook
- *   tiktok       → NguoiDung.TikTok
- */
-const mockUser = {
-    hoTen:       'Nguyễn Văn A',
-    email:       'nguyenvana@gmail.com',
-    soDienThoai: '0123 456 789',
-    facebook:    'fb.com/nguyenvana',
-    tiktok:      '@nguyenvana',
-};
-
-/**
- * TODO (Java): GET /api/users/me/login-history
- * Response mapping:
- *   thiết bị     → LichSuDangNhap.ThietBi
- *   ip           → LichSuDangNhap.DiaChiIP
- *   thoiGian     → LichSuDangNhap.ThoiGian
- *   laMienHienTai→ (phiên đang dùng)
- */
-const mockLoginHistory = [
-    { device: 'Chrome · Windows 11', ip: '113.161.xx.xx', thoiGian: '02/06/2026 · 08:00', isCurrent: true  },
-    { device: 'Safari · iPhone 14',  ip: '113.161.xx.xx', thoiGian: '01/06/2026 · 20:15', isCurrent: false },
-    { device: 'Chrome · MacBook',    ip: '27.72.xx.xx',   thoiGian: '30/05/2026 · 14:00', isCurrent: false },
-];
-
-/**
- * TODO (Java): GET /api/users/me/privacy-settings
- * Response mapping:
- *   hienThiSdt      → CaiDatRiengTu.HienThiSoDienThoai
- *   hienThiEmail    → CaiDatRiengTu.HienThiEmail
- *   hienThiFacebook → CaiDatRiengTu.HienThiFacebook
- *   hienThiTiktok   → CaiDatRiengTu.HienThiTikTok
- *   hienThiLichSu   → CaiDatRiengTu.HienThiLichSuGD
- */
-const mockPrivacy = {
-    hienThiSdt:      false,
-    hienThiEmail:    false,
-    hienThiFacebook: true,
-    hienThiTiktok:   true,
-    hienThiLichSu:   true,
-};
-
-/**
- * TODO (Java): GET /api/users/me/notification-settings
- */
-const mockNotification = {
-    gdMoi:      true,
-    gdTrangThai: true,
-    toCao:      true,
-    vi:         true,
-    tinTuc:     false,
-};
+// Đọc user thật từ Store
+const _authUser = getAuthUser() || {};
 
 
 // ============================================================
@@ -83,6 +23,9 @@ function switchSection(name) {
     // Hiện section + active nav item
     document.getElementById('section-' + name).style.display = 'block';
     document.getElementById('nav-' + name).classList.add('settings-nav__item--active');
+
+    // Render KYC status mỗi lần mở tab KYC
+    if (name === 'kyc') renderKYCStatus();
 }
 
 
@@ -122,9 +65,13 @@ function saveProfile() {
 
     if (!hoTen) { alert('Vui lòng nhập họ tên.'); return; }
 
-    // TODO: fetch('/api/users/me', { method:'PUT', body: JSON.stringify({ hoTen, facebook, tiktok }) })
+    // Lưu vào Store
+    Store.updateUser(_authUser.id, { hoTen, facebook, tiktok });
 
-    // Cập nhật sidebar
+    // Cập nhật localStorage session
+    const updated = { ..._authUser, hoTen, facebook, tiktok };
+    localStorage.setItem('escrow_user', JSON.stringify(updated));
+
     document.getElementById('sidebarName').textContent = hoTen;
     showToast('Đã lưu thông tin cá nhân!', 'success');
 }
@@ -169,10 +116,17 @@ function changePassword() {
     const confirm = document.getElementById('confirmPw').value;
 
     if (!current) { alert('Vui lòng nhập mật khẩu hiện tại.'); return; }
-    if (newPw.length < 8) { alert('Mật khẩu mới phải có ít nhất 8 ký tự.'); return; }
+    if (newPw.length < 6) { alert('Mật khẩu mới phải có ít nhất 6 ký tự.'); return; }
     if (newPw !== confirm) { alert('Mật khẩu xác nhận không khớp.'); return; }
 
-    // TODO: fetch('/api/users/me/password', { method:'PUT', body: JSON.stringify({ matKhauHienTai: current, matKhauMoi: newPw }) })
+    // Kiểm tra mật khẩu hiện tại từ Store
+    const fullUser = Store.getUserById(_authUser.id);
+    if (!fullUser || fullUser.matKhau !== current) {
+        alert('Mật khẩu hiện tại không đúng.');
+        return;
+    }
+
+    Store.updateUser(_authUser.id, { matKhau: newPw });
     document.getElementById('currentPw').value = '';
     document.getElementById('newPw').value     = '';
     document.getElementById('confirmPw').value = '';
@@ -342,36 +296,117 @@ function showToast(message, type = 'success') {
 //      fetch('/api/users/me/notification-settings').then(r=>r.json()),
 //    ]).then(([user, loginHistory, privacy, notification]) => init(...))
 // ============================================================
-document.addEventListener('DOMContentLoaded', () => {
-    // Fill thông tin user
-    document.getElementById('hoTen').value    = mockUser.hoTen;
-    document.getElementById('facebook').value = mockUser.facebook;
-    document.getElementById('tiktok').value   = mockUser.tiktok;
-    document.getElementById('sidebarName').textContent  = mockUser.hoTen;
-    document.getElementById('sidebarEmail').textContent = mockUser.email;
+// ============================================================
+//  KYC
+// ============================================================
+function renderKYCStatus() {
+    const user = Store.getUserById(_authUser.id) || _authUser;
+    const status = user.kycStatus || 'NONE';
+    const block  = document.getElementById('kyc-status-block');
+    const form   = document.getElementById('kyc-form-block');
 
-    // Lấy chữ cái đầu làm avatar
-    const parts = mockUser.hoTen.trim().split(' ');
-    const initial = parts[parts.length - 1].charAt(0).toUpperCase();
+    const configs = {
+        NONE: {
+            icon: 'bx-shield-x', color: '#94a3b8',
+            title: 'Chưa xác minh',
+            desc: 'Bạn chưa nộp hồ sơ KYC. Vui lòng điền thông tin bên dưới để xác minh danh tính.',
+            showForm: true,
+        },
+        PENDING: {
+            icon: 'bx-time', color: '#f59e0b',
+            title: 'Đang chờ xét duyệt',
+            desc: 'Hồ sơ KYC của bạn đã được gửi và đang chờ admin xét duyệt. Vui lòng chờ trong 1–3 ngày làm việc.',
+            showForm: false,
+        },
+        APPROVED: {
+            icon: 'bx-shield-check', color: '#16a34a',
+            title: 'Đã xác minh',
+            desc: 'Danh tính của bạn đã được xác minh thành công. Bạn có thể sử dụng đầy đủ tính năng P2P.',
+            showForm: false,
+        },
+        REJECTED: {
+            icon: 'bx-shield-x', color: '#ef4444',
+            title: 'Bị từ chối',
+            desc: (user.kycRejectReason || 'Hồ sơ không hợp lệ.') + ' Vui lòng nộp lại.',
+            showForm: true,
+        },
+    };
+
+    const cfg = configs[status] || configs.NONE;
+    block.innerHTML = `
+        <div class="settings-card" style="display:flex;align-items:center;gap:16px;padding:24px;">
+            <i class='bx ${cfg.icon}' style="font-size:48px;color:${cfg.color};flex-shrink:0;"></i>
+            <div>
+                <div style="font-weight:700;font-size:16px;color:#1e293b;margin-bottom:4px;">${cfg.title}</div>
+                <div style="font-size:14px;color:#64748b;">${cfg.desc}</div>
+            </div>
+        </div>
+    `;
+    form.style.display = cfg.showForm ? 'block' : 'none';
+}
+
+function submitKYC() {
+    const hoTen    = document.getElementById('kyc-hoTen').value.trim();
+    const cccd     = document.getElementById('kyc-cccd').value.trim();
+    const ngaySinh = document.getElementById('kyc-ngaySinh').value;
+
+    if (!hoTen || !cccd || !ngaySinh) {
+        showToast('Vui lòng điền đầy đủ thông tin.', 'error');
+        return;
+    }
+    if (!/^\d{9}$|^\d{12}$/.test(cccd)) {
+        showToast('Số CCCD/CMND phải có 9 hoặc 12 chữ số.', 'error');
+        return;
+    }
+
+    Store.updateUser(_authUser.id, { kycStatus: 'PENDING', kycHoTen: hoTen, kycCCCD: cccd, kycNgaySinh: ngaySinh });
+
+    // Cập nhật session
+    const updated = { ..._authUser, kycStatus: 'PENDING' };
+    localStorage.setItem('escrow_user', JSON.stringify(updated));
+
+    renderKYCStatus();
+    showToast('Đã gửi hồ sơ KYC! Chờ admin xét duyệt.', 'success');
+}
+
+
+// ============================================================
+//  KHỞI ĐỘNG
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    const main = document.querySelector('main');
+    if (!isLoggedIn()) return showLoginGate(main);
+
+    // Đọc data thật từ Store
+    const user = Store.getUserById(_authUser.id) || _authUser;
+
+    // Fill thông tin cá nhân
+    document.getElementById('hoTen').value    = user.hoTen    || '';
+    document.getElementById('facebook').value = user.facebook || '';
+    document.getElementById('tiktok').value   = user.tiktok   || '';
+    document.getElementById('sidebarName').textContent  = user.hoTen || '';
+    document.getElementById('sidebarEmail').textContent = user.email || '';
+
+    // Fill thông tin bảo mật (email + phone hiện tại)
+    const phoneEl = document.getElementById('currentPhone');
+    const emailEl = document.getElementById('currentEmail');
+    if (phoneEl) phoneEl.textContent = user.soDienThoai || 'Chưa cập nhật';
+    if (emailEl) emailEl.textContent = user.email       || 'Chưa cập nhật';
+
+    const initial = (user.hoTen || '?').trim().split(' ').pop().charAt(0).toUpperCase();
     document.getElementById('profileAvatar').textContent = initial;
     document.getElementById('sidebarAvatar').textContent = initial;
 
-    // Render lịch sử đăng nhập
-    renderLoginHistory(mockLoginHistory);
+    // Lịch sử đăng nhập (mock đơn giản)
+    renderLoginHistory([
+        { device: 'Trình duyệt hiện tại', ip: '—', thoiGian: 'Vừa xong', isCurrent: true },
+    ]);
 
-    // Fill privacy toggles
-    document.getElementById('privacy-phone').checked   = mockPrivacy.hienThiSdt;
-    document.getElementById('privacy-email').checked   = mockPrivacy.hienThiEmail;
-    document.getElementById('privacy-fb').checked      = mockPrivacy.hienThiFacebook;
-    document.getElementById('privacy-tiktok').checked  = mockPrivacy.hienThiTiktok;
-    document.getElementById('privacy-history').checked = mockPrivacy.hienThiLichSu;
-
-    // Fill notification toggles
-    document.getElementById('notif-new-tx').checked    = mockNotification.gdMoi;
-    document.getElementById('notif-tx-status').checked = mockNotification.gdTrangThai;
-    document.getElementById('notif-report').checked    = mockNotification.toCao;
-    document.getElementById('notif-wallet').checked    = mockNotification.vi;
-    document.getElementById('notif-news').checked      = mockNotification.tinTuc;
+    // Nếu URL có ?section=kyc thì tự mở tab KYC
+    const section = new URLSearchParams(window.location.search).get('section');
+    if (section === 'kyc') {
+        switchSection('kyc');
+    }
 });
 
 document.addEventListener('keydown', e => {

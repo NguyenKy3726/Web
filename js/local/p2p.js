@@ -24,35 +24,46 @@ const STEPS = [
  * TODO (Java): GET /api/users/me/transactions?status=active
  * Danh sách giao dịch đang tham gia
  */
-const mockActive = [
-    {
-        id: 'GD250531142210', type: 'BUY',
-        product: 'iPhone 13 Pro Max 256GB',
-        status: 'IN_PROGRESS', partner: 'seller_xyz',
-    },
-    {
-        id: 'GD250530091122', type: 'SELL',
-        product: 'MacBook Air M1',
-        status: 'PENDING', partner: 'buyer_abc',
-    },
-];
+// Đọc giao dịch từ Store
+const _p2pAuthUser = getAuthUser() || {};
+const DONE_STATUSES = ['COMPLETED', 'CANCELLED', 'EXPIRED'];
 
-/**
- * TODO (Java): GET /api/users/me/transactions?status=done&page=0&size=5
- * Lịch sử giao dịch gần đây
- */
-const mockHistory = [
-    {
-        id: 'GD250522192211', type: 'SELL',
-        product: 'AirPods Pro 2',
-        status: 'COMPLETED', partner: 'buyer_kkk',
-    },
-    {
-        id: 'GD250521101500', type: 'BUY',
-        product: 'Chuột Logitech MX3',
-        status: 'CANCELLED', partner: 'seller_999',
-    },
-];
+function getStoreActive() {
+    return Store.getMyTransactions(_p2pAuthUser.id)
+        .filter(t => !DONE_STATUSES.includes(t.trangThai))
+        .map(t => {
+            const isBuyer  = t.nguoiMuaId === Number(_p2pAuthUser.id);
+            const partnerId = isBuyer ? t.nguoiBanId : t.nguoiMuaId;
+            const partner   = Store.getUserById(partnerId);
+            return {
+                id:      'GD' + String(t.id).padStart(6, '0'),
+                _storeId: t.id,
+                type:    isBuyer ? 'BUY' : 'SELL',
+                product: t.sanPham,
+                status:  t.trangThai,
+                partner: partner ? partner.hoTen : '—',
+            };
+        });
+}
+
+function getStoreHistory() {
+    return Store.getMyTransactions(_p2pAuthUser.id)
+        .filter(t => DONE_STATUSES.includes(t.trangThai))
+        .slice(-5)
+        .map(t => {
+            const isBuyer  = t.nguoiMuaId === Number(_p2pAuthUser.id);
+            const partnerId = isBuyer ? t.nguoiBanId : t.nguoiMuaId;
+            const partner   = Store.getUserById(partnerId);
+            return {
+                id:      'GD' + String(t.id).padStart(6, '0'),
+                _storeId: t.id,
+                type:    isBuyer ? 'BUY' : 'SELL',
+                product: t.sanPham,
+                status:  t.trangThai,
+                partner: partner ? partner.hoTen : '—',
+            };
+        });
+}
 
 /**
  * TODO (Java): GET /api/transactions/{code}
@@ -167,6 +178,10 @@ function validateCreate() {
 //  Response: { maGiaoDich, trangThai, ... }
 // ============================================================
 function createTransaction() {
+    if (!Store.hasBankAccount(_p2pAuthUser.id)) {
+        alert('Bạn cần thêm tài khoản ngân hàng trước khi tạo giao dịch P2P.\nVui lòng vào trang Ví để thêm tài khoản.');
+        return;
+    }
     if (!validateCreate()) return;
 
     const role    = document.querySelector('input[name="role"]:checked').value;
@@ -182,14 +197,27 @@ function createTransaction() {
          Phí dịch vụ: <strong>${formatVND(FEE)}</strong><br>
          Thời hạn: <strong>${deadline} giờ</strong>`,
         () => {
-            // TODO: fetch('/api/transactions', { method:'POST', body: JSON.stringify({...}) })
+            // Lưu vào Store
+            const isBuyer = role === 'BUY';
+            const stored  = Store.createTransaction({
+                nguoiMuaId: isBuyer ? _p2pAuthUser.id : null,
+                nguoiBanId: isBuyer ? null : _p2pAuthUser.id,
+                sanPham:    product,
+                soTien:     amount,
+                phi:        FEE,
+                dieuKhoan:  terms || 'Không có điều khoản đặc biệt.',
+                deadline:   deadline + ' giờ',
+                trangThai:  'PENDING',
+            });
             closeModal();
             const tx = {
-                maGiaoDich: 'GD' + Date.now().toString().slice(-12),
+                maGiaoDich: 'GD' + String(stored.id).padStart(6, '0'),
+                _storeId: stored.id,
                 type: role, product, amount, deadline: deadline + ' giờ',
                 terms: terms || 'Không có điều khoản đặc biệt.',
-                status: 'PENDING', creator: 'Bạn', partner: null,
+                status: 'PENDING', creator: _p2pAuthUser.hoTen, partner: null,
             };
+            renderSidebar(getStoreActive(), getStoreHistory());
             showDetail(tx, [
                 { sender: 'SYSTEM', text: 'Giao dịch đã được tạo. Đang chờ đối tác tham gia...', time: now(), isMe: null }
             ]);
@@ -669,4 +697,12 @@ function now() {
 //      fetch('/api/users/me/transactions?status=done&size=5').then(r=>r.json()),
 //    ]).then(([active, history]) => renderSidebar(active, history));
 // ============================================================
-renderSidebar(mockActive, mockHistory);
+// AUTH GUARD — kiểm tra trước khi render
+const __main = document.querySelector('main');
+if (!isLoggedIn()) {
+    showLoginGate(__main);
+} else if (getAuthUser().kycStatus !== 'APPROVED') {
+    showKYCGate(__main);
+} else {
+    renderSidebar(getStoreActive(), getStoreHistory());
+}

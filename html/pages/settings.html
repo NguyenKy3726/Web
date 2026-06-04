@@ -89,6 +89,11 @@
                         <i class='bx bx-shield'></i>
                         <span>Quyền riêng tư</span>
                     </button>
+                    <button class="settings-nav__item"
+                        onclick="switchSection('kyc')" id="nav-kyc">
+                        <i class='bx bx-id-card'></i>
+                        <span>Xác minh KYC</span>
+                    </button>
                 </nav>
 
                 <!-- USER INFO MINI -->
@@ -169,7 +174,7 @@
                         <div class="settings-field">
                             <label>Số hiện tại</label>
                             <div class="settings-current-value">
-                                <span>0123 456 789</span>
+                                <span id="currentPhone">—</span>
                                 <span class="settings-verified"><i class='bx bx-check-circle'></i> Đã xác minh</span>
                             </div>
                         </div>
@@ -191,7 +196,7 @@
                         <div class="settings-field">
                             <label>Email hiện tại</label>
                             <div class="settings-current-value">
-                                <span>nguyenvana@gmail.com</span>
+                                <span id="currentEmail">—</span>
                                 <span class="settings-verified"><i class='bx bx-check-circle'></i> Đã xác minh</span>
                             </div>
                         </div>
@@ -423,6 +428,57 @@
                         <div class="settings-card__footer">
                             <button class="settings-btn settings-btn--primary" onclick="savePrivacy()">
                                 <i class='bx bx-save'></i> Lưu cài đặt
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== XÁC MINH KYC ==================== -->
+                <section class="settings-section" id="section-kyc" style="display:none;">
+                    <div class="settings-section__header">
+                        <h2>Xác minh danh tính (KYC)</h2>
+                        <p>Xác minh để mở khóa tính năng giao dịch P2P và nâng hạn mức</p>
+                    </div>
+
+                    <!-- Hiện theo trạng thái KYC -->
+                    <div id="kyc-status-block"></div>
+
+                    <!-- Form nộp KYC (chỉ hiện khi NONE hoặc REJECTED) -->
+                    <div class="settings-card" id="kyc-form-block" style="display:none;">
+                        <div class="settings-card__title">Thông tin xác minh</div>
+
+                        <div class="settings-form-group">
+                            <label>Họ tên theo giấy tờ <span style="color:#ef4444">*</span></label>
+                            <input type="text" id="kyc-hoTen" class="settings-input" placeholder="Nguyễn Văn A">
+                        </div>
+                        <div class="settings-form-group">
+                            <label>Số CCCD / CMND <span style="color:#ef4444">*</span></label>
+                            <input type="text" id="kyc-cccd" class="settings-input" placeholder="012345678901">
+                        </div>
+                        <div class="settings-form-group">
+                            <label>Ngày sinh <span style="color:#ef4444">*</span></label>
+                            <input type="date" id="kyc-ngaySinh" class="settings-input">
+                        </div>
+
+                        <div class="settings-card__title" style="margin-top:20px;">Ảnh giấy tờ</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:12px;">
+                            <div>
+                                <label style="font-size:13px;color:#64748b;display:block;margin-bottom:6px;">Mặt trước CCCD</label>
+                                <input type="file" id="kyc-mat-truoc" accept="image/*" class="settings-input" style="padding:8px;">
+                            </div>
+                            <div>
+                                <label style="font-size:13px;color:#64748b;display:block;margin-bottom:6px;">Mặt sau CCCD</label>
+                                <input type="file" id="kyc-mat-sau" accept="image/*" class="settings-input" style="padding:8px;">
+                            </div>
+                            <div>
+                                <label style="font-size:13px;color:#64748b;display:block;margin-bottom:6px;">Ảnh chân dung</label>
+                                <input type="file" id="kyc-chan-dung" accept="image/*" class="settings-input" style="padding:8px;">
+                            </div>
+                        </div>
+
+                        <div class="settings-card__footer" style="margin-top:20px;">
+                            <button class="settings-btn settings-btn--primary" onclick="submitKYC()">
+                                <i class='bx bx-send'></i> Gửi yêu cầu xác minh
                             </button>
                         </div>
                     </div>

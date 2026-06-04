@@ -24,8 +24,8 @@ function renderDropdown() {
     menu.innerHTML = TABS.map(t => {
         const iconInfo = REPORT_DROPDOWN_ICONS[t.key] || { icon: 'bx-circle', color: '#64748b' };
         const count = t.key === 'ALL'
-            ? mockReports.length
-            : mockReports.filter(r => r.trangThai === t.key).length;
+            ? getMyReports().length
+            : getMyReports().filter(r => r.trangThai === t.key).length;
         return `
         <div class="custom-dropdown__item ${t.key === currentTab ? 'custom-dropdown__item--active' : ''}"
             onclick="selectReportTab('${t.key}', '${t.label}')">
@@ -79,73 +79,28 @@ document.addEventListener('click', e => {
  *   lyDoTuChoi   → TranhChap.LyDoTuChoi (nếu REJECTED)
  *   bangChung    → BangChung[] WHERE MaTranhChap = id
  */
-const mockReports = [
-    {
-        id: 'TC001',
-        maGiaoDich:   'GD250529112005',
-        lyDo:         'Không giao hàng',
-        moTa:         'Người bán đã nhận tiền nhưng không giao hàng sau 3 ngày, không phản hồi tin nhắn.',
-        thoiGianTao:  '25/05/2026 · 09:30',
-        trangThai:    'RESOLVED',
-        adminXuLy:    'admin_nguyen',
-        thoiGianXuLy: '26/05/2026 · 14:00',
-        ketQua:       ['Hoàn tiền cho người mua', 'Khóa tài khoản người bán 7 ngày', 'Cảnh cáo người bán'],
-        lyDoTuChoi:   null,
-        bangChung:    ['evidence1.jpg', 'evidence2.jpg'],
-    },
-    {
-        id: 'TC002',
-        maGiaoDich:   'GD250521101500',
-        lyDo:         'Gian lận, lừa đảo',
-        moTa:         'Người mua nhận hàng rồi báo không nhận để lấy lại tiền. Tôi có video giao hàng.',
-        thoiGianTao:  '22/05/2026 · 10:00',
-        trangThai:    'IN_PROGRESS',
-        adminXuLy:    'admin_tran',
-        thoiGianXuLy: null,
-        ketQua:       null,
-        lyDoTuChoi:   null,
-        bangChung:    ['video_giao_hang.mp4'],
-    },
-    {
-        id: 'TC003',
-        maGiaoDich:   'GD250510141200',
-        lyDo:         'Hàng không đúng mô tả',
-        moTa:         'Sản phẩm nhận được khác hoàn toàn so với mô tả, màu sắc và tình trạng không đúng.',
-        thoiGianTao:  '12/05/2026 · 08:00',
-        trangThai:    'PENDING',
-        adminXuLy:    null,
-        thoiGianXuLy: null,
-        ketQua:       null,
-        lyDoTuChoi:   null,
-        bangChung:    ['hang_nhan.jpg'],
-    },
-    {
-        id: 'TC004',
-        maGiaoDich:   'GD250428092233',
-        lyDo:         'Không phản hồi',
-        moTa:         'Người bán không phản hồi trong suốt 48 giờ dù đã thanh toán.',
-        thoiGianTao:  '30/04/2026 · 15:00',
-        trangThai:    'REJECTED',
-        adminXuLy:    'admin_nguyen',
-        thoiGianXuLy: '02/05/2026 · 09:00',
-        ketQua:       null,
-        lyDoTuChoi:   'Không đủ bằng chứng. Giao dịch đã hoàn thành theo xác nhận của cả 2 bên.',
-        bangChung:    [],
-    },
-    {
-        id: 'TC005',
-        maGiaoDich:   'GD250415073311',
-        lyDo:         'Khác',
-        moTa:         'Hai bên đã tự giải quyết được vấn đề.',
-        thoiGianTao:  '15/04/2026 · 10:00',
-        trangThai:    'WITHDRAWN',
-        adminXuLy:    null,
-        thoiGianXuLy: null,
-        ketQua:       null,
-        lyDoTuChoi:   null,
-        bangChung:    [],
-    },
-];
+// Đọc reports từ Store
+const _reportAuthUser = getAuthUser() || {};
+
+function getMyReports() {
+    return Store.getMyReports(_reportAuthUser.id).map(r => {
+        const admin = r.adminId ? Store.getUserById(r.adminId) : null;
+        return {
+            id:           'TC' + String(r.id).padStart(3, '0'),
+            _storeId:     r.id,
+            maGiaoDich:   r.maGiaoDichId ? 'GD' + String(r.maGiaoDichId).padStart(6, '0') : '—',
+            lyDo:         r.lyDo || '—',
+            moTa:         r.moTa || '',
+            thoiGianTao:  r.thoiGianTao,
+            trangThai:    r.trangThai,
+            adminXuLy:    admin ? admin.hoTen : null,
+            thoiGianXuLy: r.thoiGianXuLy || null,
+            ketQua:       r.ketQua ? [r.ketQua] : null,
+            lyDoTuChoi:   r.lyDoTuChoi || null,
+            bangChung:    [],
+        };
+    }).reverse();
+}
 
 /**
  * TODO (Java): GET /api/transactions/{code}
@@ -227,7 +182,7 @@ function renderList() {
     const tpl       = document.getElementById('reportItemTemplate');
     container.innerHTML = '';
 
-    let filtered = mockReports.filter(r => {
+    let filtered = getMyReports().filter(r => {
         const matchTab    = currentTab === 'ALL' || r.trangThai === currentTab;
         const matchSearch = r.maGiaoDich.toLowerCase().includes(keyword) || keyword === '';
         return matchTab && matchSearch;
@@ -363,24 +318,14 @@ function submitReport() {
 
     if (hasError) return;
 
-    // TODO: fetch('/api/reports', { method:'POST', body: formData })
-
-    // DEMO: thêm vào mock
-    const newReport = {
-        id:           'TC' + Date.now().toString().slice(-3),
-        maGiaoDich:   code,
+    // Lưu vào Store
+    Store.createReport({
+        userId:       _reportAuthUser.id,
+        maGiaoDichId: code,
         lyDo:         reason.value,
         moTa:         desc,
-        thoiGianTao:  new Date().toLocaleDateString('vi-VN') + ' · ' + new Date().toLocaleTimeString('vi-VN', { hour:'2-digit', minute:'2-digit' }),
-        trangThai:    'PENDING',
-        adminXuLy:    null,
-        thoiGianXuLy: null,
-        ketQua:       null,
-        lyDoTuChoi:   null,
-        bangChung:    [],
-    };
+    });
 
-    mockReports.unshift(newReport);
     closeModal('create');
     renderDropdown();
     renderList();
@@ -426,7 +371,7 @@ function handleExtraEvidence(input) {
 //  TODO (Java): GET /api/reports/{id}
 // ============================================================
 function openDetail(id) {
-    const report = mockReports.find(r => r.id === id);
+    const report = getMyReports().find(r => r.id === id);
     if (!report) return;
     currentReportId = id;
 
@@ -602,7 +547,7 @@ function confirmWithdrawReport() {
     // TODO: fetch(`/api/reports/${currentReportId}/withdraw`, { method:'POST', body: JSON.stringify({ lyDo: reason }) })
 
     // DEMO: cập nhật mock
-    const report = mockReports.find(r => r.id === currentReportId);
+    const report = getMyReports().find(r => r.id === currentReportId);
     if (report) report.trangThai = 'WITHDRAWN';
 
     closeModal('withdraw');
@@ -673,6 +618,8 @@ function formatVND(num) {
 //  });
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
+    const main = document.querySelector('main');
+    if (!isLoggedIn()) return showLoginGate(main);
     renderDropdown();
     renderList();
 });

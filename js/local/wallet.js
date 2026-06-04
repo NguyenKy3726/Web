@@ -5,106 +5,61 @@
 
 
 // ============================================================
-//  MOCK DATA — XÓA KHI KẾT NỐI BACKEND
+//  ĐỌC DỮ LIỆU TỪ STORE
 // ============================================================
+const _walletAuthUser = getAuthUser() || {};
 
-/**
- * TODO (Java): GET /api/users/me
- * Dùng để kiểm tra trạng thái KYC và setup
- * kycStatus: 'NONE' | 'PENDING' | 'APPROVED' | 'REJECTED'
- */
-const mockUser = {
-    kycStatus:    'APPROVED',   // Đổi thành 'NONE' để test màn hình khóa
-    emailVerified: true,
-    hasBankAccount: true,
-};
+// Chuyển format Store → format wallet.js
+const LOAI_MAP = { DEPOSIT:'NAP', WITHDRAW:'RUT', FREEZE:'KY_QUY', RELEASE:'GIAI_NGAN', REFUND:'HOAN_TIEN' };
 
-/**
- * TODO (Java): GET /api/wallet/me
- * Response mapping:
- *   soDuKhaDung  → ViTien.SoDu
- *   soDuKyQuy   → ViTien.SoDuDong
- */
-const mockWallet = {
-    soDuKhaDung: 4750000,
-    soDuKyQuy:   1250000,
-};
+function storeHistoryToWallet() {
+    const history  = Store.getWalletHistory(_walletAuthUser.id);
+    const requests = Store.getWalletRequests(_walletAuthUser.id);
 
-/**
- * TODO (Java): GET /api/bank-accounts/me
- * Response mapping:
- *   id          → TaiKhoanNganHang.MaTaiKhoanNH
- *   tenNganHang → TaiKhoanNganHang.TenNganHang
- *   soTaiKhoan  → TaiKhoanNganHang.SoTaiKhoan
- *   tenChuTK    → TaiKhoanNganHang.TenChuTaiKhoan
- *   laMacDinh   → TaiKhoanNganHang.LaMacDinh
- */
-const mockBanks = [
-    { id: 1, tenNganHang: 'VCB', soTaiKhoan: '1234567890', tenChuTK: 'NGUYEN VAN A', laMacDinh: true },
-    { id: 2, tenNganHang: 'TCB', soTaiKhoan: '9876543210', tenChuTK: 'NGUYEN VAN A', laMacDinh: false },
-];
+    // Từ wallet history (đã duyệt)
+    const fromHistory = history.map(h => ({
+        id: h.id, loai: LOAI_MAP[h.loai] || 'NAP',
+        soTien: h.soTien, moTa: h.ghiChu || h.loai,
+        thoiGian: h.thoiGian, trangThai: 'SUCCESS',
+    }));
 
-/**
- * TODO (Java): GET /api/wallet/history?page=0&size=20&loai=ALL
- * Response mapping:
- *   loai     → LichSuVi.LoaiGiaoDich (NAP/RUT/KY_QUY/GIAI_NGAN/HOAN_TIEN)
- *   soTien   → LichSuVi.SoTien
- *   moTa     → LichSuVi.MoTa
- *   thoiGian → LichSuVi.ThoiGian
- *   trangThai→ LichSuVi.TrangThai (SUCCESS/PENDING/FAIL)
- */
-const mockHistory = [
-    { loai: 'NAP',       soTien: 2000000, moTa: 'Nạp tiền từ VCB',         thoiGian: '01/06/2026 · 09:15', trangThai: 'SUCCESS' },
-    { loai: 'KY_QUY',   soTien: 1250000, moTa: 'Ký quỹ GD250531142210',   thoiGian: '31/05/2026 · 14:22', trangThai: 'SUCCESS' },
-    { loai: 'RUT',      soTien: 500000,  moTa: 'Rút về Techcombank',       thoiGian: '30/05/2026 · 10:00', trangThai: 'PENDING' },
-    { loai: 'GIAI_NGAN',soTien: 3200000, moTa: 'Giải ngân GD250522192211', thoiGian: '23/05/2026 · 08:00', trangThai: 'SUCCESS' },
-    { loai: 'HOAN_TIEN',soTien: 750000,  moTa: 'Hoàn tiền GD250521101500', thoiGian: '22/05/2026 · 15:30', trangThai: 'SUCCESS' },
-    { loai: 'NAP',      soTien: 1000000, moTa: 'Nạp tiền từ MBBank',       thoiGian: '20/05/2026 · 11:00', trangThai: 'FAIL'    },
-    { loai: 'KY_QUY',   soTien: 800000,  moTa: 'Ký quỹ GD250519083011',   thoiGian: '19/05/2026 · 08:30', trangThai: 'SUCCESS' },
-    { loai: 'GIAI_NGAN',soTien: 800000,  moTa: 'Giải ngân GD250519083011', thoiGian: '19/05/2026 · 18:00', trangThai: 'SUCCESS' },
-    { loai: 'NAP',      soTien: 5000000, moTa: 'Nạp tiền từ BIDV',         thoiGian: '15/05/2026 · 13:00', trangThai: 'SUCCESS' },
-    { loai: 'RUT',      soTien: 2000000, moTa: 'Rút về VCB',               thoiGian: '14/05/2026 · 09:00', trangThai: 'SUCCESS' },
-    { loai: 'KY_QUY',   soTien: 3500000, moTa: 'Ký quỹ GD250510141200',   thoiGian: '10/05/2026 · 14:12', trangThai: 'SUCCESS' },
-    { loai: 'HOAN_TIEN',soTien: 3500000, moTa: 'Hoàn tiền GD250510141200', thoiGian: '11/05/2026 · 10:00', trangThai: 'SUCCESS' },
-    { loai: 'NAP',      soTien: 1500000, moTa: 'Nạp tiền từ TPBank',       thoiGian: '05/05/2026 · 16:45', trangThai: 'SUCCESS' },
-    { loai: 'RUT',      soTien: 1000000, moTa: 'Rút về Techcombank',       thoiGian: '03/05/2026 · 11:20', trangThai: 'FAIL'    },
-    { loai: 'GIAI_NGAN',soTien: 1200000, moTa: 'Giải ngân GD250428092233', thoiGian: '29/04/2026 · 08:00', trangThai: 'SUCCESS' },
-];
+    // Từ wallet requests (PENDING/REJECTED)
+    const fromRequests = requests
+        .filter(r => r.trangThai !== 'APPROVED')
+        .map(r => ({
+            id: 'req-' + r.id, loai: r.loai === 'DEPOSIT' ? 'NAP' : 'RUT',
+            soTien: r.soTien, moTa: (r.loai === 'DEPOSIT' ? 'Nạp tiền' : 'Rút tiền') + ' — ' + (r.nganHang || ''),
+            thoiGian: r.thoiGian,
+            trangThai: r.trangThai === 'PENDING' ? 'PENDING' : 'FAIL',
+        }));
 
-/**
- * TODO (Java): GET /api/kyc/me
- * Response mapping:
- *   trangThai    → KYC.TrangThai (NONE/PENDING/APPROVED/REJECTED)
- *   thoiGianGui  → KYC.ThoiGianGui
- *   lyDoTuChoi   → KYC.LyDoTuChoi (nếu REJECTED)
- */
-const mockKyc = {
-    trangThai:   'APPROVED',
-    thoiGianGui: '28/05/2026 · 10:00',
-    lyDoTuChoi:  null,
-};
-
+    return [...fromRequests, ...fromHistory].sort((a, b) =>
+        String(b.id).localeCompare(String(a.id))
+    );
+}
 
 // ============================================================
-//  KHỞI ĐỘNG
-//  TODO (Java): Thay bằng:
-//    Promise.all([
-//      fetch('/api/users/me').then(r=>r.json()),
-//      fetch('/api/wallet/me').then(r=>r.json()),
-//      fetch('/api/bank-accounts/me').then(r=>r.json()),
-//      fetch('/api/wallet/history').then(r=>r.json()),
-//      fetch('/api/kyc/me').then(r=>r.json()),
-//    ]).then(([user, wallet, banks, history, kyc]) => {
-//      init(user, wallet, banks, history, kyc);
-//    });
+//  KHỞI ĐỘNG — đọc từ Store thay mock
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
-    init(mockUser, mockWallet, mockBanks, mockHistory, mockKyc);
+    const main = document.querySelector('main');
+    if (!isLoggedIn()) return showLoginGate(main);
+
+    const user   = Store.getUserById(_walletAuthUser.id) || _walletAuthUser;
+    const wallet = Store.getWallet(_walletAuthUser.id)   || { soDuKhaDung: 0, soDuKyQuy: 0 };
+    const banks  = Store.getBankAccounts(_walletAuthUser.id);
+    const history = storeHistoryToWallet();
+    const kyc    = { trangThai: user.kycStatus || 'NONE', thoiGianGui: user.kycNgaySinh || null, lyDoTuChoi: user.kycRejectReason || null };
+
+    const userForInit = {
+        ...user,
+        hasBankAccount: banks.length > 0,
+    };
+
+    init(userForInit, wallet, banks, history, kyc);
 });
 
 function init(user, wallet, banks, history, kyc) {
-    renderSetupBar(user);
-
     // Kiểm tra KYC — nếu chưa approved thì khóa toàn bộ
     if (user.kycStatus !== 'APPROVED') {
         document.getElementById('walletLocked').style.display  = 'flex';
@@ -124,52 +79,7 @@ function init(user, wallet, banks, history, kyc) {
 }
 
 
-// ============================================================
-//  SETUP BAR
-// ============================================================
-const SETUP_STEPS = [
-    { key: 'email', label: 'Xác minh Email',    sub: 'Hoàn thành khi đăng ký' },
-    { key: 'kyc',   label: 'Xác minh KYC',      sub: 'Xác minh danh tính'     },
-    { key: 'bank',  label: 'Liên kết ngân hàng', sub: 'Để nạp/rút tiền'       },
-];
 
-function renderSetupBar(user) {
-    const container = document.getElementById('setupSteps');
-    const doneMap = {
-        email: user.emailVerified,
-        kyc:   user.kycStatus === 'APPROVED',
-        bank:  user.hasBankAccount,
-    };
-
-    // Ẩn setup bar nếu đã xong hết
-    if (Object.values(doneMap).every(v => v)) {
-        document.getElementById('setupBar').style.display = 'none';
-        return;
-    }
-
-    let foundActive = false;
-    container.innerHTML = '';
-
-    SETUP_STEPS.forEach((step, idx) => {
-        const isDone   = doneMap[step.key];
-        const isActive = !isDone && !foundActive;
-        if (isActive) foundActive = true;
-
-        const el = document.createElement('div');
-        el.className = `setup-step ${isDone ? 'done' : isActive ? 'active' : ''}`;
-        el.innerHTML = `
-            <div class="setup-step__dot">
-                <i class='bx bx-check'></i>
-                <span>${idx + 1}</span>
-            </div>
-            <div class="setup-step__text">
-                <span class="setup-step__label">${step.label}</span>
-                <span class="setup-step__sublabel">${isDone ? '✓ Hoàn thành' : step.sub}</span>
-            </div>
-            ${idx < SETUP_STEPS.length - 1 ? '<div class="setup-step__line"></div>' : ''}`;
-        container.appendChild(el);
-    });
-}
 
 
 // ============================================================
@@ -343,9 +253,8 @@ function setFilter(type) {
     currentFilter = type;
     renderFilterButtons();
     // TODO: fetch(`/api/wallet/history?loai=${type}`).then(r=>r.json()).then(data => renderHistory(data, type))
-    const filtered = type === 'ALL'
-        ? mockHistory
-        : mockHistory.filter(h => h.loai === type);
+    const all      = storeHistoryToWallet();
+    const filtered = type === 'ALL' ? all : all.filter(h => h.loai === type);
     renderHistory(filtered, type);
 }
 
@@ -409,16 +318,25 @@ function renderHistory(list, filter) {
 //  Body: { soTien, maTaiKhoanNH }
 // ============================================================
 function openDepositModal() {
+    if (!Store.hasBankAccount(_walletAuthUser.id)) {
+        alert('Bạn cần thêm tài khoản ngân hàng trước khi nạp tiền.\nVui lòng thêm tài khoản ngân hàng ở phần bên trái.');
+        return;
+    }
     document.getElementById('depositAmount').value = '';
     openModal('deposit');
 }
 
 function confirmDeposit() {
-    const amount = parseAmount(document.getElementById('depositAmount').value);
+    const amount  = parseAmount(document.getElementById('depositAmount').value);
+    const bankSel = document.getElementById('depositBank');
+    const nganHang = bankSel ? bankSel.options[bankSel.selectedIndex]?.text : '—';
     if (!amount || amount < 10000) { alert('Số tiền tối thiểu là 10.000đ.'); return; }
-    // TODO: fetch('/api/wallet/deposit', { method:'POST', body: JSON.stringify({ soTien: amount, maTaiKhoanNH: bankId }) })
-    alert(`Demo: Yêu cầu nạp ${formatVND(amount)} đã được gửi!`);
+    Store.createWalletRequest({ userId: _walletAuthUser.id, loai: 'DEPOSIT', soTien: amount, nganHang });
     closeModal('deposit');
+    // Reload lại trang để hiển thị request mới
+    document.getElementById('depositAmount').value = '';
+    setFilter(currentFilter);
+    alert(`Yêu cầu nạp ${formatVND(amount)} đã được gửi! Chờ admin duyệt.`);
 }
 
 
@@ -428,16 +346,26 @@ function confirmDeposit() {
 //  Body: { soTien, maTaiKhoanNH }
 // ============================================================
 function openWithdrawModal() {
+    if (!Store.hasBankAccount(_walletAuthUser.id)) {
+        alert('Bạn cần thêm tài khoản ngân hàng trước khi rút tiền.\nVui lòng thêm tài khoản ngân hàng ở phần bên trái.');
+        return;
+    }
     document.getElementById('withdrawAmount').value = '';
     openModal('withdraw');
 }
 
 function confirmWithdraw() {
-    const amount = parseAmount(document.getElementById('withdrawAmount').value);
+    const amount   = parseAmount(document.getElementById('withdrawAmount').value);
+    const bankSel  = document.getElementById('withdrawBank');
+    const nganHang = bankSel ? bankSel.options[bankSel.selectedIndex]?.text : '—';
     if (!amount || amount < 10000) { alert('Số tiền tối thiểu là 10.000đ.'); return; }
-    // TODO: fetch('/api/wallet/withdraw', { method:'POST', body: JSON.stringify({ soTien: amount, maTaiKhoanNH: bankId }) })
-    alert(`Demo: Yêu cầu rút ${formatVND(amount)} đã được gửi!`);
+    const wallet = Store.getWallet(_walletAuthUser.id);
+    if (!wallet || wallet.soDuKhaDung < amount) { alert('Số dư không đủ.'); return; }
+    Store.createWalletRequest({ userId: _walletAuthUser.id, loai: 'WITHDRAW', soTien: amount, nganHang });
     closeModal('withdraw');
+    document.getElementById('withdrawAmount').value = '';
+    setFilter(currentFilter);
+    alert(`Yêu cầu rút ${formatVND(amount)} đã được gửi! Chờ admin duyệt.`);
 }
 
 
@@ -474,10 +402,10 @@ function confirmAddBank() {
         return;
     }
 
-    // TODO: fetch('/api/bank-accounts', { method:'POST', body: JSON.stringify({ tenNganHang: name, soTaiKhoan: number, tenChuTaiKhoan: owner }) })
-    mockBanks.push({ id: Date.now(), tenNganHang: name, soTaiKhoan: number, tenChuTK: owner, laMacDinh: false });
-    renderBankList(mockBanks);
-    populateBankSelects(mockBanks);
+    Store.addBankAccount(_walletAuthUser.id, { tenNganHang: name, soTaiKhoan: number, tenChuTK: owner });
+    const updatedBanks = Store.getBankAccounts(_walletAuthUser.id);
+    renderBankList(updatedBanks);
+    populateBankSelects(updatedBanks);
     closeModal('bank');
 }
 

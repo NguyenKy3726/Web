@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - ESCROW</title>
+    <title>Owner Panel - ESCROW</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="/css/local/admin.css">
 </head>
@@ -16,14 +16,22 @@
 
         <div class="admin-sidebar__logo">
             <span class="admin-sidebar__logo-text">ESCROW</span>
-            <span class="admin-sidebar__logo-badge" id="roleBadge">ADMIN</span>
+            <span class="admin-sidebar__logo-badge owner" id="roleBadge">OWNER</span>
         </div>
 
         <nav class="admin-nav">
 
+            <div class="admin-nav__group" id="group-overview">
+                <div class="admin-nav__group-label">Tổng quan</div>
+                <a href="#" class="admin-nav__item admin-nav__item--active" onclick="switchSection('overview', this)">
+                    <i class='bx bx-bar-chart-alt-2'></i>
+                    <span>Thống kê hệ thống</span>
+                </a>
+            </div>
+
             <div class="admin-nav__group">
                 <div class="admin-nav__group-label">Quản lý</div>
-                <a href="#" class="admin-nav__item admin-nav__item--active" onclick="switchSection('users', this)">
+                <a href="#" class="admin-nav__item" onclick="switchSection('users', this)">
                     <i class='bx bx-group'></i>
                     <span>Người dùng</span>
                 </a>
@@ -43,13 +51,25 @@
                 </a>
             </div>
 
+            <div class="admin-nav__group" id="group-owner">
+                <div class="admin-nav__group-label">Owner</div>
+                <a href="#" class="admin-nav__item" onclick="switchSection('roles', this)">
+                    <i class='bx bx-shield-alt-2'></i>
+                    <span>Phân quyền</span>
+                </a>
+                <a href="#" class="admin-nav__item" onclick="switchSection('admins', this)">
+                    <i class='bx bx-user-pin'></i>
+                    <span>Quản lý Admin</span>
+                </a>
+            </div>
+
         </nav>
 
         <div class="admin-sidebar__footer">
-            <div class="admin-sidebar__avatar" id="sidebarAvatar">A</div>
+            <div class="admin-sidebar__avatar owner" id="sidebarAvatar">O</div>
             <div class="admin-sidebar__user">
-                <span class="admin-sidebar__user-name" id="sidebarName">Admin</span>
-                <span class="admin-sidebar__user-role" id="sidebarRole">Quản trị viên</span>
+                <span class="admin-sidebar__user-name" id="sidebarName">Owner</span>
+                <span class="admin-sidebar__user-role" id="sidebarRole">Chủ sở hữu</span>
             </div>
             <a href="/html/index.html" class="admin-sidebar__logout" title="Về trang chủ">
                 <i class='bx bx-log-out'></i>
@@ -73,6 +93,49 @@
                 </div>
             </div>
         </div>
+
+        <!-- SECTION: THỐNG KÊ -->
+        <section class="admin-section" id="section-overview">
+            <div class="admin-stat-grid">
+                <div class="admin-stat-card">
+                    <div class="admin-stat-card__icon admin-stat-card__icon--blue"><i class='bx bx-group'></i></div>
+                    <div class="admin-stat-card__info">
+                        <div class="admin-stat-card__num" id="stat-users">0</div>
+                        <div class="admin-stat-card__label">Người dùng</div>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-card__icon admin-stat-card__icon--green"><i class='bx bx-transfer-alt'></i></div>
+                    <div class="admin-stat-card__info">
+                        <div class="admin-stat-card__num" id="stat-txs">0</div>
+                        <div class="admin-stat-card__label">Giao dịch P2P</div>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-card__icon admin-stat-card__icon--orange"><i class='bx bx-error-circle'></i></div>
+                    <div class="admin-stat-card__info">
+                        <div class="admin-stat-card__num" id="stat-reports">0</div>
+                        <div class="admin-stat-card__label">Tố cáo đang xử lý</div>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-card__icon admin-stat-card__icon--purple"><i class='bx bx-money'></i></div>
+                    <div class="admin-stat-card__info">
+                        <div class="admin-stat-card__num" id="stat-volume">0đ</div>
+                        <div class="admin-stat-card__label">Tổng số dư hệ thống</div>
+                    </div>
+                </div>
+            </div>
+            <div class="admin-card">
+                <div class="admin-card__header"><h3>Hoạt động gần đây</h3></div>
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead><tr><th>Thời gian</th><th>Loại</th><th>Mô tả</th><th>Trạng thái</th></tr></thead>
+                        <tbody id="overviewActivityBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
 
         <!-- SECTION: NGƯỜI DÙNG -->
         <section class="admin-section" id="section-users" style="display:none;">
@@ -208,6 +271,50 @@
             </div>
         </section>
 
+        <!-- SECTION: PHÂN QUYỀN -->
+        <section class="admin-section" id="section-roles" style="display:none;">
+            <div class="admin-card">
+                <div class="admin-card__header"><h3>Phân quyền người dùng</h3></div>
+                <div class="admin-toolbar" style="padding:0 0 16px;">
+                    <div class="admin-search-wrap">
+                        <i class='bx bx-search'></i>
+                        <input type="text" placeholder="Tìm tên, email..." id="roleSearch" oninput="filterRoleUsers()">
+                    </div>
+                </div>
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead><tr><th>Người dùng</th><th>Email</th><th>Vai trò hiện tại</th><th>Đổi vai trò</th><th>Thao tác</th></tr></thead>
+                        <tbody id="roleTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: QUẢN LÝ ADMIN -->
+        <section class="admin-section" id="section-admins" style="display:none;">
+            <div class="admin-toolbar">
+                <div class="admin-search-wrap">
+                    <i class='bx bx-search'></i>
+                    <input type="text" placeholder="Tìm admin..." id="adminSearch" oninput="filterAdmins()">
+                </div>
+                <button class="admin-btn admin-btn--primary" onclick="openCreateAdminModal()">
+                    <i class='bx bx-user-plus'></i> Tạo tài khoản Admin
+                </button>
+            </div>
+            <div class="admin-card">
+                <div class="admin-card__header">
+                    <h3>Danh sách Admin</h3>
+                    <span class="admin-card__count" id="adminListCount"></span>
+                </div>
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead><tr><th>Admin</th><th>Email</th><th>Số dư ví</th><th>Trạng thái</th><th>Ngày tạo</th><th>Thao tác</th></tr></thead>
+                        <tbody id="adminTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
     </main>
 </div>
 
@@ -244,9 +351,72 @@
     <div class="admin-modal__footer" id="walletActionFooter"></div>
 </div>
 
+<!-- MODAL: TẠO ADMIN -->
+<div class="admin-overlay" id="createAdminOverlay" onclick="closeModal('createAdmin')"></div>
+<div class="admin-modal" id="createAdminModal">
+    <div class="admin-modal__header">
+        <h3>Tạo tài khoản Admin mới</h3>
+        <button onclick="closeModal('createAdmin')"><i class='bx bx-x'></i></button>
+    </div>
+    <div class="admin-modal__body">
+        <div class="admin-form-group">
+            <label>Tên đăng nhập <span class="required">*</span></label>
+            <input type="text" id="newAdminUsername" placeholder="admin_nguyen" class="admin-input">
+            <span class="admin-form-error" id="err-newAdminUsername"></span>
+        </div>
+        <div class="admin-form-group">
+            <label>Họ tên <span class="required">*</span></label>
+            <input type="text" id="newAdminName" placeholder="Nguyễn Văn A" class="admin-input">
+            <span class="admin-form-error" id="err-newAdminName"></span>
+        </div>
+        <div class="admin-form-group">
+            <label>Email <span class="required">*</span></label>
+            <input type="email" id="newAdminEmail" placeholder="admin@escrow.vn" class="admin-input">
+            <span class="admin-form-error" id="err-newAdminEmail"></span>
+        </div>
+        <div class="admin-form-group">
+            <label>Mật khẩu <span class="required">*</span></label>
+            <input type="password" id="newAdminPassword" placeholder="Tối thiểu 6 ký tự" class="admin-input">
+            <span class="admin-form-error" id="err-newAdminPassword"></span>
+        </div>
+    </div>
+    <div class="admin-modal__footer">
+        <button class="admin-btn admin-btn--ghost" onclick="closeModal('createAdmin')">Hủy</button>
+        <button class="admin-btn admin-btn--primary" onclick="submitCreateAdmin()">
+            <i class='bx bx-user-plus'></i> Tạo tài khoản
+        </button>
+    </div>
+</div>
+
+<!-- MODAL: NẠP TIỀN TRỰC TIẾP -->
+<div class="admin-overlay" id="directDepositOverlay" onclick="closeModal('directDeposit')"></div>
+<div class="admin-modal" id="directDepositModal">
+    <div class="admin-modal__header">
+        <h3>Nạp tiền trực tiếp</h3>
+        <button onclick="closeModal('directDeposit')"><i class='bx bx-x'></i></button>
+    </div>
+    <div class="admin-modal__body">
+        <p style="font-size:14px;color:#64748b;margin-bottom:16px;">Nạp tiền cho: <strong id="directDepositTarget"></strong></p>
+        <div class="admin-form-group">
+            <label>Số tiền (VNĐ) <span class="required">*</span></label>
+            <input type="number" id="directDepositAmount" placeholder="VD: 5000000" class="admin-input" min="1">
+        </div>
+        <div class="admin-form-group">
+            <label>Ghi chú</label>
+            <input type="text" id="directDepositNote" placeholder="Lý do nạp tiền..." class="admin-input">
+        </div>
+    </div>
+    <div class="admin-modal__footer">
+        <button class="admin-btn admin-btn--ghost" onclick="closeModal('directDeposit')">Hủy</button>
+        <button class="admin-btn admin-btn--primary" onclick="submitDirectDeposit()">
+            <i class='bx bx-wallet'></i> Nạp tiền
+        </button>
+    </div>
+</div>
+
 <div class="admin-toast" id="adminToast"></div>
 
 <script src="/js/global.js"></script>
-<script src="/js/local/admin.js"></script>
+<script src="/js/local/owner.js"></script>
 </body>
 </html>
