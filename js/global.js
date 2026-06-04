@@ -445,13 +445,13 @@ function renderHeaderAuth() {
 
     // Xây dựng các link mới
 const dashUrl = user.role === 'OWNER'
-    ? '/Web/Web/html/pages/admin/owner-dashboard.html'
+    ? '/Web/html/pages/admin/owner-dashboard.html'
     : user.role === 'ADMIN'
-    ? '/Web/Web/html/pages/admin/admin-dashboard.html'
+    ? '/Web/html/pages/admin/admin-dashboard.html'
     : null;
 
 const html = [
-    `<a href="/Web/Web/html/pages/profile.html" class="header-top__link">
+    `<a href="/Web/html/pages/profile.html" class="header-top__link">
         <i class="bx bx-user-circle"></i> ${user.hoTen}
     </a>`,
     dashUrl
