@@ -164,6 +164,6 @@ document.getElementById('registerBtn').addEventListener('click', async () => {
         localStorage.setItem('escrow_token', 'token-' + newUser.id + '-' + Date.now());
         localStorage.setItem('escrow_user', JSON.stringify(userToStore));
 
-        window.location.href = '/html/index.html';
+        window.location.href = '/Web/html/index.html';
     }, 800);
 });

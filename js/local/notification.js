@@ -88,9 +88,9 @@ function getNotifs() {
     return Store.getNotifications(_notifAuthUser.id).map(n => ({
         ...n,
         ngay: n.thoiGian ? n.thoiGian.split(',')[0] : '',
-        duongDan: n.loai === 'GD' ? '/html/pages/p2p.html'
-                : n.loai === 'VI' ? '/html/pages/wallet.html'
-                : n.loai === 'TO_CAO' ? '/html/pages/report.html'
+        duongDan: n.loai === 'GD' ? '/Web/html/pages/p2p.html'
+                : n.loai === 'VI' ? '/Web/html/pages/wallet.html'
+                : n.loai === 'TO_CAO' ? '/Web/html/pages/report.html'
                 : '#',
     }));
 }

@@ -421,7 +421,7 @@ function isLoggedIn() {
 function logout() {
     localStorage.removeItem('escrow_token');
     localStorage.removeItem('escrow_user');
-    window.location.href = '/html/index.html';
+    window.location.href = '/Web/html/index.html';
 }
 
 // ============================================================
@@ -444,27 +444,27 @@ function renderHeaderAuth() {
     loginLink.remove();
 
     // Xây dựng các link mới
-    const dashUrl = user.role === 'OWNER'
-        ? '/html/pages/admin/owner-dashboard.html'
-        : user.role === 'ADMIN'
-        ? '/html/pages/admin/admin-dashboard.html'
-        : null;
+const dashUrl = user.role === 'OWNER'
+    ? '/Web/Web/html/pages/admin/owner-dashboard.html'
+    : user.role === 'ADMIN'
+    ? '/Web/Web/html/pages/admin/admin-dashboard.html'
+    : null;
 
-    const html = [
-        `<a href="/html/pages/profile.html" class="header-top__link">
-            <i class="bx bx-user-circle"></i> ${user.hoTen}
-        </a>`,
-        dashUrl
-            ? `<span>|</span>
-               <a href="${dashUrl}" class="header-top__link">
-                   <i class="bx bx-layout"></i> Dashboard
-               </a>`
-            : '',
-        `<span>|</span>
-         <a href="#" class="header-top__link" id="logoutBtn">
-             <i class="bx bx-log-out"></i> Đăng Xuất
-         </a>`,
-    ].join('');
+const html = [
+    `<a href="/Web/Web/html/pages/profile.html" class="header-top__link">
+        <i class="bx bx-user-circle"></i> ${user.hoTen}
+    </a>`,
+    dashUrl
+        ? `<span>|</span>
+           <a href="${dashUrl}" class="header-top__link">
+               <i class="bx bx-layout"></i> Dashboard
+           </a>`
+        : '',
+    `<span>|</span>
+     <a href="#" class="header-top__link" id="logoutBtn">
+         <i class="bx bx-log-out"></i> Đăng Xuất
+     </a>`,
+].join('');
 
     parent.insertAdjacentHTML('beforeend', html);
     document.getElementById('logoutBtn')
@@ -483,7 +483,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const doSearch = () => {
             const q = searchInput.value.trim();
             if (!q) return;
-            window.location.href = `/html/pages/profile.html?q=${encodeURIComponent(q)}`;
+            window.location.href = `/Web/html/pages/profile.html?q=${encodeURIComponent(q)}`;
         };
         searchBtn.addEventListener('click', doSearch);
         searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
@@ -511,10 +511,10 @@ function showLoginGate(mainEl) {
                     Vui lòng đăng nhập để sử dụng tính năng này.
                 </p>
                 <div class="auth-gate__actions">
-                    <a href="/html/pages/login.html" class="auth-gate__btn auth-gate__btn--primary">
+                    <a href="/Web/html/pages/login.html" class="auth-gate__btn auth-gate__btn--primary">
                         <i class="bx bx-log-in-circle"></i> Đăng Nhập
                     </a>
-                    <a href="/html/pages/register.html" class="auth-gate__btn auth-gate__btn--secondary">
+                    <a href="/Web/html/pages/register.html" class="auth-gate__btn auth-gate__btn--secondary">
                         Tạo tài khoản mới
                     </a>
                 </div>
@@ -543,7 +543,7 @@ function showKYCGate(mainEl) {
                 </p>
                 ${!isPending ? `
                 <div class="auth-gate__actions">
-                    <a href="/html/pages/settings.html?section=kyc" class="auth-gate__btn auth-gate__btn--primary">
+                    <a href="/Web/html/pages/settings.html?section=kyc" class="auth-gate__btn auth-gate__btn--primary">
                         <i class="bx bx-id-card"></i> Xác Minh Ngay
                     </a>
                 </div>` : ''}

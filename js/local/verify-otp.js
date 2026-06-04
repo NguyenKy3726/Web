@@ -234,7 +234,7 @@ function showSuccess() {
         el.textContent = sec;
         if (sec <= 0) {
             clearInterval(interval);
-            window.location.href = '/html/pages/login.html';
+            window.location.href = '/Web/html/pages/login.html';
         }
     }, 1000);
 }
