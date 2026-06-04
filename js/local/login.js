@@ -63,7 +63,7 @@ loginBtn.addEventListener('click', () => {
         localStorage.setItem('escrow_token', 'token-' + found.id + '-' + Date.now());
         localStorage.setItem('escrow_user', JSON.stringify(userToStore));
 
-        window.location.href = '/html/index.html';
+        window.location.href = '../index.html';
     }, 600);
 });
 
