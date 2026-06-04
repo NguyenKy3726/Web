@@ -150,13 +150,6 @@ function renderBankList(banks) {
             el.querySelector('.bank-item__default-badge').style.display = 'inline-flex';
         }
 
-        el.querySelector('.wallet-btn-sm--danger').addEventListener('click', () => {
-            if (confirm('Xóa tài khoản ngân hàng này?')) {
-                el.closest('.bank-item').remove();
-                // TODO: DELETE /api/bank-accounts/{id}
-            }
-        });
-
         container.appendChild(clone);
     });
 }

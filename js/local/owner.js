@@ -326,14 +326,7 @@ function openReportAction(id) {
 }
 
 function resolveReport(id, trangThai) {
-    const reports = Store.getAllReports();
-    const r = reports.find(x => x.id === id);
-    if (!r) return;
-    // Update in store — need a method for this
-    const data = JSON.parse(localStorage.getItem('escrow_store_v1'));
-    const idx  = data.reports.findIndex(x => x.id === id);
-    if (idx !== -1) { data.reports[idx].trangThai = trangThai; data.reports[idx].adminId = currentUser.id; }
-    localStorage.setItem('escrow_store_v1', JSON.stringify(data));
+    Store.updateReport(id, { trangThai, adminId: currentUser.id });
     closeModal('reportAction');
     renderAdminReports();
     renderSidebar();
@@ -493,12 +486,17 @@ function submitDirectDeposit() {
     const note      = document.getElementById('directDepositNote').value.trim();
     if (!amount || amount <= 0) return showToast('Vui lòng nhập số tiền hợp lệ.', 'error');
 
-    Store.directDeposit({
+    const result = Store.directDeposit({
         toUserId: _depositTargetId,
         amount,
         performedBy: currentUser.id,
         ghiChu: note || 'Nạp tiền trực tiếp từ Owner',
     });
+
+    if (result === 'INSUFFICIENT_OWNER') {
+        return showToast('Ví Owner không đủ tiền để thực hiện.', 'error');
+    }
+    if (!result) return showToast('Không thể nạp tiền. Vui lòng thử lại.', 'error');
 
     const target = Store.getUserById(_depositTargetId);
     Store.addNotification({

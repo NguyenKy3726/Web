@@ -102,14 +102,6 @@ function getMyReports() {
     }).reverse();
 }
 
-/**
- * TODO (Java): GET /api/transactions/{code}
- * Dùng để preview thông tin GD khi nhập mã
- */
-const mockGdLookup = {
-    'GD250531142210': { product: 'iPhone 13 Pro Max 256GB', partner: 'seller_xyz', amount: 5000000, trangThai: 'COMPLETED' },
-    'GD250531101533': { product: 'MacBook Air M1',          partner: 'buyer_abc',  amount: 2500000, trangThai: 'COMPLETED' },
-};
 
 // ID tố cáo đang mở chi tiết/rút
 let currentReportId = null;

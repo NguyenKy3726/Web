@@ -262,7 +262,7 @@ const Store = (() => {
         // ── P2P TRANSACTIONS ───────────────────────────────────
         getMyTransactions(userId) {
             return load().p2pTransactions.filter(t =>
-                t.nguoiTaoId === Number(userId) || t.nguoiThamGiaId === Number(userId)
+                t.nguoiMuaId === Number(userId) || t.nguoiBanId === Number(userId)
             );
         },
         getAllTransactions() {
@@ -289,6 +289,14 @@ const Store = (() => {
             data.reports.push(r);
             save(data);
             return r;
+        },
+        updateReport(id, fields) {
+            const data = load();
+            const idx  = data.reports.findIndex(r => r.id === Number(id));
+            if (idx === -1) return false;
+            data.reports[idx] = { ...data.reports[idx], ...fields };
+            save(data);
+            return true;
         },
 
         // ── NOTIFICATIONS ──────────────────────────────────────

@@ -556,33 +556,6 @@
         </footer>
 
 </div>
-<div class="smodal" id="deleteModal">
-    <div class="smodal__header">
-        <h3><i class='bx bx-error-circle'></i> Xóa tài khoản</h3>
-        <button class="smodal__close" onclick="closeDeleteModal()"><i class='bx bx-x'></i></button>
-    </div>
-    <div class="smodal__body">
-        <div class="smodal__warn">
-            <p>Hành động này <strong>không thể hoàn tác</strong>. Toàn bộ dữ liệu sẽ bị xóa vĩnh viễn bao gồm:</p>
-            <ul>
-                <li>Lịch sử giao dịch</li>
-                <li>Số dư trong ví</li>
-                <li>Thông tin KYC</li>
-                <li>Lịch sử tố cáo</li>
-            </ul>
-        </div>
-        <div class="settings-field" style="margin-top:16px">
-            <label>Nhập mật khẩu để xác nhận</label>
-            <input type="password" id="deleteConfirmPw" class="settings-input" placeholder="Mật khẩu của bạn">
-        </div>
-    </div>
-    <div class="smodal__footer">
-        <button class="settings-btn settings-btn--ghost" onclick="closeDeleteModal()">Hủy</button>
-        <button class="settings-btn settings-btn--danger" onclick="deleteAccount()">
-            <i class='bx bx-trash'></i> Xác nhận xóa
-        </button>
-    </div>
-</div>
 
 <script src="/js/global.js"></script>
 <script src="/js/local/settings.js"></script>

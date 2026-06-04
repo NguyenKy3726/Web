@@ -287,10 +287,7 @@ function openReportAction(id) {
 }
 
 function resolveReport(id, trangThai) {
-    const data = JSON.parse(localStorage.getItem('escrow_store_v1'));
-    const idx  = data.reports.findIndex(x => x.id === id);
-    if (idx !== -1) { data.reports[idx].trangThai = trangThai; data.reports[idx].adminId = currentAdmin.id; }
-    localStorage.setItem('escrow_store_v1', JSON.stringify(data));
+    Store.updateReport(id, { trangThai, adminId: currentAdmin.id });
     closeModal('reportAction');
     renderAdminReports();
     renderSidebar();
