@@ -410,7 +410,6 @@ function renderHistory(list, filter) {
 // ============================================================
 function openDepositModal() {
     document.getElementById('depositAmount').value = '';
-    document.getElementById('feeAmount') && (document.getElementById('feeAmount').textContent = '—');
     openModal('deposit');
 }
 

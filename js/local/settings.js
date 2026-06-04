@@ -294,26 +294,6 @@ function savePrivacy() {
 }
 
 
-function confirmDeleteAccount() {
-    document.getElementById('deleteConfirmPw').value = '';
-    document.getElementById('deleteOverlay').classList.add('show');
-    document.getElementById('deleteModal').classList.add('show');
-}
-
-function closeDeleteModal() {
-    document.getElementById('deleteOverlay').classList.remove('show');
-    document.getElementById('deleteModal').classList.remove('show');
-}
-
-function deleteAccount() {
-    const pw = document.getElementById('deleteConfirmPw').value;
-    if (!pw) { alert('Vui lòng nhập mật khẩu để xác nhận.'); return; }
-    // TODO: fetch('/api/users/me', { method:'DELETE', body: JSON.stringify({ matKhau: pw }) })
-    //   .then(() => window.location.href = '/html/index.html')
-    alert('Demo: Tài khoản đã bị xóa.');
-    closeDeleteModal();
-}
-
 
 // ============================================================
 //  TOAST NOTIFICATION
